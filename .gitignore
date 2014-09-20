@@ -39,3 +39,6 @@ Thumbs.db
 
 # Log Files
 *.log
+
+#Cloud Code Data
+TaskManagerCloud/config/*
