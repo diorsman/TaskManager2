@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.personal.taskmanager2.homescreen.HomeScreenActivity" >
+
+    <item
+        android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@drawable/ic_action_search"
+        android:showAsAction="collapseActionView|ifRoom"
+        android:actionViewClass="android.widget.SearchView"/>
+
+    <item android:id="@+id/action_create"
+          android:title="@string/action_create"
+          android:icon="@drawable/ic_action_content_new_white"
+          android:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_refresh"
+          android:title="@string/action_refresh"
+          android:showAsAction="never" />
+
+    <item android:id="@+id/action_sort_by"
+          android:title="@string/action_sort_by"
+          android:showAsAction="never" />
+
+    <item android:id="@+id/action_logout"
+          android:title="@string/action_logout"
+          android:showAsAction="never" />
+
+    <item android:id="@+id/action_create_more_projects"
+          android:title="Create Extra Projects"
+          android:showAsAction="never" />
+
+</menu>

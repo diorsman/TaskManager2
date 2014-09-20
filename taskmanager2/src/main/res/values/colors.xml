@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="holo_purple">#ffaa66cc</color>
+    <color name="holo_green_light">#ff99cc00</color>
+    <color name="holo_green_dark">#ff669900</color>
+    <color name="holo_orange_dark">#ffff8800</color>
+    <color name="holo_red_light">#ffff4444</color>
+    <color name="holo_blue_dark">#ff0099cc</color>
+    <color name="action_bar_button_background">#44ffffff</color>
+    <color name="background">#e5e5e5</color>
+    <color name="button_pressed">#cc0099cc</color>
+    <color name="button_focused">#cc0099cc</color>
+    <color name="card_ui_background_shadow">#15000000</color>
+    <color name="card_ui_selected">#ebebeb</color>
+    <color name="nav_drawer_item_selected">#40aaaaaa</color>
+    <color name="actionbar_subtitle">#CCffffff</color>
+</resources>

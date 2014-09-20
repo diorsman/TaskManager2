@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="10dp"
+    android:background="@drawable/list_view_background"
+    android:descendantFocusability="blocksDescendants">
+
+    <View
+        android:id="@+id/project_detail_color"
+        android:layout_marginTop="10dp"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/project_detail_status"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/project_detail_name"
+        style="@style/not_completed_detail"
+        android:layout_toRightOf="@id/project_detail_color"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"/>
+
+    <TextView
+        android:id="@+id/project_detail_due_date"
+        android:textSize="15sp"
+        android:textColor="@android:color/secondary_text_light"
+        android:layout_below="@id/project_detail_name"
+        android:layout_alignLeft="@id/project_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"/>
+
+    <View
+        android:id="@+id/project_detail_separator"
+        android:layout_below="@id/project_detail_due_date"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:background="?android:attr/listDivider"
+        android:layout_toRightOf="@id/project_detail_color"/>
+
+    <TextView
+        android:id="@+id/project_detail_description"
+        android:textSize="15sp"
+        android:textColor="@android:color/secondary_text_light"
+        android:textStyle="italic"
+        android:layout_below="@id/project_detail_separator"
+        android:layout_alignLeft="@id/project_detail_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:maxLines="3"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/project_detail_status"
+        android:textSize="15sp"
+        android:textColor="@android:color/secondary_text_light"
+        android:layout_below="@id/project_detail_description"
+        android:layout_alignLeft="@id/project_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"/>
+
+    <ImageButton
+        android:id="@+id/project_detail_overflow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/card_overflow_style"
+        android:contentDescription="@string/overflow"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
+
+</RelativeLayout>

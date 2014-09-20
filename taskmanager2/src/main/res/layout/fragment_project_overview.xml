@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:scrollbarStyle="outsideOverlay"
+            tools:context="com.personal.taskmanager2.projectDetails.ProjectOverviewFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/project_completion_overview_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider1"
+            android:layout_marginBottom="5dp"
+            android:text="Overview"/>
+
+        <TextView
+            android:id="@+id/project_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/project_completion_overview_label"
+            android:textIsSelectable="true"/>
+
+
+        <View
+            android:id="@+id/divider2"
+            style="@style/horizontal_divider"
+            android:layout_below="@id/project_overview"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/description_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/project_description"
+            android:layout_below="@id/divider2"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/project_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/description_label"
+            android:textIsSelectable="true"/>
+
+    </RelativeLayout>
+
+
+</ScrollView>

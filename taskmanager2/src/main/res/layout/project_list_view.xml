@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/project_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:divider="@android:color/transparent"
+            android:listSelector="@android:color/transparent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:dividerHeight="7dp"
+            android:paddingRight="0dp"
+            android:paddingLeft="10dp"
+            android:clickable="true"
+            android:scrollbarStyle="outsideInset"
+            android:clipToPadding="false"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/myProjectLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="@string/loading_projects"
+        android:visibility="gone"/>
+
+</RelativeLayout>

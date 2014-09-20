@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ViewSwitcher
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_switcher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+        <com.personal.taskmanager2.utilities.MyEditText
+            style="@style/uid_edit_text"
+            android:id="@+id/joinProjectUID"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/project_uid"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin">
+            <requestFocus />
+        </com.personal.taskmanager2.utilities.MyEditText>
+
+        <com.personal.taskmanager2.utilities.MyEditText
+            style="@style/password_edit_text"
+            android:id="@+id/joinProjectPassword"
+            android:layout_below="@+id/joinProjectUID"
+            android:hint="@string/password"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_below="@id/joinProjectPassword"
+            style="@style/horizontal_divider" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            style="?android:attr/buttonBarStyle">
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/action_cancel"/>
+
+            <Button
+                android:id="@+id/join_project"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/action_join"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        style="@style/center_progress"
+        android:id="@+id/create_project_progress"
+        android:layout_gravity="center"/>
+
+</ViewSwitcher>

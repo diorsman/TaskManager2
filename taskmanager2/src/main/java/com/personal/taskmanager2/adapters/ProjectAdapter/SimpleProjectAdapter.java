@@ -1,0 +1,159 @@
+package com.personal.taskmanager2.adapters.ProjectAdapter;
+
+import android.app.FragmentManager;
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.utilities.CharacterIcon;
+import com.personal.taskmanager2.utilities.DateParser;
+import com.personal.taskmanager2.utilities.IconKey;
+
+import java.util.HashMap;
+import java.util.List;
+
+public class SimpleProjectAdapter extends BaseProjectAdapter {
+
+    private static final String TAG = "SimpleProjectAdapter";
+
+    private static HashMap<IconKey, CharacterIcon> sIconMap = new HashMap<>();
+
+    private Typeface typeface =
+            Typeface.createFromAsset(getContext().getAssets(),
+                                     "Roboto-Light.ttf");
+
+    private DateParser dateParser = new DateParser(DateParser.DEFAULT);
+
+    public SimpleProjectAdapter(Context context,
+                                List<Project> projectList,
+                                FragmentManager fm,
+                                ListView listView) {
+
+        super(context,
+              projectList,
+              fm,
+              listView);
+    }
+
+    private static class ViewHolder {
+
+        public View        colorSlice;
+        public TextView    lineOneView;
+        public TextView    lineTwoView;
+        public ProgressBar status;
+        public ImageButton overFlowButton;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View colorSlice;
+        TextView lineOneView;
+        TextView lineTwoView;
+        ProgressBar status;
+        ImageButton overFlowButton;
+
+        if (convertView == null) {
+            // inflate row
+            LayoutInflater inflater = (LayoutInflater) getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item_project,
+                                           parent,
+                                           false);
+
+            colorSlice =
+                    convertView.findViewById(R.id.project_list_color_slice);
+            lineOneView =
+                    (TextView) convertView.findViewById(R.id.project_list_name);
+            lineTwoView =
+                    (TextView) convertView.findViewById(R.id.project_list_due_date);
+            status =
+                    (ProgressBar) convertView.findViewById(R.id.project_list_status);
+            overFlowButton =
+                    (ImageButton) convertView.findViewById(R.id.project_list_overflow);
+
+            //set up view holder
+            ViewHolder viewHolder = new ViewHolder();
+            viewHolder.colorSlice = colorSlice;
+            viewHolder.lineOneView = lineOneView;
+            viewHolder.lineTwoView = lineTwoView;
+            viewHolder.status = status;
+            viewHolder.overFlowButton = overFlowButton;
+            convertView.setTag(viewHolder);
+        }
+        else {
+            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+            colorSlice = viewHolder.colorSlice;
+            lineOneView = viewHolder.lineOneView;
+            lineTwoView = viewHolder.lineTwoView;
+            status = viewHolder.status;
+            overFlowButton = viewHolder.overFlowButton;
+        }
+
+        Project project = getItem(position);
+        initButton(overFlowButton, project);
+
+        double progress;
+        if (project.getStatus()) {
+            progress = 100;
+        }
+        else {
+            //get task info
+            int numTasks = project.getNumCompletedTasks();
+            int totalTasks = project.getNumTotalTask();
+            progress = (double) numTasks / totalTasks;
+            progress *= 100;
+        }
+
+
+        char initLet = project.getAdminName().charAt(0);
+        int colorRsrc = project.getColorRsrc();
+
+        //check if icon already exists
+        IconKey key = new IconKey(initLet, colorRsrc);
+        CharacterIcon icon =sIconMap.get(key);
+
+        //create new icon if it does not exist
+        if (icon == null) {
+            icon = new CharacterIcon(initLet,
+                                     getContext().getResources()
+                                                 .getColor(colorRsrc),
+                                     typeface
+            );
+            sIconMap.put(key, icon);
+        }
+        colorSlice.setBackgroundDrawable(icon);
+
+        // set name
+        lineOneView.setText(project.getName());
+
+        //set due date
+        dateParser.parse(project.getDueDate(), lineTwoView);
+
+        //set progress
+        status.setVisibility(ProgressBar.VISIBLE);
+        status.setProgress((int) progress);
+        status.getProgressDrawable()
+              .setColorFilter(convertView.getResources()
+                                         .getColor(colorRsrc),
+                              PorterDuff.Mode.SRC_IN
+                             );
+
+        setTitleAppearance(lineOneView,
+                           project,
+                           R.style.completed_default,
+                           R.style.not_completed_default);
+
+
+        return convertView;
+    }
+}

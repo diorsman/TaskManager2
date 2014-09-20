@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Sign In, Create Account, Forgot Password -->
+    <string name="app_name">Task Manager 2</string>
+    <string name="email_address">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_account">Create Account</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="name">Name</string>
+    <string name="instructions">Please enter your email address below.\n
+        An email will be sent with instructions to\nreset your password</string>
+    <string name="submit">Submit</string>
+
+    <!-- Activity/Fragment Titles -->
+    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="my_projects_title">My Projects</string>
+    <string name="create_project_title">Create Project</string>
+    <string name="join_project_title">Join Project</string>
+    <string name="account_settings_title">Profile</string>
+    <string name="trash_title">Trash</string>
+    <string name="archive_title">Archive</string>
+    <string name="help_title">Help</string>
+
+    <!-- Projects -->
+    <string name="project_uid">Unique Identifier</string>
+    <string name="project_name">Project Name</string>
+    <string name="project_description">Description</string>
+    <string name="due_date">Due Date</string>
+    <string name="due_time">Due Time</string>
+    <string name="create_project">Create Project</string>
+    <string name="loading_projects">Loading Projects\nPlease Wait…</string>
+    <string name="no_projects">No projects found.\nPlease a create a project.</string>
+    <string name="no_archived_projects">No projects archived.</string>
+    <string name="no_trash_projects">No projects in trash.</string>
+    <string name="overflow">Overflow</string>
+    <string name="search_no_results">No projects match query.</string>
+
+    <!-- Nav Drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Account Settings -->
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm New Password</string>
+    <string name="old_password">Current Password</string>
+    <string name="phone">Phone Number</string>
+
+    <!-- Action Bar -->
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_search">Search</string>
+    <string name="action_create">Create Project</string>
+    <string name="action_join">Join Project</string>
+    <string name="action_accept">Accept</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_filter_by">Filter By</string>
+    <string name="action_sort_by">Sort By</string>
+    <string name="action_logout">Log Out</string>
+    <string name="action_project_view">Project View</string>
+    <string name="action_task_view">Task View</string>
+
+    <!-- Project Overflow -->
+    <string name="action_edit_project">Edit Project</string>
+    <string name="action_mark_complete">Mark Complete</string>
+    <string name="action_mark_not_complete">Mark Not Complete</string>
+    <string name="shared_project">Share Project</string>
+    <string name="archive_project">Archive</string>
+    <string name="delete_project">Delete</string>
+
+    <!-- Archive/Trash Overflow -->
+    <string name="move_to_projects">Move to Projects</string>
+
+    <!-- Help -->
+    <string name="help_create_project">Creating Projects</string>
+    <string name="help_create_project_body">- Swipe left to pull out navigation drawer\n- Tap "Create Project"\n- Unique Identifier: allows others to join your project\n- Password: prevents unwanted people from joining\n</string>
+    <string name="help_join_project">Joining Projects</string>
+    <string name="help_join_project_body">- Swipe left to pull out navigation drawer\n- Tap "Join Project"\n- Enter the UID given in the e-mail\n- Ask the project admin for the password\n</string>
+    <string name="help_share_project">Sharing Projects</string>
+    <string name="help_share_project_body">- Swipe left to pull out navigation drawer\n- Tap "My Projects"\n- Tap the add person button for the desired project\n- Choose an e-mail client and enter e-mail address\n</string>
+
+    <!-- Edit Project -->
+    <string name="edit_project_instructions">Click Each Value to Edit</string>
+    <string name="category">Category: </string>
+    <string name="edit_project_description">Project Description</string>
+    <string name="edit_password">Change Password</string>
+
+    <!-- Sort By -->
+    <string-array name="sort_by_array">
+        <item>Due Date</item>
+        <item>Project Name</item>
+        <item>Project Description</item>
+        <item>Category</item>
+    </string-array>
+
+    <!-- Filter By -->
+    <string-array name="filter_by_array">
+        <item>None</item>
+        <item>Due Date</item>
+        <item>Project Name</item>
+        <item>Project Description</item>
+        <item>Category</item>
+    </string-array>
+    <string-array name="action_bar_spinner_items">
+        <item>List View</item>
+        <item>Detail View</item>
+    </string-array>
+
+    <string name="title_activity_project_detail">ProjectDetailActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>

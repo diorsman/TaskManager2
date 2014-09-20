@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="Theme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/ActionBar.Style</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionBar.Overflow</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_action_navigation_previous_item</item>
+        <item name="android:actionDropDownStyle">@style/ActionBar.Spinner</item>
+        <item name="android:actionBarItemBackground">@drawable/action_bar_item_background</item>
+        <item name="android:dropDownListViewStyle">@style/ListView.DropDown</item>
+        <item name="android:popupMenuStyle">@style/Widget.PopupMenu</item>
+        <item name="android:buttonStyle">@style/Widget.Button</item>
+        <item name="android:imageButtonStyle">@style/Widget.ImageButton</item>
+    </style>
+
+
+
+    <!-- Popup Menu Style -->
+    <style name="Widget.PopupMenu" parent="@android:style/Widget.Holo.Light.PopupMenu">
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+    </style>
+
+    <!-- DropDown Menu Style -->
+    <style name="ListView.DropDown" parent="@android:style/Widget.Holo.Light.ListView.DropDown">
+        <item name="android:listSelector">?android:selectableItemBackground</item>
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+
+    <!-- Action Bar Theme -->
+    <style name="ActionBar.Style" parent="@android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:titleTextStyle">@style/ActionBar.Title</item>
+        <item name="android:background">@drawable/ab_solid_example</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_example</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_example</item>
+    </style>
+
+    <!-- ActionBar title text -->
+    <style name="ActionBar.Title" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- ActionBar Overflow Icon -->
+    <style name="ActionBar.Overflow" parent="android:style/Widget.Holo.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_action_core_overflow</item>
+    </style>
+
+    <!-- ActionBar Spinner Style -->
+    <style name="ActionBar.Spinner" parent="@android:style/Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/apptheme_spinner_background_holo_light</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+    </style>
+
+    <style name="Widget.Button" parent="android:Widget.Holo.Light.Button">
+        <item name="android:background">@drawable/apptheme_btn_default_holo_light</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Widget.ImageButton" parent="android:Widget.Holo.Light.ImageButton">
+        <item name="android:background">@drawable/apptheme_btn_default_holo_light</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+
+</resources>

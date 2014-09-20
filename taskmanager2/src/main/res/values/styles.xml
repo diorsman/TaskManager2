@@ -1,0 +1,175 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Progress Bar at Center of View -->
+    <style name="center_progress" parent="android:Widget.Holo.Light.ProgressBar.Large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
+
+    <!-- Default Edit Text -->
+    <style name="default_edit_text" parent="android:Widget.EditText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!-- Email Edit Text -->
+    <style name="email_edit_text" parent="default_edit_text">
+        <item name="android:inputType">textEmailAddress</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- Password Edit Text -->
+    <style name="password_edit_text" parent="default_edit_text">
+        <item name="android:inputType">textPassword</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+
+    <!-- Horizontal Divider -->
+    <style name="horizontal_divider">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <!-- Submission Button -->
+    <style name="submit_button" parent="Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
+    <!-- No Projects Text -->
+    <style name="no_projects_found" parent="android:TextAppearance.DeviceDefault.Medium">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <!-- Create Account -->
+    <style name="account_create_name" parent="default_edit_text">
+        <item name="android:inputType">textPersonName</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+
+    <!-- Create Project -->
+    <style name="create_project_button" parent="Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
+
+    <!-- Join Project -->
+    <style name="uid_edit_text" parent="default_edit_text">
+        <item name="android:inputType">text</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+
+    <!-- Edit Project -->
+    <style name="edit_project_title" parent="android:TextAppearance.DeviceDefault.Large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@android:color/holo_blue_dark</item>
+    </style>
+
+    <style name="edit_project_label" parent="android:TextAppearance.DeviceDefault.Large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+    </style>
+
+    <style name="edit_project_actual" parent="android:TextAppearance.DeviceDefault.Medium">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="edit_project_password" parent="android:TextAppearance.DeviceDefault.Large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="edit_project_view_switcher">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+    </style>
+
+    <style name="edit_project_linear_layout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+    </style>
+
+    <style name="edit_project_buttons" parent="Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+
+
+    <!-- Project List View Text Style -->
+    <style name="completed_default" parent="android:TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">top</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="not_completed_default" parent="android:TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">top</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="completed_detail" parent="android:TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:textSize">23sp</item>
+    </style>
+
+    <style name="not_completed_detail" parent="android:TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:textSize">23sp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ViewSwitcher
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_switcher"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_project_relative_layout"
+        >
+
+        <com.personal.taskmanager2.utilities.MyEditText
+            style="@style/default_edit_text"
+            android:id="@+id/project_name"
+            android:hint="@string/project_name"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin">
+            <requestFocus/>
+        </com.personal.taskmanager2.utilities.MyEditText>
+
+        <com.personal.taskmanager2.utilities.MyEditText
+            style="@style/default_edit_text"
+            android:id="@+id/project_uid"
+            android:layout_below="@+id/project_name"
+            android:hint="@string/project_uid"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+        <com.personal.taskmanager2.utilities.MyEditText
+            style="@style/password_edit_text"
+            android:id="@+id/project_password"
+            android:layout_below="@+id/project_uid"
+            android:hint="@string/password"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/project_password"
+            android:orientation="horizontal"
+            style="?android:attr/buttonBarStyle"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin">
+
+            <Button
+                android:id="@+id/project_due_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/due_date"/>
+
+            <Button
+                android:id="@+id/project_due_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/due_time"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            style="@style/horizontal_divider"
+            android:layout_below="@id/linearLayout1"
+            android:paddingLeft="-16dp"
+            android:paddingRight="-16dp"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            style="?android:attr/buttonBarStyle">
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/action_cancel"/>
+
+            <Button
+                android:id="@+id/create_project"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="?android:attr/borderlessButtonStyle"
+                android:text="@string/action_create"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        style="@style/center_progress"
+        android:id="@+id/create_project_progress"
+        android:layout_gravity="center"/>
+
+</ViewSwitcher>
