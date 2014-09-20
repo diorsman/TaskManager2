@@ -330,7 +330,7 @@ public class Project extends ParseObject implements Parcelable {
         }
     }
 
-    public boolean isProjectAdminCurUser(ParseUser currentUser) {
+    private boolean isProjectAdminCurUser(ParseUser currentUser) {
 
         return getAdmin().getObjectId().equals(currentUser.getObjectId());
     }

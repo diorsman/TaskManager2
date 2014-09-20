@@ -18,8 +18,6 @@ import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.parseObjects.Project;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnClickListener {
@@ -60,12 +58,6 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
             }
         });
-    }
-
-    public void sort(Comparator<Project> comparator) {
-
-        Collections.sort(mProjectList, comparator);
-        notifyDataSetChanged();
     }
 
     public void addItems(List<Project> items) {
