@@ -29,17 +29,14 @@ public class CreateAccountFragment extends DialogFragment
                              Bundle savedInstanceState) {
 
         getDialog().setTitle(R.string.create_account);
-        View rootView =
-                inflater.inflate(R.layout.fragment_create_account, container);
+        View rootView = inflater.inflate(R.layout.fragment_create_account, container);
 
         rootView.findViewById(R.id.createNewAccount).setOnClickListener(this);
 
         mName = (MyEditText) rootView.findViewById(R.id.accountCreateName);
         mEmail = (MyEditText) rootView.findViewById(R.id.accountCreateEmail);
-        mPassword =
-                (MyEditText) rootView.findViewById(R.id.accountCreatePassword);
-        mProgress =
-                (ProgressBar) rootView.findViewById(R.id.accountCreateProgress);
+        mPassword = (MyEditText) rootView.findViewById(R.id.accountCreatePassword);
+        mProgress = (ProgressBar) rootView.findViewById(R.id.accountCreateProgress);
 
         mProgress.setVisibility(View.INVISIBLE);
 
@@ -92,19 +89,14 @@ public class CreateAccountFragment extends DialogFragment
 
                 if (e == null) {
                     mProgress.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getActivity().getApplicationContext(),
-                                   "Account Created!",
-                                   Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Account Created!", Toast.LENGTH_SHORT).show();
                     getDialog().dismiss();
-                    Intent intent =
-                            new Intent(getActivity(), HomeScreenActivity.class);
+                    Intent intent = new Intent(getActivity(), HomeScreenActivity.class);
                     startActivity(intent);
                     //getActivity().finish();
                 }
                 else {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                                   e.getMessage(),
-                                   Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                     mProgress.setVisibility(View.INVISIBLE);
                     mName.setVisibility(View.VISIBLE);
                     mPassword.setVisibility(View.VISIBLE);

@@ -1,6 +1,6 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
-import android.app.FragmentManager;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -33,15 +33,11 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     private DateParser dateParser = new DateParser(DateParser.DEFAULT);
 
-    public SimpleProjectAdapter(Context context,
+    public SimpleProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                FragmentManager fm,
                                 ListView listView) {
 
-        super(context,
-              projectList,
-              fm,
-              listView);
+        super(context, projectList, listView);
     }
 
     private static class ViewHolder {
@@ -64,22 +60,15 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
         if (convertView == null) {
             // inflate row
-            LayoutInflater inflater = (LayoutInflater) getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_project,
-                                           parent,
-                                           false);
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item_project, parent, false);
 
-            colorSlice =
-                    convertView.findViewById(R.id.project_list_color_slice);
-            lineOneView =
-                    (TextView) convertView.findViewById(R.id.project_list_name);
-            lineTwoView =
-                    (TextView) convertView.findViewById(R.id.project_list_due_date);
-            status =
-                    (ProgressBar) convertView.findViewById(R.id.project_list_status);
-            overFlowButton =
-                    (ImageButton) convertView.findViewById(R.id.project_list_overflow);
+            colorSlice = convertView.findViewById(R.id.project_list_color_slice);
+            lineOneView = (TextView) convertView.findViewById(R.id.project_list_name);
+            lineTwoView = (TextView) convertView.findViewById(R.id.project_list_due_date);
+            status = (ProgressBar) convertView.findViewById(R.id.project_list_status);
+            overFlowButton = (ImageButton) convertView.findViewById(R.id.project_list_overflow);
 
             //set up view holder
             ViewHolder viewHolder = new ViewHolder();
@@ -120,15 +109,13 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
         //check if icon already exists
         IconKey key = new IconKey(initLet, colorRsrc);
-        CharacterIcon icon =sIconMap.get(key);
+        CharacterIcon icon = sIconMap.get(key);
 
         //create new icon if it does not exist
         if (icon == null) {
             icon = new CharacterIcon(initLet,
-                                     getContext().getResources()
-                                                 .getColor(colorRsrc),
-                                     typeface
-            );
+                                     getContext().getResources().getColor(colorRsrc),
+                                     typeface);
             sIconMap.put(key, icon);
         }
         colorSlice.setBackgroundDrawable(icon);
@@ -143,10 +130,8 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
         status.setVisibility(ProgressBar.VISIBLE);
         status.setProgress((int) progress);
         status.getProgressDrawable()
-              .setColorFilter(convertView.getResources()
-                                         .getColor(colorRsrc),
-                              PorterDuff.Mode.SRC_IN
-                             );
+              .setColorFilter(convertView.getResources().getColor(colorRsrc),
+                              PorterDuff.Mode.SRC_IN);
 
         setTitleAppearance(lineOneView,
                            project,

@@ -9,8 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 
 public class CharacterIcon extends ColorDrawable {
 
-    private char    mCharacter;
-    private Paint   mTextPaint;
+    private char  mCharacter;
+    private Paint mTextPaint;
 
 
     public CharacterIcon(char character, int color, Typeface typeface) {
@@ -30,16 +30,16 @@ public class CharacterIcon extends ColorDrawable {
 
     @Override
     public void draw(Canvas canvas) {
+
         super.draw(canvas);
 
         // draw text
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        mTextPaint.setTextSize((height/2) * 1.2f);
+        mTextPaint.setTextSize((height / 2) * 1.2f);
         canvas.drawText(String.valueOf(mCharacter),
                         width / 2,
-                        height / 2 -
-                        ((mTextPaint.descent() + mTextPaint.ascent()) / 2),
+                        height / 2 - ((mTextPaint.descent() + mTextPaint.ascent()) / 2),
                         mTextPaint);
 
     }

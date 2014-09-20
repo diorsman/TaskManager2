@@ -22,8 +22,7 @@ public class ProjectDetailActivity extends Activity {
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                                 .add(R.id.container,
-                                     ProjectDetailFragment.newInstance(
-                                             project))
+                                     ProjectOverviewFragment.newInstance(project))
                                 .commit();
         }
     }
@@ -44,6 +43,7 @@ public class ProjectDetailActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         }

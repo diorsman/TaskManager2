@@ -22,29 +22,18 @@ public class CategoryAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getDropDownView(int position,
-                                View convertView,
-                                ViewGroup parent) {
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
 
-        return getCustomView(position,
-                             convertView,
-                             parent,
-                             R.layout.spinner_category_drop_down);
+        return getCustomView(position, convertView, parent, R.layout.spinner_category_drop_down);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        return getCustomView(position,
-                             convertView,
-                             parent,
-                             R.layout.spinner_category_row);
+        return getCustomView(position, convertView, parent, R.layout.spinner_category_row);
     }
 
-    private View getCustomView(int position,
-                               View convertView,
-                               ViewGroup parent,
-                               int resource) {
+    private View getCustomView(int position, View convertView, ViewGroup parent, int resource) {
 
         if (convertView == null) {
             LayoutInflater inflater =
@@ -53,14 +42,11 @@ public class CategoryAdapter extends ArrayAdapter<String> {
         }
 
         View colorSlice = convertView.findViewById(R.id.spinner_icon);
-        TextView spinnerText =
-                (TextView) convertView.findViewById(R.id.spinner_text);
+        TextView spinnerText = (TextView) convertView.findViewById(R.id.spinner_text);
 
         colorSlice.setBackgroundResource(getResourceFromPosition(position));
         spinnerText.setText(getItem(position));
-        spinnerText.setTextColor(convertView.getResources()
-                                            .getColor(getResourceFromPosition(
-                                                    position)));
+        spinnerText.setTextColor(convertView.getResources().getColor(getResourceFromPosition(position)));
 
         return convertView;
     }

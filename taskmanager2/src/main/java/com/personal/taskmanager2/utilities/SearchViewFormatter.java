@@ -145,8 +145,7 @@ public class SearchViewFormatter {
         }
         if (mSearchIconResource != 0) {
             ImageView imageView =
-                    (ImageView) searchView.findViewById(getIdentifier(
-                            "search_mag_icon"));
+                    (ImageView) searchView.findViewById(getIdentifier("search_mag_icon"));
 
             if (mSearchIconInside) {
                 Drawable searchIconDrawable =
@@ -184,18 +183,14 @@ public class SearchViewFormatter {
             view.setOnEditorActionListener(mEditorActionListener);
         }
 
-        int textViewID = searchView.getContext()
-                                   .getResources()
-                                   .getIdentifier(
-                                           "android:id/search_src_text",
-                                           null,
-                                           null);
+        int textViewID = searchView.getContext().getResources().getIdentifier(
+                "android:id/search_src_text",
+                null,
+                null);
         AutoCompleteTextView searchTextView =
-                (AutoCompleteTextView) searchView.findViewById(
-                        textViewID);
+                (AutoCompleteTextView) searchView.findViewById(textViewID);
         try {
-            Field mCursorDrawable =
-                    TextView.class.getDeclaredField("mCursorDrawableRes");
+            Field mCursorDrawable = TextView.class.getDeclaredField("mCursorDrawableRes");
             mCursorDrawable.setAccessible(true);
             mCursorDrawable.set(searchTextView, mSearchCursorResource);
         }
@@ -206,10 +201,6 @@ public class SearchViewFormatter {
 
     protected int getIdentifier(String literalId) {
 
-        return mResources.getIdentifier(
-                String.format("android:id/%s", literalId),
-                null,
-                null
-                                       );
+        return mResources.getIdentifier(String.format("android:id/%s", literalId), null, null);
     }
 }

@@ -149,9 +149,7 @@ public class DateParser {
     private static final int DELAY_BEFORE_PURGE  = 10 * 1000;
 
     private final HashMap<Date, String> sHardParsedDateCache =
-            new LinkedHashMap<Date, String>(HARD_CACHE_CAPACITY / 2,
-                                            .75f,
-                                            true) {
+            new LinkedHashMap<Date, String>(HARD_CACHE_CAPACITY / 2, .75f, true) {
                 @Override
                 protected boolean removeEldestEntry(Entry<Date, String> eldest) {
 

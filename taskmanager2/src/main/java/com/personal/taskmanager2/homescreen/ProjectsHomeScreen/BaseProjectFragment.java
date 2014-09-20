@@ -33,8 +33,10 @@ import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
+import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.homescreen.AddProjects.CreateProjectFragment;
 import com.personal.taskmanager2.homescreen.AddProjects.JoinProjectFragment;
+import com.personal.taskmanager2.homescreen.SearchFragment;
 import com.personal.taskmanager2.parseObjects.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.SearchViewFormatter;
@@ -123,23 +125,16 @@ public abstract class BaseProjectFragment extends Fragment
         mArchive = args.getBoolean("archive");
         mTrash = args.getBoolean("trash");
 
-        View rootView = inflater.inflate(mLayoutResourceId,
-                                         container,
-                                         false);
+        View rootView = inflater.inflate(mLayoutResourceId, container, false);
 
         mRefreshLayoutList =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout_list_view);
-        mLoadProjects =
-                (TextView) rootView.findViewById(R.id.myProjectLoad);
-        mListView =
-                (ListView) rootView.findViewById(R.id.project_list_view);
-        mNoProjects =
-                (TextView) rootView.findViewById(R.id.no_projects_text);
+        mLoadProjects = (TextView) rootView.findViewById(R.id.myProjectLoad);
+        mListView = (ListView) rootView.findViewById(R.id.project_list_view);
+        mNoProjects = (TextView) rootView.findViewById(R.id.no_projects_text);
 
         // ListView set up
-        mFooterView = inflater.inflate(R.layout.project_list_view_footer,
-                                       null,
-                                       false);
+        mFooterView = inflater.inflate(R.layout.project_list_view_footer, null, false);
         mListView.setOnScrollListener(this);
         mListView.setEmptyView(mLoadProjects);
         mListView.setOnItemClickListener(this);
@@ -197,8 +192,6 @@ public abstract class BaseProjectFragment extends Fragment
 
     private Bundle saveState() {
 
-        Log.i(TAG, "saveState is being called");
-
         mListViewState = mListView.onSaveInstanceState();
 
         Bundle args = new Bundle();
@@ -231,14 +224,13 @@ public abstract class BaseProjectFragment extends Fragment
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
-        ArrayAdapter<String> actionBarSpinner =
-                new ActionBarSpinner(actionBar.getThemedContext(),
-                                     getResources().getStringArray(R.array.action_bar_spinner_items));
+        ArrayAdapter<String> actionBarSpinner = new ActionBarSpinner(actionBar.getThemedContext(),
+                                                                     getResources().getStringArray(R.array.action_bar_spinner_items));
         actionBarSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        actionBar.setListNavigationCallbacks(actionBarSpinner,
-                                             this);
+        actionBar.setListNavigationCallbacks(actionBarSpinner, this);
         actionBar.setSelectedNavigationItem(mSelectedPosition);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_solid_example));
     }
 
     private void setUpSearchView(Menu menu) {
@@ -252,9 +244,7 @@ public abstract class BaseProjectFragment extends Fragment
         formatter.setSearchCloseIconResource(R.drawable.ic_action_cancel);
         formatter.setSearchTextColorResource(android.R.color.white);
         formatter.setSearchHintColorResource(android.R.color.white);
-        formatter.setSearchIconResource(R.drawable.ic_action_search,
-                                        true,
-                                        false);
+        formatter.setSearchIconResource(R.drawable.ic_action_search, true, false);
         formatter.format(searchView);
 
 
@@ -279,9 +269,9 @@ public abstract class BaseProjectFragment extends Fragment
 
                 getFragmentManager().beginTransaction()
                                     .replace(R.id.container,
-                                             SearchFragment.newInstance(
-                                                     query))
-                                    .addToBackStack(TAG)
+                                             SearchFragment.newInstance(query))
+                                    .addToBackStack(
+                                            TAG)
                                     .commit();
                 return true;
             }
@@ -336,14 +326,12 @@ public abstract class BaseProjectFragment extends Fragment
 
                 switch (item.getItemId()) {
                     case R.id.action_create:
-                        CreateProjectFragment.newInstance()
-                                             .show(getFragmentManager(),
-                                                   "CreateProjectFragment");
+                        CreateProjectFragment.newInstance().show(getFragmentManager(),
+                                                                 "CreateProjectFragment");
                         return true;
                     case R.id.action_join:
-                        JoinProjectFragment.newInstance()
-                                           .show(getFragmentManager(),
-                                                 "JoinProjectFragment");
+                        JoinProjectFragment.newInstance().show(getFragmentManager(),
+                                                               "JoinProjectFragment");
                         return true;
                     default:
                         return false;
@@ -403,9 +391,7 @@ public abstract class BaseProjectFragment extends Fragment
             public void handleMessage(Message msg) {
 
                 if (msg.what == 1) {
-                    Toast.makeText(getActivity(),
-                                   "Done",
-                                   Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Done", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -417,28 +403,16 @@ public abstract class BaseProjectFragment extends Fragment
                 try {
                     final ParseUser user = ParseUser.getCurrentUser();
                     final String[] sColorValues =
-                            {"Blue",
-                             "Orange",
-                             "Yellow",
-                             "Green",
-                             "Red",
-                             "Purple"};
+                            {"Blue", "Orange", "Yellow", "Green", "Red", "Purple"};
                     user.fetchIfNeeded();
                     for (int i = 1; i < 55; ++i) {
                         String projectName = "Project ";
                         projectName += Integer.toString(i);
                         String uid = Integer.toString(i);
                         String password = "test";
-                        Date date = Calendar.getInstance()
-                                            .getTime();
+                        Date date = Calendar.getInstance().getTime();
                         String name = (String) user.get("Name");
-                        Project project =
-                                new Project(projectName,
-                                            uid,
-                                            password,
-                                            date,
-                                            user,
-                                            name);
+                        Project project = new Project(projectName, uid, password, date, user, name);
                         project.setDescription(Utilities.description);
                         project.setColor(sColorValues[i % 6]);
                         project.save();
@@ -466,12 +440,10 @@ public abstract class BaseProjectFragment extends Fragment
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-        if (scrollState == SCROLL_STATE_IDLE && !mAllProjectsLoaded &&
-            !mIsLoadingMore) {
+        if (scrollState == SCROLL_STATE_IDLE && !mAllProjectsLoaded && !mIsLoadingMore) {
 
             // Load next page of projects
-            if (mListView.getLastVisiblePosition() >=
-                mListView.getCount() - 1 - 5) {
+            if (mListView.getLastVisiblePosition() >= mListView.getCount() - 1 - 5) {
                 mCurrentPage++;
                 mIsLoadingMore = true;
                 queryProjects();
@@ -514,8 +486,7 @@ public abstract class BaseProjectFragment extends Fragment
 
         mSelectedPosition = position;
         if (!hasQueried) {
-            if (mListView.getAdapter() != null &&
-                !mListView.getAdapter().isEmpty()) {
+            if (mListView.getAdapter() != null && !mListView.getAdapter().isEmpty()) {
                 mListViewState = mListView.onSaveInstanceState();
             }
             mListView.setAdapter(null);
@@ -557,12 +528,12 @@ public abstract class BaseProjectFragment extends Fragment
                     Log.i(TAG, "First Load");
                     projects = (List<Project>) msg.obj;
                     mProjectAdapter =
-                            Utilities.createProjectAdapter(mSelectedPosition,
-                                                           mContext,
-                                                           projects,
-                                                           getFragmentManager(),
-                                                           mListView);
+                            ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
+                                                                       getActivity(),
+                                                                       projects,
+                                                                       mListView);
                     mListView.setAdapter(mProjectAdapter);
+
                     if (mListViewState != null) {
                         mListView.onRestoreInstanceState(mListViewState);
                         mListViewState = null;
@@ -604,13 +575,10 @@ public abstract class BaseProjectFragment extends Fragment
     private void queryProjectsInBackground(Handler handler) {
 
         try {
-            ParseQuery<Project> projectAdmin =
-                    ParseQuery.getQuery(Project.class);
-            projectAdmin.whereEqualTo(Project.ADMIN_COL,
-                                      ParseUser.getCurrentUser());
+            ParseQuery<Project> projectAdmin = ParseQuery.getQuery(Project.class);
+            projectAdmin.whereEqualTo(Project.ADMIN_COL, ParseUser.getCurrentUser());
 
-            ParseQuery<Project> projectUser =
-                    ParseQuery.getQuery(Project.class);
+            ParseQuery<Project> projectUser = ParseQuery.getQuery(Project.class);
             projectUser.whereEqualTo(Project.USERS_ID_COL,
                                      ParseUser.getCurrentUser().getObjectId());
 
@@ -648,8 +616,7 @@ public abstract class BaseProjectFragment extends Fragment
             }
             else {
                 if (mListView.getAdapter() == null ||
-                    mListView.getAdapter().getCount() -
-                    mListView.getFooterViewsCount() < 1) {
+                    mListView.getAdapter().getCount() - mListView.getFooterViewsCount() < 1) {
                     projectQuery.setSkip(0);
                     projectQuery.setLimit((mCurrentPage + 1) * LOAD_LIMIT);
                 }
@@ -662,10 +629,8 @@ public abstract class BaseProjectFragment extends Fragment
             List<Project> projects = projectQuery.find();
 
             if (!projects.isEmpty()) {
-                if (mProjectAdapter != null && !mAllProjectsLoaded &&
-                    mIsLoadingMore) {
-                    Message msg =
-                            handler.obtainMessage(LOADED_MORE_ITEMS, projects);
+                if (mProjectAdapter != null && !mAllProjectsLoaded && mIsLoadingMore) {
+                    Message msg = handler.obtainMessage(LOADED_MORE_ITEMS, projects);
                     handler.sendMessage(msg);
                 }
                 else {
@@ -689,10 +654,7 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent,
-                            View view,
-                            int position,
-                            long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         Project project = (Project) mListView.getItemAtPosition(position);
         Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);

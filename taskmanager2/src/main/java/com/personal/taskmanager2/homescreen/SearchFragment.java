@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen.ProjectsHomeScreen;
+package com.personal.taskmanager2.homescreen;
 
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -24,7 +24,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
-import com.personal.taskmanager2.adapters.ProjectAdapter.SimpleProjectAdapter;
+import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.parseObjects.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.SearchViewFormatter;
@@ -60,8 +60,7 @@ public class SearchFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView =
-                inflater.inflate(R.layout.fragment_search, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
         mListView = (ListView) rootView.findViewById(R.id.project_list_view);
         mListView.setOnItemClickListener(this);
@@ -108,9 +107,7 @@ public class SearchFragment extends Fragment
         formatter.setSearchCloseIconResource(R.drawable.ic_action_cancel);
         formatter.setSearchTextColorResource(android.R.color.white);
         formatter.setSearchHintColorResource(android.R.color.white);
-        formatter.setSearchIconResource(R.drawable.ic_action_search,
-                                        true,
-                                        false);
+        formatter.setSearchIconResource(R.drawable.ic_action_search, true, false);
         formatter.format(searchView);
 
 
@@ -156,10 +153,10 @@ public class SearchFragment extends Fragment
             public void handleMessage(Message msg) {
 
                 List<Project> projects = (List<Project>) msg.obj;
-                BaseProjectAdapter adapter = new SimpleProjectAdapter(
+                BaseProjectAdapter adapter = ProjectAdapterFactory.createProjectAdapter(
+                        ProjectAdapterFactory.SIMPLE_ADAPTER,
                         getActivity(),
                         projects,
-                        getFragmentManager(),
                         mListView);
                 mListView.setAdapter(adapter);
                 mListView.setEmptyView(mNoResults);
@@ -170,6 +167,7 @@ public class SearchFragment extends Fragment
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+
                 searchForProjectsInBackground(query.toLowerCase(), handler);
             }
         };
@@ -178,10 +176,10 @@ public class SearchFragment extends Fragment
     }
 
     private void searchForProjectsInBackground(String query, Handler handler) {
+
         try {
             ParseQuery<Project> projectAdmin = ParseQuery.getQuery(Project.class);
-            projectAdmin.whereEqualTo(Project.ADMIN_COL,
-                                      ParseUser.getCurrentUser());
+            projectAdmin.whereEqualTo(Project.ADMIN_COL, ParseUser.getCurrentUser());
 
             ParseQuery<Project> projectUser = ParseQuery.getQuery(Project.class);
             projectUser.whereEqualTo(Project.USERS_ID_COL,
@@ -241,10 +239,7 @@ public class SearchFragment extends Fragment
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent,
-                            View view,
-                            int position,
-                            long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         Project project = (Project) mListView.getItemAtPosition(position);
         Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);

@@ -26,15 +26,11 @@ public class ActionBarSpinner extends ArrayAdapter<String> {
         if (convertView == null) {
             LayoutInflater inflater =
                     (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.action_bar_spinner_item,
-                                           parent,
-                                           false);
+            convertView = inflater.inflate(R.layout.action_bar_spinner_item, parent, false);
         }
 
-        TextView title =
-                (TextView) convertView.findViewById(R.id.action_bar_title);
-        TextView subtitle =
-                (TextView) convertView.findViewById(R.id.action_bar_subtitle);
+        TextView title = (TextView) convertView.findViewById(R.id.action_bar_title);
+        TextView subtitle = (TextView) convertView.findViewById(R.id.action_bar_subtitle);
         subtitle.setText(getItem(position));
         title.setText("My Projects");
         return convertView;

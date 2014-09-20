@@ -41,9 +41,9 @@ public class CreateProjectFragment extends DialogFragment
 
     private static final String TAG = "CreateProjectFragment";
 
-    private static final int BLANK_EDIT_TEXT = 0;
-    private static final int UID_EXISTS = 1;
-    private static final int CREATE_PROJECT =2;
+    private static final int BLANK_EDIT_TEXT    = 0;
+    private static final int UID_EXISTS         = 1;
+    private static final int CREATE_PROJECT     = 2;
     private static final int EXCEPTION_OCCURRED = 3;
 
     private MyEditText   mNameView;
@@ -61,25 +61,21 @@ public class CreateProjectFragment extends DialogFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
 
         getDialog().setTitle(R.string.create_project_title);
-        View rootView = inflater.inflate(R.layout.fragment_create_project,
-                                         container,
-                                         false);
+        View rootView = inflater.inflate(R.layout.fragment_create_project, container, false);
 
         mNameView = (MyEditText) rootView.findViewById(R.id.project_name);
         mUidView = (MyEditText) rootView.findViewById(R.id.project_uid);
-        mPasswordView =
-                (MyEditText) rootView.findViewById(R.id.project_password);
+        mPasswordView = (MyEditText) rootView.findViewById(R.id.project_password);
         mDateButton = (Button) rootView.findViewById(R.id.project_due_date);
         mTimeButton = (Button) rootView.findViewById(R.id.project_due_time);
-        Button submitButton =
-                (Button) rootView.findViewById(R.id.create_project);
+        Button submitButton = (Button) rootView.findViewById(R.id.create_project);
         Button cancelButton = (Button) rootView.findViewById(R.id.cancel);
-        mViewSwitcher =
-                (ViewSwitcher) rootView.findViewById(R.id.view_switcher);
+        mViewSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher);
 
         mDateButton.setOnClickListener(this);
         mTimeButton.setOnClickListener(this);
@@ -169,18 +165,15 @@ public class CreateProjectFragment extends DialogFragment
                         break;
 
                     case CREATE_PROJECT:
-                        Toast.makeText(getActivity(),
-                                       "Project Created!",
-                                       Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Project Created!", Toast.LENGTH_SHORT)
+                             .show();
                         getDialog().dismiss();
                         Utilities.refreshFragment(getFragmentManager());
                         break;
 
                     case EXCEPTION_OCCURRED:
                         Exception e = (Exception) msg.obj;
-                        Toast.makeText(getActivity(),
-                                       e.getMessage(),
-                                       Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         mViewSwitcher.setDisplayedChild(0);
                         break;
                 }
@@ -214,13 +207,8 @@ public class CreateProjectFragment extends DialogFragment
                 case 0:
                     ParseUser currentUser = ParseUser.getCurrentUser();
                     String adminName = (String) currentUser.get("Name");
-                    Project newProject = new Project(name,
-                                                     uid,
-                                                     password,
-                                                     date,
-                                                     currentUser,
-                                                     adminName
-                    );
+                    Project newProject =
+                            new Project(name, uid, password, date, currentUser, adminName);
                     newProject.save();
                     Message message = handler.obtainMessage(CREATE_PROJECT);
                     handler.sendMessage(message);

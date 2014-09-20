@@ -32,13 +32,12 @@ public class HomeScreenActivity extends Activity
 
         setContentView(R.layout.activity_home_screen);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mNavigationDrawerFragment =
+                (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
         // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
+                                        (DrawerLayout) findViewById(R.id.drawer_layout));
 
         getWindow().setBackgroundDrawable(null);
     }
@@ -55,15 +54,12 @@ public class HomeScreenActivity extends Activity
                                .commit();
                 break;
             case 1:
-                fragmentManager.beginTransaction()
-                               .replace(R.id.container,
-                                        ArchiveFragment.newInstance())
-                               .commit();
+                fragmentManager.beginTransaction().replace(R.id.container,
+                                                           ArchiveFragment.newInstance()).commit();
                 break;
             case 2:
                 fragmentManager.beginTransaction()
-                               .replace(R.id.container,
-                                        TrashFragment.newInstance())
+                               .replace(R.id.container, TrashFragment.newInstance())
                                .commit();
                 break;
             case 3:
@@ -74,10 +70,8 @@ public class HomeScreenActivity extends Activity
                                .commit();
                 break;
             case 5:
-                fragmentManager.beginTransaction()
-                               .replace(R.id.container,
-                                        HelpFragment.newInstance())
-                               .commit();
+                fragmentManager.beginTransaction().replace(R.id.container,
+                                                           HelpFragment.newInstance()).commit();
                 break;
         }
     }
@@ -111,15 +105,12 @@ public class HomeScreenActivity extends Activity
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
         finish();
-        overridePendingTransition(android.R.anim.slide_in_left,
-                                  android.R.anim.slide_out_right);
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     private void logOut() {
 
-        Toast.makeText(this,
-                       "You have been logged out.",
-                       Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "You have been logged out.", Toast.LENGTH_SHORT).show();
         ParseUser.logOut();
     }
 }

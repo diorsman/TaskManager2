@@ -1,11 +1,18 @@
 package com.personal.taskmanager2.parseObjects;
 
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.homescreen.EditProjectFragment;
 import com.personal.taskmanager2.utilities.BCrypt;
 
 import org.json.JSONArray;
@@ -76,6 +83,7 @@ public class Project extends ParseObject implements Parcelable {
     }
 
     public void addUser(ParseUser user) {
+
         addUserId(user);
         addUserName(user);
     }
@@ -91,14 +99,17 @@ public class Project extends ParseObject implements Parcelable {
     }
 
     private void setUserIdArray(JSONArray array) {
+
         put(USERS_ID_COL, array);
     }
 
     public JSONArray getUserId() {
+
         return getJSONArray(USERS_ID_COL);
     }
 
     private void addUserName(ParseUser user) {
+
         JSONArray userNameArray = getUserName();
         if (userNameArray == null) {
             userNameArray = new JSONArray();
@@ -108,14 +119,17 @@ public class Project extends ParseObject implements Parcelable {
     }
 
     private void setUserNameArray(JSONArray array) {
+
         put(USERS_NAME_COL, array);
     }
 
     public JSONArray getUserName() {
+
         return getJSONArray(USERS_NAME_COL);
     }
 
     private void addEmptyUser() {
+
         JSONArray idArray = new JSONArray();
         JSONArray nameArray = new JSONArray();
         put(USERS_ID_COL, idArray);
@@ -283,6 +297,63 @@ public class Project extends ParseObject implements Parcelable {
     public int describeContents() {
 
         return 0;
+    }
+
+    public interface ModifyProject {
+
+        void modify();
+    }
+
+    public void safeModify(Context context, ParseUser currentUser, ModifyProject command) {
+
+        if (isProjectAdminCurUser(currentUser)) {
+            command.modify();
+        }
+        else {
+            Toast.makeText(context,
+                           "Only the administrator can make changes to the project.",
+                           Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void safeEdit(FragmentManager fragmentManager, Context context) {
+
+        if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
+            fragmentManager.beginTransaction()
+                           .addToBackStack(null)
+                           .replace(R.id.container, EditProjectFragment.newInstance(this))
+                           .commit();
+        }
+        else {
+            Toast.makeText(context, "Only administrator can edit the project", Toast.LENGTH_LONG)
+                 .show();
+        }
+    }
+
+    public boolean isProjectAdminCurUser(ParseUser currentUser) {
+
+        return getAdmin().getObjectId().equals(currentUser.getObjectId());
+    }
+
+    public void share(Context context) {
+
+        String uid = getUid();
+        String password = getPassword();
+        String projectName = getName();
+        String body =
+                "Hello,\n\n" + ParseUser.getCurrentUser().get("Name")
+                + " has invited you to join their project, "
+                + projectName + "."
+                +
+                "\nYou can join them on the TaskManager app with the following information."
+                + "\nUnique Identifier: " + uid
+                + "\nPassword: " + password
+                + "\n\nSincerely,\nThe Task Manager App Team\n";
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT,
+                             "You have been invited to join project " + projectName);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+        context.startActivity(Intent.createChooser(emailIntent, "Share project..."));
     }
 
     @Override

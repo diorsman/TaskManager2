@@ -1,6 +1,6 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
-import android.app.FragmentManager;
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,15 +21,11 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
 
     private DateParser dateParser = new DateParser(DateParser.DETAIL);
 
-    public DetailProjectAdapter(Context context,
+    public DetailProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                FragmentManager fm,
                                 ListView listView) {
 
-        super(context,
-              projectList,
-              fm,
-              listView);
+        super(context, projectList, listView);
     }
 
     private static class ViewHolder {
@@ -53,23 +49,16 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         ImageButton overFlowButton;
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_project_detail,
-                                           parent,
-                                           false);
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item_project_detail, parent, false);
 
             colorSlice = convertView.findViewById(R.id.project_detail_color);
-            lineOneView =
-                    (TextView) convertView.findViewById(R.id.project_detail_name);
-            lineTwoView =
-                    (TextView) convertView.findViewById(R.id.project_detail_due_date);
-            lineThreeView =
-                    (TextView) convertView.findViewById(R.id.project_detail_description);
-            lineFourView =
-                    (TextView) convertView.findViewById(R.id.project_detail_status);
-            overFlowButton =
-                    (ImageButton) convertView.findViewById(R.id.project_detail_overflow);
+            lineOneView = (TextView) convertView.findViewById(R.id.project_detail_name);
+            lineTwoView = (TextView) convertView.findViewById(R.id.project_detail_due_date);
+            lineThreeView = (TextView) convertView.findViewById(R.id.project_detail_description);
+            lineFourView = (TextView) convertView.findViewById(R.id.project_detail_status);
+            overFlowButton = (ImageButton) convertView.findViewById(R.id.project_detail_overflow);
 
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.colorSlice = colorSlice;

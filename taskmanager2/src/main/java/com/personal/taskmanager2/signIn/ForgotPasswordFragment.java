@@ -19,8 +19,7 @@ public class ForgotPasswordFragment extends DialogFragment {
                              Bundle savedInstanceState) {
 
         getDialog().setTitle(R.string.forgot_password);
-        View rootView =
-                inflater.inflate(R.layout.fragment_forgot_password, container);
+        View rootView = inflater.inflate(R.layout.fragment_forgot_password, container);
         return rootView;
     }
 }

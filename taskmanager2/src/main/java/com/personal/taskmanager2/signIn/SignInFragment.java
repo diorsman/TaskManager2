@@ -39,8 +39,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
 
         // get views
         mEmailView = (MyEditText) rootView.findViewById(R.id.emailTextBox);
-        mPasswordView =
-                (MyEditText) rootView.findViewById(R.id.passwordTextBox);
+        mPasswordView = (MyEditText) rootView.findViewById(R.id.passwordTextBox);
 
         return rootView;
     }
@@ -61,8 +60,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
             case R.id.signIn:
 
                 // show progress dialog
-                final ProgressDialog progress =
-                        new ProgressDialog(view.getContext());
+                final ProgressDialog progress = new ProgressDialog(view.getContext());
                 progress.setTitle("Logging In");
                 progress.setMessage("Please Wait...");
                 progress.show();
@@ -98,23 +96,18 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
 
                                                     if (parseUser != null) {
                                                         progress.dismiss();
-                                                        Intent intent =
-                                                                new Intent(
-                                                                        getActivity(),
-                                                                        HomeScreenActivity.class);
+                                                        Intent intent = new Intent(getActivity(),
+                                                                                   HomeScreenActivity.class);
                                                         startActivity(intent);
                                                         getActivity().finish();
                                                     }
                                                     else {
                                                         progress.dismiss();
-                                                        Toast.makeText(
-                                                                getActivity().getApplicationContext(),
-                                                                e.getMessage(),
-                                                                Toast.LENGTH_LONG)
-                                                             .show();
+                                                        Toast.makeText(getActivity(),
+                                                                       e.getMessage(),
+                                                                       Toast.LENGTH_LONG).show();
                                                         mEmailView.setError("");
-                                                        mPasswordView.setError(
-                                                                "");
+                                                        mPasswordView.setError("");
                                                     }
                                                 }
                                             });

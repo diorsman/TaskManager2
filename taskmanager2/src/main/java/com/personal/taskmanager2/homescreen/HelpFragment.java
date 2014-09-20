@@ -25,8 +25,7 @@ public class HelpFragment extends Fragment {
                              Bundle savedInstanceState) {
         //Set title of action bar
         //(getActivity()).getActionBar().setTitle(getString(R.string.help));
-        View rootView =
-                inflater.inflate(R.layout.fragment_help, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_help, container, false);
         return rootView;
     }
 

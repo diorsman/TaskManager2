@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -87,6 +88,7 @@ public class EditProjectFragment extends android.app.Fragment
         // set title
         getActionBar().setDisplayShowTitleEnabled(true);
         getActionBar().setTitle("Editing Project");
+        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(mProject.getColorRsrc())));
     }
 
     private ActionBar getActionBar() {
@@ -95,28 +97,21 @@ public class EditProjectFragment extends android.app.Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_edit_project,
-                                         container,
-                                         false);
-        mMainViewSwitcher =
-                (ViewSwitcher) rootView.findViewById(R.id.main_view_switcher);
-        mProjectNameLabel =
-                (TextView) rootView.findViewById(R.id.edit_project_name_actual);
+        View rootView = inflater.inflate(R.layout.fragment_edit_project, container, false);
+
+        mMainViewSwitcher = (ViewSwitcher) rootView.findViewById(R.id.main_view_switcher);
+        mProjectNameLabel = (TextView) rootView.findViewById(R.id.edit_project_name_actual);
         mProjectDescriptionLabel =
                 (TextView) rootView.findViewById(R.id.edit_project_description_actual);
-
-        mDateButton =
-                (Button) rootView.findViewById(R.id.editProjectDueDateButton);
-        mTimeButton =
-                (Button) rootView.findViewById(R.id.editProjectTimeButton);
+        mDateButton = (Button) rootView.findViewById(R.id.editProjectDueDateButton);
+        mTimeButton = (Button) rootView.findViewById(R.id.editProjectTimeButton);
         mProjectName = (EditText) rootView.findViewById(R.id.edit_project_name);
-        mProjectDescription =
-                (EditText) rootView.findViewById(R.id.edit_project_description);
-        mProjectPassword =
-                (EditText) rootView.findViewById(R.id.edit_project_password);
+        mProjectDescription = (EditText) rootView.findViewById(R.id.edit_project_description);
+        mProjectPassword = (EditText) rootView.findViewById(R.id.edit_project_password);
         mSpinner = (Spinner) rootView.findViewById(R.id.edit_project_category);
 
         mMainViewSwitcher.setDisplayedChild(0);
@@ -124,8 +119,7 @@ public class EditProjectFragment extends android.app.Fragment
         //set click listeners
         mProjectNameLabel.setOnClickListener(this);
         mProjectDescriptionLabel.setOnClickListener(this);
-        rootView.findViewById(R.id.edit_project_password_label)
-                .setOnClickListener(this);
+        rootView.findViewById(R.id.edit_project_password_label).setOnClickListener(this);
         mDateButton.setOnClickListener(this);
         mTimeButton.setOnClickListener(this);
 
@@ -141,16 +135,14 @@ public class EditProjectFragment extends android.app.Fragment
             mProjectDescriptionLabel.setText(mProject.getDescription());
         }
         else {
-            mProjectDescriptionLabel.setText(
-                    "There is no description for this project!");
+            mProjectDescriptionLabel.setText("There is no description for this project!");
         }
 
         mCalendar = Calendar.getInstance();
         mCalendar.setTime(mProject.getDueDate());
 
         // set up spinner
-        ArrayAdapter<String> adapter =
-                new CategoryAdapter(getActivity().getApplicationContext());
+        ArrayAdapter<String> adapter = new CategoryAdapter(getActivity());
         mSpinner.setAdapter(adapter);
         mSpinner.setSelection(colorValues.indexOf(mProject.getColor()));
 
@@ -192,9 +184,7 @@ public class EditProjectFragment extends android.app.Fragment
 
                 switch (msg.what) {
                     case 1:
-                        Toast.makeText(getActivity(),
-                                       "Project Updated!",
-                                       Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Project Updated!", Toast.LENGTH_LONG).show();
                         getFragmentManager().popBackStack();
                         break;
                     case 0:
@@ -211,8 +201,7 @@ public class EditProjectFragment extends android.app.Fragment
 
                 try {
                     String name = mProjectName.getText().toString();
-                    String description =
-                            mProjectDescription.getText().toString();
+                    String description = mProjectDescription.getText().toString();
                     String password = mProjectPassword.getText().toString();
                     String category = mSpinner.getSelectedItem().toString();
                     Date newDate = mCalendar.getTime();
@@ -229,6 +218,7 @@ public class EditProjectFragment extends android.app.Fragment
                     if (!newDate.equals(mProject.getDueDate())) {
                         mProject.setDueDate(newDate);
                     }
+
                     mProject.setColor(category);
                     mProject.save();
                     handler.sendEmptyMessage(1);
@@ -246,14 +236,11 @@ public class EditProjectFragment extends android.app.Fragment
     private void resetViews() {
 
         ViewSwitcher switcher;
-        switcher =
-                (ViewSwitcher) getView().findViewById(R.id.edit_project_name_view);
+        switcher = (ViewSwitcher) getView().findViewById(R.id.edit_project_name_view);
         switcher.setDisplayedChild(0);
-        switcher =
-                (ViewSwitcher) getView().findViewById(R.id.edit_project_password_view);
+        switcher = (ViewSwitcher) getView().findViewById(R.id.edit_project_password_view);
         switcher.setDisplayedChild(0);
-        switcher =
-                (ViewSwitcher) getView().findViewById(R.id.edit_project_description_view);
+        switcher = (ViewSwitcher) getView().findViewById(R.id.edit_project_description_view);
         switcher.setDisplayedChild(0);
         DateFormat date = DateFormat.getDateInstance(DateFormat.SHORT);
         DateFormat time = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -270,13 +257,11 @@ public class EditProjectFragment extends android.app.Fragment
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         switch (v.getId()) {
             case R.id.edit_project_name_actual:
-                switcher =
-                        (ViewSwitcher) getView().findViewById(R.id.edit_project_name_view);
+                switcher = (ViewSwitcher) getView().findViewById(R.id.edit_project_name_view);
                 switcher.showNext();
                 break;
             case R.id.edit_project_password_label:
-                switcher =
-                        (ViewSwitcher) getView().findViewById(R.id.edit_project_password_view);
+                switcher = (ViewSwitcher) getView().findViewById(R.id.edit_project_password_view);
                 switcher.showNext();
                 break;
             case R.id.edit_project_description_actual:
@@ -296,10 +281,7 @@ public class EditProjectFragment extends android.app.Fragment
     }
 
     @Override
-    public void onDateSet(DatePicker view,
-                          int year,
-                          int monthOfYear,
-                          int dayOfMonth) {
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
         mCalendar.set(year, monthOfYear, dayOfMonth);
         DateFormat date = DateFormat.getDateInstance(DateFormat.SHORT);

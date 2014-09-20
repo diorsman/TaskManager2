@@ -19,16 +19,13 @@ public class SignInActivity extends Activity {
 
         ParseUser curr = ParseUser.getCurrentUser();
         if (curr != null) {
-            Toast.makeText(this,
-                           "Logged Out",
-                           Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show();
             ParseUser.logOut();
         }
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                                .add(R.id.container, new SignInFragment())
-                                .commit();
+            getFragmentManager().beginTransaction().add(R.id.container,
+                                                        new SignInFragment()).commit();
         }
     }
 

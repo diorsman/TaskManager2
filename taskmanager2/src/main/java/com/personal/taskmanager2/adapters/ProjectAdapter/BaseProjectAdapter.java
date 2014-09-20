@@ -1,6 +1,6 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
-import android.app.FragmentManager;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.view.MenuItem;
@@ -17,39 +17,31 @@ import android.widget.Toast;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.parseObjects.Project;
-import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class BaseProjectAdapter extends BaseAdapter
-        implements View.OnClickListener {
+public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnClickListener {
 
     private static final String TAG = "BaseProjectAdapter";
 
-    private final Context         mContext;
+    private final Activity        mContext;
     private       List<Project>   mProjectList;
-    private       FragmentManager mFragmentManager;
-    private       ParseUser       mCurrentUser;
     private       ListView        mListView;
 
     private Animation removeAnimation;
 
 
-    public BaseProjectAdapter(Context context,
+    public BaseProjectAdapter(Activity context,
                               List<Project> projectList,
-                              FragmentManager fm,
                               ListView listView) {
 
         mContext = context;
         mProjectList = projectList;
-        mFragmentManager = fm;
-        mCurrentUser = ParseUser.getCurrentUser();
         mListView = listView;
 
-        removeAnimation = AnimationUtils.loadAnimation(mContext,
-                                                       android.R.anim.slide_out_right);
+        removeAnimation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_out_right);
         removeAnimation.setDuration(350);
         removeAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -150,8 +142,7 @@ public abstract class BaseProjectAdapter extends BaseAdapter
         overflowMenu.setOnMenuItemClickListener(new ProjectMenuItemClick(project));
     }
 
-    private class ProjectMenuItemClick
-            implements PopupMenu.OnMenuItemClickListener {
+    private class ProjectMenuItemClick implements PopupMenu.OnMenuItemClickListener {
 
         private Project mProject;
 
@@ -165,9 +156,7 @@ public abstract class BaseProjectAdapter extends BaseAdapter
 
             switch (menuItem.getItemId()) {
                 case R.id.action_edit_project:
-                    Utilities.safeEditProject(mProject,
-                                              mFragmentManager,
-                                              mContext);
+                    mProject.safeEdit(mContext.getFragmentManager(), mContext);
                     return true;
 
                 case R.id.action_share_project:
@@ -205,15 +194,13 @@ public abstract class BaseProjectAdapter extends BaseAdapter
 
     private void shareProject(Project project) {
 
-        Utilities.shareProject(project, mContext);
+        project.share(mContext);
     }
 
     private void changeStatus(boolean status,
                               Project project) {
 
-        if (ParseUser.getCurrentUser()
-                     .getObjectId()
-                     .equals(project.getAdmin().getObjectId())) {
+        if (ParseUser.getCurrentUser().getObjectId().equals(project.getAdmin().getObjectId())) {
             project.setStatus(status);
             project.saveInBackground();
 
@@ -226,55 +213,44 @@ public abstract class BaseProjectAdapter extends BaseAdapter
         }
     }
 
-    private void archive(boolean archive,
-                         Project project) {
-        if (ParseUser.getCurrentUser()
-                     .getObjectId()
-                     .equals(project.getAdmin().getObjectId())) {
-            project.setArchive(archive);
-            project.saveInBackground();
+    private void archive(final boolean archive,
+                         final Project project) {
 
-            removeProjectAnim(project);
-        }
-        else {
-            Toast.makeText(mContext,
-                           "Only the administrator can make changes to the project.",
-                           Toast.LENGTH_LONG).show();
-        }
+        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
+            @Override
+            public void modify() {
+
+                project.setArchive(archive);
+                project.saveInBackground();
+                removeProjectAnim(project);
+            }
+        });
     }
 
-    private void removeFromTrash(Project project) {
+    private void removeFromTrash(final Project project) {
+        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
+            @Override
+            public void modify() {
 
-        if (ParseUser.getCurrentUser()
-                     .getObjectId()
-                     .equals(project.getAdmin().getObjectId())) {
-            project.setTrash(false);
-            project.saveInBackground();
-
-            removeProjectAnim(project);
-        }
-        else {
-            Toast.makeText(mContext,
-                           "Only the administrator can make changes to the project.",
-                           Toast.LENGTH_LONG).show();
-        }
+                project.setTrash(false);
+                project.saveInBackground();
+                removeProjectAnim(project);
+            }
+        });
     }
 
-    private void moveToTrash(Project project) {
-        if (ParseUser.getCurrentUser()
-                     .getObjectId()
-                     .equals(project.getAdmin().getObjectId())) {
-            project.setTrash(true);
-            project.setArchive(false);
-            project.saveInBackground();
+    private void moveToTrash(final Project project) {
 
-            removeProjectAnim(project);
-        }
-        else {
-            Toast.makeText(mContext,
-                           "Only the administrator can make changes to the project.",
-                           Toast.LENGTH_LONG).show();
-        }
+        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
+            @Override
+            public void modify() {
+
+                project.setTrash(true);
+                project.setArchive(false);
+                project.saveInBackground();
+                removeProjectAnim(project);
+            }
+        });
     }
 
     private void removeProjectAnim(Project project) {
@@ -292,13 +268,11 @@ public abstract class BaseProjectAdapter extends BaseAdapter
 
         if (project.getStatus()) {
             textView.setTextAppearance(mContext, styleComplete);
-            textView.setPaintFlags(
-                    textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
         else {
             textView.setTextAppearance(mContext, styleNotComplete);
-            textView.setPaintFlags(
-                    textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
+            textView.setPaintFlags(textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
         }
     }
 

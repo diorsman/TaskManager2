@@ -16,8 +16,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 
-public class AccountSettingsFragment extends android.app.Fragment
-        implements View.OnClickListener {
+public class AccountSettingsFragment extends android.app.Fragment implements View.OnClickListener {
 
     private static final String TAG = "AccountSettingsFragment";
 
@@ -35,11 +34,11 @@ public class AccountSettingsFragment extends android.app.Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
 
-        (getActivity()).getActionBar()
-                       .setTitle(getString(R.string.account_settings_title));
+        (getActivity()).getActionBar().setTitle(getString(R.string.account_settings_title));
         View rootView = inflater.inflate(R.layout.fragment_account_settings,
                                          container,
                                          false);
@@ -47,14 +46,10 @@ public class AccountSettingsFragment extends android.app.Fragment
         rootView.findViewById(R.id.account_settings_save_changes_btn)
                 .setOnClickListener(this);
 
-        mName =
-                (EditText) rootView.findViewById(R.id.account_settings_edit_name);
-        mPhone =
-                (EditText) rootView.findViewById(R.id.account_settings_edit_phone);
-        mOldPassword =
-                (EditText) rootView.findViewById(R.id.account_settings_edit_old_password);
-        mNewPassword =
-                (EditText) rootView.findViewById(R.id.account_settings_edit_new_password);
+        mName = (EditText) rootView.findViewById(R.id.account_settings_edit_name);
+        mPhone = (EditText) rootView.findViewById(R.id.account_settings_edit_phone);
+        mOldPassword = (EditText) rootView.findViewById(R.id.account_settings_edit_old_password);
+        mNewPassword = (EditText) rootView.findViewById(R.id.account_settings_edit_new_password);
         mConfirmPassword =
                 (EditText) rootView.findViewById(R.id.account_settings_edit_confirm_password);
 
@@ -129,11 +124,9 @@ public class AccountSettingsFragment extends android.app.Fragment
                                                 user.saveInBackground();
                                                 Toast.makeText(getActivity().getApplicationContext(),
                                                                "Changes saved!",
-                                                               Toast.LENGTH_SHORT)
-                                                     .show();
-                                                Intent intent = new Intent(
-                                                        getActivity(),
-                                                        HomeScreenActivity.class);
+                                                               Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent(getActivity(),
+                                                                           HomeScreenActivity.class);
                                                 startActivity(intent);
                                                 getActivity().finish();
                                             }
@@ -142,8 +135,7 @@ public class AccountSettingsFragment extends android.app.Fragment
                                                 //login failed, output message
                                                 Toast.makeText(getActivity().getApplicationContext(),
                                                                e.getMessage(),
-                                                               Toast.LENGTH_LONG)
-                                                     .show();
+                                                               Toast.LENGTH_LONG).show();
                                                 mOldPassword.requestFocus();
                                                 clearErrors();
                                             }

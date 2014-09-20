@@ -50,19 +50,16 @@ public class JoinProjectFragment extends DialogFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
 
         getDialog().setTitle(R.string.join_project_title);
-        View rootView = inflater.inflate(R.layout.fragment_join_project,
-                                         container,
-                                         false);
+        View rootView = inflater.inflate(R.layout.fragment_join_project, container, false);
 
-        mViewSwitcher =
-                (ViewSwitcher) rootView.findViewById(R.id.view_switcher);
+        mViewSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher);
         mUidView = (MyEditText) rootView.findViewById(R.id.joinProjectUID);
-        mPasswordView =
-                (MyEditText) rootView.findViewById(R.id.joinProjectPassword);
+        mPasswordView = (MyEditText) rootView.findViewById(R.id.joinProjectPassword);
         Button join = (Button) rootView.findViewById(R.id.join_project);
         Button cancel = (Button) rootView.findViewById(R.id.cancel);
 
@@ -116,9 +113,7 @@ public class JoinProjectFragment extends DialogFragment
                     // Join Project
                     case JOIN_PROJECT:
                         dismiss();
-                        Toast.makeText(getActivity(),
-                                       "Joined Project",
-                                       Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Joined Project", Toast.LENGTH_LONG).show();
                         Utilities.refreshFragment(getFragmentManager());
                         break;
 
@@ -126,9 +121,7 @@ public class JoinProjectFragment extends DialogFragment
                     case EXCEPTION_OCCURRED:
                         Exception e = (Exception) msg.obj;
                         mViewSwitcher.setDisplayedChild(0);
-                        Toast.makeText(getActivity(),
-                                       e.getMessage(),
-                                       Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                         break;
 
                     //User has already joined project
@@ -208,9 +201,7 @@ public class JoinProjectFragment extends DialogFragment
             JSONArray users = project.getUserId();
             for (int i = 0; i < users.length(); i++) {
                 String objectId = users.getString(i);
-                return ParseUser.getCurrentUser()
-                                .getObjectId()
-                                .equals(objectId);
+                return ParseUser.getCurrentUser().getObjectId().equals(objectId);
             }
         }
         catch (JSONException e) {
