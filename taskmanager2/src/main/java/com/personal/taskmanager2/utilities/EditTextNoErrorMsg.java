@@ -5,9 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-public class MyEditText extends EditText {
+public class EditTextNoErrorMsg extends EditText {
 
-    public MyEditText(Context context, AttributeSet attrs) {
+    public EditTextNoErrorMsg(Context context, AttributeSet attrs) {
 
         super(context, attrs);
     }

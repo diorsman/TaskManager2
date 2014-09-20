@@ -19,7 +19,7 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.parseObjects.Project;
 import com.personal.taskmanager2.utilities.BCrypt;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
-import com.personal.taskmanager2.utilities.MyEditText;
+import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import org.json.JSONArray;
@@ -39,9 +39,9 @@ public class JoinProjectFragment extends DialogFragment
     private static final int EXCEPTION_OCCURRED     = 3;
     private static final int ALREADY_JOINED_PROJECT = 4;
 
-    private ViewSwitcher mViewSwitcher;
-    private MyEditText   mUidView;
-    private MyEditText   mPasswordView;
+    private ViewSwitcher       mViewSwitcher;
+    private EditTextNoErrorMsg mUidView;
+    private EditTextNoErrorMsg mPasswordView;
 
 
     public static JoinProjectFragment newInstance() {
@@ -58,8 +58,8 @@ public class JoinProjectFragment extends DialogFragment
         View rootView = inflater.inflate(R.layout.fragment_join_project, container, false);
 
         mViewSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher);
-        mUidView = (MyEditText) rootView.findViewById(R.id.joinProjectUID);
-        mPasswordView = (MyEditText) rootView.findViewById(R.id.joinProjectPassword);
+        mUidView = (EditTextNoErrorMsg) rootView.findViewById(R.id.joinProjectUID);
+        mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.joinProjectPassword);
         Button join = (Button) rootView.findViewById(R.id.join_project);
         Button cancel = (Button) rootView.findViewById(R.id.cancel);
 
@@ -96,7 +96,7 @@ public class JoinProjectFragment extends DialogFragment
                 switch (msg.what) {
                     //Edit text is empty
                     case BLANK_EDIT_TEXT:
-                        MyEditText view = (MyEditText) msg.obj;
+                        EditTextNoErrorMsg view = (EditTextNoErrorMsg) msg.obj;
                         mViewSwitcher.setDisplayedChild(0);
                         view.setError("");
                         break;

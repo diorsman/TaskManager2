@@ -24,7 +24,7 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.TimePickerFragment;
 import com.personal.taskmanager2.parseObjects.Project;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
-import com.personal.taskmanager2.utilities.MyEditText;
+import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.text.DateFormat;
@@ -46,13 +46,13 @@ public class CreateProjectFragment extends DialogFragment
     private static final int CREATE_PROJECT     = 2;
     private static final int EXCEPTION_OCCURRED = 3;
 
-    private MyEditText   mNameView;
-    private MyEditText   mUidView;
-    private MyEditText   mPasswordView;
-    private Calendar     mCalendar;
-    private Button       mTimeButton;
-    private Button       mDateButton;
-    private ViewSwitcher mViewSwitcher;
+    private EditTextNoErrorMsg mNameView;
+    private EditTextNoErrorMsg mUidView;
+    private EditTextNoErrorMsg mPasswordView;
+    private Calendar           mCalendar;
+    private Button             mTimeButton;
+    private Button             mDateButton;
+    private ViewSwitcher       mViewSwitcher;
 
     public static CreateProjectFragment newInstance() {
 
@@ -68,9 +68,9 @@ public class CreateProjectFragment extends DialogFragment
         getDialog().setTitle(R.string.create_project_title);
         View rootView = inflater.inflate(R.layout.fragment_create_project, container, false);
 
-        mNameView = (MyEditText) rootView.findViewById(R.id.project_name);
-        mUidView = (MyEditText) rootView.findViewById(R.id.project_uid);
-        mPasswordView = (MyEditText) rootView.findViewById(R.id.project_password);
+        mNameView = (EditTextNoErrorMsg) rootView.findViewById(R.id.project_name);
+        mUidView = (EditTextNoErrorMsg) rootView.findViewById(R.id.project_uid);
+        mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.project_password);
         mDateButton = (Button) rootView.findViewById(R.id.project_due_date);
         mTimeButton = (Button) rootView.findViewById(R.id.project_due_time);
         Button submitButton = (Button) rootView.findViewById(R.id.create_project);
@@ -151,7 +151,7 @@ public class CreateProjectFragment extends DialogFragment
                 switch (msg.what) {
 
                     case BLANK_EDIT_TEXT:
-                        MyEditText view = (MyEditText) msg.obj;
+                        EditTextNoErrorMsg view = (EditTextNoErrorMsg) msg.obj;
                         mViewSwitcher.setDisplayedChild(0);
                         view.setError("");
                         break;

@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 
 public class Utilities {
 
-    public static String getValFromEditText(MyEditText editText)
+    public static String getValFromEditText(EditTextNoErrorMsg editText)
             throws EmptyEditTextException {
 
         String uid = editText.getText().toString();

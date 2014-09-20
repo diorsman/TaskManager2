@@ -14,15 +14,15 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.personal.taskmanager2.homescreen.HomeScreenActivity;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.utilities.MyEditText;
+import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
 
 public class CreateAccountFragment extends DialogFragment
         implements View.OnClickListener {
 
-    private MyEditText  mName;
-    private MyEditText  mEmail;
-    private MyEditText  mPassword;
-    private ProgressBar mProgress;
+    private EditTextNoErrorMsg mName;
+    private EditTextNoErrorMsg mEmail;
+    private EditTextNoErrorMsg mPassword;
+    private ProgressBar        mProgress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,9 +33,9 @@ public class CreateAccountFragment extends DialogFragment
 
         rootView.findViewById(R.id.createNewAccount).setOnClickListener(this);
 
-        mName = (MyEditText) rootView.findViewById(R.id.accountCreateName);
-        mEmail = (MyEditText) rootView.findViewById(R.id.accountCreateEmail);
-        mPassword = (MyEditText) rootView.findViewById(R.id.accountCreatePassword);
+        mName = (EditTextNoErrorMsg) rootView.findViewById(R.id.accountCreateName);
+        mEmail = (EditTextNoErrorMsg) rootView.findViewById(R.id.accountCreateEmail);
+        mPassword = (EditTextNoErrorMsg) rootView.findViewById(R.id.accountCreatePassword);
         mProgress = (ProgressBar) rootView.findViewById(R.id.accountCreateProgress);
 
         mProgress.setVisibility(View.INVISIBLE);

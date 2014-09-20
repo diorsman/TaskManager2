@@ -9,21 +9,21 @@
     tools:context="com.personal.taskmanager2.signIn.SignInFragment" >
 
 
-    <com.personal.taskmanager2.utilities.MyEditText
+    <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
         style="@style/email_edit_text"
         android:id="@+id/emailTextBox"
         android:layout_marginTop="40dp"
         android:hint="@string/email_address">
         <requestFocus />
-    </com.personal.taskmanager2.utilities.MyEditText>
+    </com.personal.taskmanager2.utilities.EditTextNoErrorMsg>
 
-    <com.personal.taskmanager2.utilities.MyEditText
+    <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
         style="@style/password_edit_text"
         android:id="@+id/passwordTextBox"
         android:layout_below="@+id/emailTextBox"
         android:hint="@string/password" >
 
-    </com.personal.taskmanager2.utilities.MyEditText>
+    </com.personal.taskmanager2.utilities.EditTextNoErrorMsg>
 
     <Button
         style="@style/submit_button"

@@ -14,12 +14,12 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.homescreen.HomeScreenActivity;
-import com.personal.taskmanager2.utilities.MyEditText;
+import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
 
 public class SignInFragment extends Fragment implements View.OnClickListener {
 
-    private MyEditText mEmailView;
-    private MyEditText mPasswordView;
+    private EditTextNoErrorMsg mEmailView;
+    private EditTextNoErrorMsg mPasswordView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,8 +38,8 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         rootView.findViewById(R.id.forgotPassword).setOnClickListener(this);
 
         // get views
-        mEmailView = (MyEditText) rootView.findViewById(R.id.emailTextBox);
-        mPasswordView = (MyEditText) rootView.findViewById(R.id.passwordTextBox);
+        mEmailView = (EditTextNoErrorMsg) rootView.findViewById(R.id.emailTextBox);
+        mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.passwordTextBox);
 
         return rootView;
     }

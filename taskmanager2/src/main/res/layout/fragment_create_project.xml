@@ -12,7 +12,7 @@
         android:id="@+id/create_project_relative_layout"
         >
 
-        <com.personal.taskmanager2.utilities.MyEditText
+        <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
             style="@style/default_edit_text"
             android:id="@+id/project_name"
             android:hint="@string/project_name"
@@ -20,9 +20,9 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin">
             <requestFocus/>
-        </com.personal.taskmanager2.utilities.MyEditText>
+        </com.personal.taskmanager2.utilities.EditTextNoErrorMsg>
 
-        <com.personal.taskmanager2.utilities.MyEditText
+        <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
             style="@style/default_edit_text"
             android:id="@+id/project_uid"
             android:layout_below="@+id/project_name"
@@ -30,7 +30,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-        <com.personal.taskmanager2.utilities.MyEditText
+        <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
             style="@style/password_edit_text"
             android:id="@+id/project_password"
             android:layout_below="@+id/project_uid"

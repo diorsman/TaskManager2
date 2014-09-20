@@ -1,16 +1,20 @@
 package com.personal.taskmanager2.utilities;
 
 
-public class EmptyEditTextException extends Exception {
+import java.text.ParseException;
 
-    private MyEditText mEditText;
+public class EmptyEditTextException extends ParseException {
 
-    public EmptyEditTextException(MyEditText editText) {
-        super();
+    private EditTextNoErrorMsg mEditText;
+
+    public EmptyEditTextException(EditTextNoErrorMsg editText) {
+
+        super("EditText is empty", 0);
         mEditText = editText;
     }
 
-    public MyEditText getEditText() {
+    public EditTextNoErrorMsg getEditText() {
+
         return mEditText;
     }
 }
