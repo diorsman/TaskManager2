@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
@@ -189,20 +188,17 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
         project.share(mContext);
     }
 
-    private void changeStatus(boolean status,
-                              Project project) {
+    private void changeStatus(final boolean status,
+                              final Project project) {
 
-        if (ParseUser.getCurrentUser().getObjectId().equals(project.getAdmin().getObjectId())) {
-            project.setStatus(status);
-            project.saveInBackground();
-
-            notifyDataSetChanged();
-        }
-        else {
-            Toast.makeText(mContext,
-                           "Only the administrator can make changes to the project.",
-                           Toast.LENGTH_LONG).show();
-        }
+        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
+            @Override
+            public void modify() {
+                project.setStatus(status);
+                project.saveInBackground();
+                notifyDataSetChanged();
+            }
+        });
     }
 
     private void archive(final boolean archive,

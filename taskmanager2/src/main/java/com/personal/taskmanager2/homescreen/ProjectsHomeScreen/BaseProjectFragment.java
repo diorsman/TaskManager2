@@ -99,7 +99,7 @@ public abstract class BaseProjectFragment extends Fragment
 
     private Bundle savedState;
 
-    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService mExecutor;
 
     private Runnable mQueryRunnable = new Runnable() {
         @Override
@@ -167,7 +167,7 @@ public abstract class BaseProjectFragment extends Fragment
     public void onResume() {
 
         super.onResume();
-        Log.d(TAG, "mCurrentPage = " + mCurrentPage);
+        mExecutor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -190,6 +190,7 @@ public abstract class BaseProjectFragment extends Fragment
 
         super.onDestroyView();
         savedState = saveState();
+        mExecutor.shutdown();
     }
 
     private Bundle saveState() {

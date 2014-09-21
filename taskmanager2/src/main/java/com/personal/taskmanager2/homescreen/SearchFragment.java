@@ -216,6 +216,7 @@ public class SearchFragment extends Fragment
 
             ParseQuery<Project> searchQuery = ParseQuery.or(searchQueryList);
             searchQuery.whereMatchesKeyInQuery("objectId", "objectId", projectQuery);
+            searchQuery.orderByAscending(Project.DUE_DATE_COL);
 
             List<Project> projects = searchQuery.find();
             Message msg = handler.obtainMessage(1, projects);

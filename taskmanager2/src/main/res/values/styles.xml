@@ -53,6 +53,7 @@
         <item name="android:background">@drawable/default_button_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
     <style name="Widget.ImageButton" parent="android:Widget.Holo.Light.ImageButton">
@@ -195,7 +196,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
     </style>
-
 
 
     <!-- Project List View Text Style -->

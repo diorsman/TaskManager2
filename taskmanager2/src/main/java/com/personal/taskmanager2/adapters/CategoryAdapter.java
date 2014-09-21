@@ -1,6 +1,7 @@
 package com.personal.taskmanager2.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,8 @@ public class CategoryAdapter extends ArrayAdapter<String> {
 
         colorSlice.setBackgroundResource(getResourceFromPosition(position));
         spinnerText.setText(getItem(position));
-        spinnerText.setTextColor(convertView.getResources().getColor(getResourceFromPosition(position)));
+        spinnerText.setTextColor(convertView.getResources().getColor(getResourceFromPosition(
+                position)));
 
         return convertView;
     }
@@ -67,7 +69,8 @@ public class CategoryAdapter extends ArrayAdapter<String> {
             case 5:
                 return android.R.color.holo_purple;
             default:
-                return -1;
+                Log.e(TAG, "Illegal position for color");
+                throw new IllegalArgumentException();
         }
     }
 }
