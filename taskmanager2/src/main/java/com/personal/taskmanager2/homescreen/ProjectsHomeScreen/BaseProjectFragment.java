@@ -110,12 +110,6 @@ public abstract class BaseProjectFragment extends Fragment
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
@@ -163,9 +157,17 @@ public abstract class BaseProjectFragment extends Fragment
             mListViewState = savedState.getParcelable("listViewState");
             mListView.setAdapter(null);
             mListView.removeFooterView(mFooterView);
+            Log.d(TAG, "mCurrentPage = " + mCurrentPage);
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        Log.d(TAG, "mCurrentPage = " + mCurrentPage);
     }
 
     @Override
@@ -443,7 +445,7 @@ public abstract class BaseProjectFragment extends Fragment
         if (scrollState == SCROLL_STATE_IDLE && !mAllProjectsLoaded && !mIsLoadingMore) {
 
             // Load next page of projects
-            if (mListView.getLastVisiblePosition() >= mListView.getCount() - 1 - 5) {
+            if (mListView.getLastVisiblePosition() >= mListView.getCount() - 1) {
                 mCurrentPage++;
                 mIsLoadingMore = true;
                 queryProjects();
@@ -517,7 +519,7 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
 
                 case LOADED_MORE_ITEMS:
-                    Log.i(TAG, "LOADED_MORE_ITEMS");
+                    Log.d(TAG, "LOADED_MORE_ITEMS");
                     projects = (List<Project>) msg.obj;
                     mProjectAdapter.addItems(projects);
                     mProjectAdapter.notifyDataSetChanged();
@@ -525,7 +527,7 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
 
                 case FIRST_LOAD:
-                    Log.i(TAG, "First Load");
+                    Log.d(TAG, "First Load");
                     projects = (List<Project>) msg.obj;
                     mProjectAdapter =
                             ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
@@ -546,14 +548,14 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
 
                 case ALL_PROJECTS_LOADED:
-                    Log.i(TAG, "ALL_PROJECTS_LOADED");
+                    Log.d(TAG, "ALL_PROJECTS_LOADED");
                     mListView.removeFooterView(mFooterView);
                     mIsLoadingMore = false;
                     mAllProjectsLoaded = true;
                     break;
 
                 case NO_PROJECTS_FOUND:
-                    Log.i(TAG, "NO_PROJECTS_FOUND");
+                    Log.d(TAG, "NO_PROJECTS_FOUND");
                     mListView.setEmptyView(mNoProjects);
                     mListView.removeFooterView(mFooterView);
                     mLoadProjects.setVisibility(View.GONE);
@@ -605,6 +607,7 @@ public abstract class BaseProjectFragment extends Fragment
             }
             projectQuery.addAscendingOrder(Project.DUE_DATE_COL);
 
+            Log.d(TAG, "mCurrentPage = " + mCurrentPage);
             if (mListViewState == null) {
                 // set load limit
                 projectQuery.setLimit(LOAD_LIMIT);
@@ -618,11 +621,11 @@ public abstract class BaseProjectFragment extends Fragment
                 if (mListView.getAdapter() == null ||
                     mListView.getAdapter().getCount() - mListView.getFooterViewsCount() < 1) {
                     projectQuery.setSkip(0);
-                    projectQuery.setLimit((mCurrentPage + 1) * LOAD_LIMIT);
+                    projectQuery.setLimit((mCurrentPage +1) * LOAD_LIMIT);
                 }
                 else {
                     projectQuery.setSkip(mCurrentPage * LOAD_LIMIT);
-                    projectQuery.setLimit((mCurrentPage + 1) * LOAD_LIMIT);
+                    projectQuery.setLimit(LOAD_LIMIT);
                 }
             }
 

@@ -3,7 +3,6 @@ package com.personal.taskmanager2.projectDetails;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,8 +37,6 @@ public class ProjectOverviewFragment extends Fragment
 
     private Project mProject;
 
-    private Typeface       mRobotoLight;
-    private Typeface       mRoboto;
     private TextView       mProjectNameView;
     private TextView       mProjectDescriptionView;
     private TextView       mProjectOverview;
@@ -48,6 +45,8 @@ public class ProjectOverviewFragment extends Fragment
     private Button         mViewChat;
     private Button         mEditProject;
     private Button         mShareProject;
+    private Button         mArchiveProject;
+    private Button         mDeleteProject;
 
     public static ProjectOverviewFragment newInstance(Project project) {
 
@@ -82,9 +81,6 @@ public class ProjectOverviewFragment extends Fragment
                                            }
                                        });
         }
-
-        mRobotoLight = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Light.ttf");
-        mRoboto = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Regular.ttf");
     }
 
     @Override
@@ -96,23 +92,13 @@ public class ProjectOverviewFragment extends Fragment
 
         mProjectNameView = (TextView) rootView.findViewById(R.id.project_name);
         mProjectNameView.setText(mProject.getName());
-        mProjectNameView.setTypeface(mRobotoLight);
-
-        TextView descriptionLabel = (TextView) rootView.findViewById(R.id.description_label);
-        descriptionLabel.setTypeface(mRobotoLight);
 
         mProjectDescriptionView = (TextView) rootView.findViewById(R.id.project_description);
         mProjectDescriptionView.setText(mProject.getDescription());
-        mProjectDescriptionView.setTypeface(mRoboto);
-
-        TextView overviewLabel =
-                (TextView) rootView.findViewById(R.id.project_completion_overview_label);
-        overviewLabel.setTypeface(mRobotoLight);
 
         mProjectOverview = (TextView) rootView.findViewById(R.id.project_overview);
-        mProjectOverview.setTypeface(mRoboto);
         DateFormat format = new SimpleDateFormat("'Due' 'on' MMMM dd, yyyy 'at' hh:mm a");
-        String overviewText = "Due Date: " + format.format(mProject.getDueDate());
+        String overviewText = format.format(mProject.getDueDate());
         overviewText += "\nAdministrator: " + mProject.getAdminName();
         overviewText += "\nCompleted " + mProject.getNumCompletedTasks() + " out of " +
                         mProject.getNumTotalTask() + " tasks";
@@ -120,29 +106,22 @@ public class ProjectOverviewFragment extends Fragment
         mProjectOverview.setText(overviewText);
         Utilities.appendUsersToTextView(mProjectOverview, mProject, TAG);
 
-        TextView viewMore = (TextView) rootView.findViewById(R.id.view_more);
-        viewMore.setTypeface(mRoboto);
-
         mOverviewLayout =
                 (RelativeLayout) rootView.findViewById(R.id.content_overview);
         mOverviewLayout.setOnClickListener(this);
-
-        TextView mTasksLabel =
-                (TextView) rootView.findViewById(R.id.project_tasks);
-        mTasksLabel.setTypeface(mRobotoLight);
 
         mViewFiles = (Button) rootView.findViewById(R.id.view_files);
         mViewChat = (Button) rootView.findViewById(R.id.view_chat);
         mEditProject = (Button) rootView.findViewById(R.id.edit_project);
         mShareProject = (Button) rootView.findViewById(R.id.share_project);
+        mArchiveProject = (Button) rootView.findViewById(R.id.archive);
+        mDeleteProject = (Button) rootView.findViewById(R.id.delete);
         mViewFiles.setOnClickListener(this);
         mViewChat.setOnClickListener(this);
         mEditProject.setOnClickListener(this);
         mShareProject.setOnClickListener(this);
-        mViewFiles.setTypeface(mRobotoLight);
-        mViewChat.setTypeface(mRobotoLight);
-        mEditProject.setTypeface(mRobotoLight);
-        mShareProject.setTypeface(mRobotoLight);
+        mArchiveProject.setOnClickListener(this);
+        mDeleteProject.setOnClickListener(this);
 
         setUpActionBar();
 

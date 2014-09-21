@@ -85,7 +85,8 @@
             android:drawablePadding="6dp"
             android:drawableLeft="@drawable/ic_action_person"
             android:text="@string/account_settings_title"
-            android:background="@drawable/nav_drawer_secondary_item_background"/>
+            android:background="@drawable/nav_drawer_secondary_item_background"
+            android:fontFamily="san-serif-light"/>
             />
 
         <!--<View-->
@@ -102,7 +103,8 @@
             android:drawablePadding="6dp"
             android:drawableLeft="@drawable/ic_action_settings"
             android:text="@string/action_settings"
-            android:background="@drawable/nav_drawer_secondary_item_background"/>
+            android:background="@drawable/nav_drawer_secondary_item_background"
+            android:fontFamily="san-serif-light"/>
             />
 
         <!--<View-->
@@ -119,7 +121,8 @@
             android:drawablePadding="6dp"
             android:drawableLeft="@drawable/ic_action_help"
             android:text="@string/help_title"
-            android:background="@drawable/nav_drawer_secondary_item_background"/>
+            android:background="@drawable/nav_drawer_secondary_item_background"
+            android:fontFamily="san-serif-light"/>
             />
 
         <!--<View-->

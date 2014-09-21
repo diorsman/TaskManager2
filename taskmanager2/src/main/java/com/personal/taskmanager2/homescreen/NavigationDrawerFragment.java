@@ -185,8 +185,7 @@ public class NavigationDrawerFragment extends Fragment
 
     private void setBold(TextView textView) {
 
-        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(),
-                                                     "Roboto-Light.ttf");
+        Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
         mProjects.setTypeface(typeface, Typeface.NORMAL);
         mArchive.setTypeface(typeface, Typeface.NORMAL);
         mTrash.setTypeface(typeface, Typeface.NORMAL);

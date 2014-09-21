@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -28,18 +29,19 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         View rootView =
                 inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        /*int[] resources =
-                {R.id.signIn, R.id.createAccount, R.id.forgotPassword};
-        for (int i : resources) {
-            rootView.findViewById(i).setOnClickListener(this);
-        }*/
-        rootView.findViewById(R.id.signIn).setOnClickListener(this);
+        Button signIn = (Button) rootView.findViewById(R.id.signIn);
+        signIn.setOnClickListener(this);
+
         rootView.findViewById(R.id.createAccount).setOnClickListener(this);
         rootView.findViewById(R.id.forgotPassword).setOnClickListener(this);
 
         // get views
         mEmailView = (EditTextNoErrorMsg) rootView.findViewById(R.id.emailTextBox);
         mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.passwordTextBox);
+
+        // temporary, will remove later
+        mEmailView.setText("omid@omid.com");
+        mPasswordView.setText("omid");
 
         return rootView;
     }

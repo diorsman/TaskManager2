@@ -27,9 +27,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     private static HashMap<IconKey, CharacterIcon> sIconMap = new HashMap<>();
 
-    private Typeface typeface =
-            Typeface.createFromAsset(getContext().getAssets(),
-                                     "Roboto-Light.ttf");
+    Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
     private DateParser dateParser = new DateParser(DateParser.DEFAULT);
 

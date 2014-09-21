@@ -32,7 +32,8 @@
         android:layout_toRightOf="@id/project_list_color_slice"
         android:paddingLeft="15dp"
         android:textSize="12sp"
-        android:textColor="@android:color/secondary_text_light"/>
+        android:textColor="@android:color/secondary_text_light"
+        android:fontFamily="sans-serif"/>
 
     <ProgressBar
         android:id="@+id/project_list_status"

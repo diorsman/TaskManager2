@@ -3,7 +3,6 @@ package com.personal.taskmanager2.projectDetails;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,8 +29,6 @@ public class ProjectDetailFragment extends Fragment {
 
     private Project mProject;
 
-    private Typeface mRobotoLight;
-    private Typeface mRoboto;
     private TextView mProjectDescriptionView;
     private TextView mProjectOverview;
 
@@ -68,9 +65,6 @@ public class ProjectDetailFragment extends Fragment {
                                            }
                                        });
         }
-
-        mRobotoLight = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Light.ttf");
-        mRoboto = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Regular.ttf");
     }
 
     @Override
@@ -80,21 +74,12 @@ public class ProjectDetailFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_project_detail, container, false);
 
-        TextView descriptionLabel = (TextView) rootView.findViewById(R.id.description_label);
-        descriptionLabel.setTypeface(mRobotoLight);
-
         mProjectDescriptionView = (TextView) rootView.findViewById(R.id.project_description);
         mProjectDescriptionView.setText(mProject.getDescription());
-        mProjectDescriptionView.setTypeface(mRoboto);
-
-        TextView overviewLabel =
-                (TextView) rootView.findViewById(R.id.project_completion_overview_label);
-        overviewLabel.setTypeface(mRobotoLight);
 
         mProjectOverview = (TextView) rootView.findViewById(R.id.project_overview);
-        mProjectOverview.setTypeface(mRoboto);
         DateFormat format = new SimpleDateFormat("'Due' 'on' MMMM dd, yyyy 'at' hh:mm a");
-        String overviewText = "Due Date: " + format.format(mProject.getDueDate());
+        String overviewText = format.format(mProject.getDueDate());
         overviewText += "\nAdministrator: " + mProject.getAdminName();
         overviewText += "\nCompleted " + mProject.getNumCompletedTasks() + " out of " +
                         mProject.getNumTotalTask() + " tasks";
@@ -112,7 +97,7 @@ public class ProjectDetailFragment extends Fragment {
         setHasOptionsMenu(true);
 
         ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(mProject.getName() + " Overview");
+        actionBar.setTitle(mProject.getName() + " Details");
         actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(mProject.getColorRsrc())));
     }
 

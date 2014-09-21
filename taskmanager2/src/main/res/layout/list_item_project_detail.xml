@@ -33,7 +33,8 @@
         android:layout_alignLeft="@id/project_detail_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        android:fontFamily="sans-serif"/>
 
     <View
         android:id="@+id/project_detail_separator"
@@ -57,7 +58,8 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:maxLines="3"
-        android:ellipsize="end"/>
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"/>
 
     <TextView
         android:id="@+id/project_detail_status"
@@ -67,7 +69,8 @@
         android:layout_alignLeft="@id/project_detail_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        android:fontFamily="sans-serif"/>
 
     <ImageButton
         android:id="@+id/project_detail_overflow"
