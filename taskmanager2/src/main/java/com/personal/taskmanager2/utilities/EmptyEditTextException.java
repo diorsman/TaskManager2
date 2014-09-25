@@ -1,19 +1,21 @@
 package com.personal.taskmanager2.utilities;
 
 
+import android.widget.EditText;
+
 import java.text.ParseException;
 
 public class EmptyEditTextException extends ParseException {
 
-    private EditTextNoErrorMsg mEditText;
+    private EditText mEditText;
 
-    public EmptyEditTextException(EditTextNoErrorMsg editText) {
+    public EmptyEditTextException(EditText editText) {
 
         super("EditText is empty", 0);
         mEditText = editText;
     }
 
-    public EditTextNoErrorMsg getEditText() {
+    public EditText getEditText() {
 
         return mEditText;
     }

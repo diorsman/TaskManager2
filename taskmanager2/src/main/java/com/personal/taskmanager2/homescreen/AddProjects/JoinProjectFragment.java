@@ -157,7 +157,7 @@ public class JoinProjectFragment extends DialogFragment
             projectQuery.whereEqualTo("Uid", uid);
             Project project = projectQuery.getFirst();
 
-            if (checkIfUserHasJoinedProject(project)) {
+            if (userHasJoinedProject(project)) {
                 Message msg = handler.obtainMessage(ALREADY_JOINED_PROJECT);
                 handler.sendMessage(msg);
                 return;
@@ -190,7 +190,7 @@ public class JoinProjectFragment extends DialogFragment
         }
     }
 
-    private boolean checkIfUserHasJoinedProject(Project project) {
+    private boolean userHasJoinedProject(Project project) {
 
         try {
             if (ParseUser.getCurrentUser()

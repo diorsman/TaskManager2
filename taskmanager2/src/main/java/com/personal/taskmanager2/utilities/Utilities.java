@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
@@ -19,7 +20,7 @@ import java.util.concurrent.Executors;
 
 public class Utilities {
 
-    public static String getValFromEditText(EditTextNoErrorMsg editText)
+    public static String getValFromEditText(EditText editText)
             throws EmptyEditTextException {
 
         String uid = editText.getText().toString();
