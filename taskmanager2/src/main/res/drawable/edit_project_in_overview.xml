@@ -12,12 +12,12 @@
                         android:width="45dp"/>
 
                     <solid
-                        android:color="#99ffbb33"/>
+                        android:color="#9933b5e5"/>
                 </shape>
             </item>
 
             <item
-                android:drawable="@drawable/ic_social_chat"
+                android:drawable="@drawable/ic_action_about"
                 android:top="5dp"
                 android:bottom="5dp"
                 android:left="5dp"
@@ -37,12 +37,12 @@
                         android:width="45dp"/>
 
                     <solid
-                        android:color="#99ffbb33"/>
+                        android:color="#9933b5e5"/>
                 </shape>
             </item>
 
             <item
-                android:drawable="@drawable/ic_social_chat"
+                android:drawable="@drawable/ic_action_about"
                 android:top="5dp"
                 android:bottom="5dp"
                 android:left="5dp"
@@ -62,12 +62,12 @@
                         android:width="45dp"/>
 
                     <solid
-                        android:color="@android:color/holo_orange_light"/>
+                        android:color="@android:color/holo_blue_light"/>
                 </shape>
             </item>
 
             <item
-                android:drawable="@drawable/ic_social_chat"
+                android:drawable="@drawable/ic_action_about"
                 android:top="5dp"
                 android:bottom="5dp"
                 android:left="5dp"

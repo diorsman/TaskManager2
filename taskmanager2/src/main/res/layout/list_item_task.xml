@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="6dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="7dp"
+    android:background="@drawable/list_view_background"
+    android:descendantFocusability="blocksDescendants">
+
+    <View
+        android:id="@+id/color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:id="@+id/name"
+        style="@style/not_completed_default"
+        android:paddingLeft="15dp"
+        android:layout_toRightOf="@id/color"
+        />
+
+    <TextView
+        android:id="@+id/due_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:layout_toRightOf="@id/project_list_color_slice"
+        android:paddingLeft="15dp"
+        android:textSize="12sp"
+        android:textColor="@android:color/secondary_text_light"
+        android:fontFamily="sans-serif"/>
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/due_date"
+        android:layout_toRightOf="@id/color"
+        android:textSize="12sp"
+        android:textColor="@android:color/holo_blue_dark"
+        android:fontFamily="sans-serif"/>
+
+</RelativeLayout>

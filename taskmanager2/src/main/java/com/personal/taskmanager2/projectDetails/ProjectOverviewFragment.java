@@ -69,7 +69,6 @@ public class ProjectOverviewFragment extends Fragment
 
         ParseUser admin = mProject.getAdmin();
         if (admin == null) {
-            Log.i(TAG, "admin is null");
             ParseQuery<ParseUser> adminQuery = ParseUser.getQuery();
             adminQuery.getInBackground(mProject.getAdminUid(),
                                        new GetCallback<ParseUser>() {
@@ -106,8 +105,7 @@ public class ProjectOverviewFragment extends Fragment
         mProjectOverview.setText(overviewText);
         Utilities.appendUsersToTextView(mProjectOverview, mProject, TAG);
 
-        mOverviewLayout =
-                (RelativeLayout) rootView.findViewById(R.id.content_overview);
+        mOverviewLayout = (RelativeLayout) rootView.findViewById(R.id.content_overview);
         mOverviewLayout.setOnClickListener(this);
 
         mViewFiles = (Button) rootView.findViewById(R.id.view_files);
