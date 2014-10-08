@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+ext {
+    parse_application_id = ext.TASK_MANAGER_2_APP_ID
+    parse_client_key = ext.TASK_MANAGER_2_CLIENT_KEY
+}
+
 repositories {
     mavenCentral()
 }
@@ -9,20 +14,48 @@ android {
     compileSdkVersion 20
     buildToolsVersion '20.0'
 
+    signingConfigs {
+        release {
+            storeFile file("taskmanager2-release-key.jks")
+            keyAlias "myKey"
+            def console = System.console()
+            if (console != null) {
+                def storepass = new String(console.readPassword("\n> Enter store password: "))
+                storePassword storepass
+                def keypass = new String(console.readPassword("\n> Enter key password"))
+                keyPassword keypass
+            }
+        }
+    }
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 20
         versionCode 1
         versionName "1.0"
+        resValue "string", "parse_application_id", parse_application_id
+        resValue "string", "parse_client_key", parse_client_key
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
     buildTypes {
         release {
+            debuggable false
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            resValue "string", "parse_application_id", parse_application_id
+            resValue "string", "parse_client_key", parse_client_key
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
+            runProguard false
+            resValue "string", "parse_application_id", parse_application_id
+            resValue "string", "parse_client_key", parse_client_key
         }
     }
 }
@@ -31,5 +64,4 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/Parse-1.6.0/Parse-1.6.0.jar')
     compile 'com.android.support:support-v4:20+'
-    compile 'com.nhaarman.listviewanimations:library:2.6.0'
 }

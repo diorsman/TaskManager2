@@ -20,7 +20,7 @@ public class App extends Application {
         ParseObject.registerSubclass(Chat.class);
         ParseObject.registerSubclass(Task.class);
         Parse.initialize(this,
-                         "GxIcNKHwyZWMT7vSNe74lLbeNpEcQlTwo4Zjd33y",
-                         "Vo2llHgiGZAMMymFGJZr08cX1ma4WR6LdTcpcs9V");
+                         getString(R.string.parse_application_id),
+                         getString(R.string.parse_client_key));
     }
 }

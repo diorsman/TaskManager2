@@ -2,7 +2,6 @@ package com.personal.taskmanager2;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;
@@ -12,12 +11,16 @@ import java.util.Calendar;
 
 public class TimePickerFragment extends DialogFragment {
 
-    private Fragment mFragment;
+    /*private Fragment mFragment;
+
+    public TimePickerFragment() {
+
+    }
 
     public TimePickerFragment(Fragment callback) {
 
         mFragment = callback;
-    }
+    }*/
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -26,7 +29,7 @@ public class TimePickerFragment extends DialogFragment {
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
         return new TimePickerDialog(getActivity(),
-                                    (OnTimeSetListener) mFragment,
+                                    (OnTimeSetListener) getTargetFragment(),
                                     hour,
                                     minute,
                                     DateFormat.is24HourFormat(getActivity()));

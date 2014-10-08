@@ -40,8 +40,8 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.passwordTextBox);
 
         // temporary, will remove later
-        mEmailView.setText("omid@omid.com");
-        mPasswordView.setText("omid");
+        mEmailView.setText("demo@demo.com");
+        mPasswordView.setText("demo");
 
         return rootView;
     }

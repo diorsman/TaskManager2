@@ -121,12 +121,14 @@ public class CreateProjectFragment extends DialogFragment
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         switch (v.getId()) {
             case R.id.project_due_date:
-                dialogFragment = new DatePickerFragment(this);
+                dialogFragment = new DatePickerFragment();
+                dialogFragment.setTargetFragment(this, 1);
                 dialogFragment.show(ft, "date picker");
                 break;
 
             case R.id.project_due_time:
-                dialogFragment = new TimePickerFragment(this);
+                dialogFragment = new TimePickerFragment();
+                dialogFragment.setTargetFragment(this, 2);
                 dialogFragment.show(ft, "time picker");
                 break;
 
