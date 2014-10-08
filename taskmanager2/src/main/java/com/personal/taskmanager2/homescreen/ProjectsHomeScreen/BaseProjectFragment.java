@@ -408,7 +408,7 @@ public abstract class BaseProjectFragment extends Fragment
                     final String[] sColorValues =
                             {"Blue", "Orange", "Yellow", "Green", "Red", "Purple"};
                     user.fetchIfNeeded();
-                    for (int i = 1; i < 55; ++i) {
+                    for (int i = 1; i < 300; ++i) {
                         String projectName = "Project ";
                         projectName += Integer.toString(i);
                         String uid = Integer.toString(i);
