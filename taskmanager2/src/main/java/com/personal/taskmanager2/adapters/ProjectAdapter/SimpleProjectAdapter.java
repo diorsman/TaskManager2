@@ -8,12 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.CharacterIcon;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.IconKey;
@@ -33,9 +32,9 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     public SimpleProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                ListView listView) {
+                                AnimationCallback animationCallback) {
 
-        super(context, projectList, listView);
+        super(context, projectList, animationCallback);
     }
 
     private static class ViewHolder {

@@ -4,9 +4,9 @@ import android.app.Application;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
-import com.personal.taskmanager2.parseObjects.Chat;
-import com.personal.taskmanager2.parseObjects.Project;
-import com.personal.taskmanager2.parseObjects.Task;
+import com.personal.taskmanager2.model.parse.Chat;
+import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.model.parse.Task;
 
 public class App extends Application {
 

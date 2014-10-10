@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.parseObjects;
+package com.personal.taskmanager2.model.parse;
 
 import android.app.FragmentManager;
 import android.content.Context;
@@ -299,23 +299,6 @@ public class Project extends ParseObject implements Parcelable {
         return 0;
     }
 
-    public interface ModifyProject {
-
-        void modify();
-    }
-
-    public void safeModify(Context context, ParseUser currentUser, ModifyProject command) {
-
-        if (isProjectAdminCurUser(currentUser)) {
-            command.modify();
-        }
-        else {
-            Toast.makeText(context,
-                           "Only the administrator can make changes to the project.",
-                           Toast.LENGTH_LONG).show();
-        }
-    }
-
     public void safeEdit(FragmentManager fragmentManager, Context context) {
 
         if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
@@ -328,11 +311,6 @@ public class Project extends ParseObject implements Parcelable {
             Toast.makeText(context, "Only administrator can edit the project", Toast.LENGTH_LONG)
                  .show();
         }
-    }
-
-    private boolean isProjectAdminCurUser(ParseUser currentUser) {
-
-        return getAdmin().getObjectId().equals(currentUser.getObjectId());
     }
 
     public void share(Context context) {
@@ -354,6 +332,67 @@ public class Project extends ParseObject implements Parcelable {
                              "You have been invited to join project " + projectName);
         emailIntent.putExtra(Intent.EXTRA_TEXT, body);
         context.startActivity(Intent.createChooser(emailIntent, "Share project..."));
+    }
+
+    public boolean safeChangeStatus(final boolean status, Context context) {
+
+        return safeModify(context, new Project.ModifyProject() {
+            @Override
+            public void modify() {
+
+                setStatus(status);
+                saveInBackground();
+            }
+        });
+    }
+
+    public boolean safeArchive(final boolean archive, Context context) {
+
+        return safeModify(context, new Project.ModifyProject() {
+            @Override
+            public void modify() {
+
+                setArchive(archive);
+                saveInBackground();
+            }
+        });
+    }
+
+    public boolean safeTrash(final boolean trash, Context context) {
+
+        return safeModify(context, new Project.ModifyProject() {
+            @Override
+            public void modify() {
+
+                setArchive(false);
+                setTrash(trash);
+                saveInBackground();
+            }
+        });
+    }
+
+    private interface ModifyProject {
+
+        void modify();
+    }
+
+    private boolean safeModify(Context context, ModifyProject command) {
+
+        if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
+            command.modify();
+            return true;
+        }
+        else {
+            Toast.makeText(context,
+                           "Only the administrator can make changes to the project.",
+                           Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
+
+    private boolean isProjectAdminCurUser(ParseUser currentUser) {
+
+        return getAdmin().getObjectId().equals(currentUser.getObjectId());
     }
 
     @Override

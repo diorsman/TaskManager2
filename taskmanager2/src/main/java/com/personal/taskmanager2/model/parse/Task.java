@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.parseObjects;
+package com.personal.taskmanager2.model.parse;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;

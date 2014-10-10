@@ -5,17 +5,13 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 
 import java.util.List;
 
@@ -23,40 +19,23 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
     private static final String TAG = "BaseProjectAdapter";
 
-    private final Activity        mContext;
-    private       List<Project>   mProjectList;
-    private       ListView        mListView;
+    private final Activity          mContext;
+    private       List<Project>     mProjectList;
+    private       AnimationCallback mAnimationCallback;
 
-    private Animation removeAnimation;
+    public interface AnimationCallback {
+
+        public void showRemoveAnimation(Project project);
+    }
 
 
     public BaseProjectAdapter(Activity context,
                               List<Project> projectList,
-                              ListView listView) {
+                              AnimationCallback animationCallback) {
 
         mContext = context;
         mProjectList = projectList;
-        mListView = listView;
-
-        removeAnimation = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_out_right);
-        removeAnimation.setDuration(350);
-        removeAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        mAnimationCallback = animationCallback;
     }
 
     public void addItems(List<Project> items) {
@@ -151,102 +130,47 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
                     return true;
 
                 case R.id.action_share_project:
-                    shareProject(mProject);
+                    mProject.share(mContext);
                     return true;
 
                 case R.id.action_mark_complete:
-                    changeStatus(true, mProject);
+                    if (mProject.safeChangeStatus(true, mContext)) {
+                        notifyDataSetChanged();
+                    }
                     return true;
 
                 case R.id.action_mark_not_complete:
-                    changeStatus(false, mProject);
+                    if (mProject.safeChangeStatus(false, mContext)) {
+                        notifyDataSetChanged();
+                    }
                     return true;
 
                 case R.id.action_archive:
-                    archive(true, mProject);
+                    if (mProject.safeArchive(true, mContext)) {
+                        mAnimationCallback.showRemoveAnimation(mProject);
+                    }
                     return true;
 
                 case R.id.remove_from_archive:
-                    archive(false, mProject);
+                    if (mProject.safeArchive(false, mContext)) {
+                        mAnimationCallback.showRemoveAnimation(mProject);
+                    }
                     return true;
 
                 case R.id.remove_from_trash:
-                    removeFromTrash(mProject);
+                    if (mProject.safeTrash(false, mContext)) {
+                        mAnimationCallback.showRemoveAnimation(mProject);
+                    }
                     return true;
 
                 case R.id.delete:
-                    moveToTrash(mProject);
-
+                    if (mProject.safeTrash(true, mContext)) {
+                        mAnimationCallback.showRemoveAnimation(mProject);
+                    }
                 default:
                     return false;
             }
         }
-    }
-
-    private void shareProject(Project project) {
-
-        project.share(mContext);
-    }
-
-    private void changeStatus(final boolean status,
-                              final Project project) {
-
-        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
-            @Override
-            public void modify() {
-                project.setStatus(status);
-                project.saveInBackground();
-                notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void archive(final boolean archive,
-                         final Project project) {
-
-        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
-            @Override
-            public void modify() {
-
-                project.setArchive(archive);
-                project.saveInBackground();
-                removeProjectAnim(project);
-            }
-        });
-    }
-
-    private void removeFromTrash(final Project project) {
-        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
-            @Override
-            public void modify() {
-
-                project.setTrash(false);
-                project.saveInBackground();
-                removeProjectAnim(project);
-            }
-        });
-    }
-
-    private void moveToTrash(final Project project) {
-
-        project.safeModify(mContext, ParseUser.getCurrentUser(), new Project.ModifyProject() {
-            @Override
-            public void modify() {
-
-                project.setTrash(true);
-                project.setArchive(false);
-                project.saveInBackground();
-                removeProjectAnim(project);
-            }
-        });
-    }
-
-    private void removeProjectAnim(Project project) {
-
-        int pos = getPosition(project);
-        remove(project);
-        int visiblePos = mListView.getFirstVisiblePosition();
-        mListView.getChildAt(pos - visiblePos).startAnimation(removeAnimation);
     }
 
     protected void setTitleAppearance(TextView textView,

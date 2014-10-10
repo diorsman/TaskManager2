@@ -16,7 +16,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.BCrypt;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
 import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;

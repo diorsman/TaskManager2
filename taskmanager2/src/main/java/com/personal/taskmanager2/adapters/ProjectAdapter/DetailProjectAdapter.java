@@ -6,11 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.DateParser;
 
 import java.util.List;
@@ -23,9 +22,9 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
 
     public DetailProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                ListView listView) {
+                                AnimationCallback animationCallback) {
 
-        super(context, projectList, listView);
+        super(context, projectList, animationCallback);
     }
 
     private static class ViewHolder {

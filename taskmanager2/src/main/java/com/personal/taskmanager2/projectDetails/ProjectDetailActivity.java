@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 
 public class ProjectDetailActivity extends Activity {
 

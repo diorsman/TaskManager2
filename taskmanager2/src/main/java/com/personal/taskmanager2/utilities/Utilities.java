@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -2,9 +2,8 @@ package com.personal.taskmanager2.adapters.ProjectAdapter;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.ListView;
 
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 
 import java.util.List;
 
@@ -18,13 +17,13 @@ public class ProjectAdapterFactory {
     public static BaseProjectAdapter createProjectAdapter(int adapterType,
                                                           Activity context,
                                                           List<Project> projects,
-                                                          ListView listView) {
+                                                          BaseProjectAdapter.AnimationCallback animationCallback) {
 
         if (adapterType == SIMPLE_ADAPTER) {
-            return new SimpleProjectAdapter(context, projects, listView);
+            return new SimpleProjectAdapter(context, projects, animationCallback);
         }
         else if (adapterType == DETAIL_ADAPTER) {
-            return new DetailProjectAdapter(context, projects, listView);
+            return new DetailProjectAdapter(context, projects, animationCallback);
         }
         else {
             Log.e(TAG, "Passed in incorrect adapter type.");

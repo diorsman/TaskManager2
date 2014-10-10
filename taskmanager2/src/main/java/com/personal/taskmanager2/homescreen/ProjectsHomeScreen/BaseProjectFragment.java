@@ -18,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +39,7 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.homescreen.AddProjects.CreateProjectFragment;
 import com.personal.taskmanager2.homescreen.AddProjects.JoinProjectFragment;
 import com.personal.taskmanager2.homescreen.SearchFragment;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.SearchViewFormatter;
 import com.personal.taskmanager2.utilities.Utilities;
@@ -53,19 +55,20 @@ public abstract class BaseProjectFragment extends Fragment
         implements ActionBar.OnNavigationListener,
                    SwipeRefreshLayout.OnRefreshListener,
                    AbsListView.OnScrollListener,
-                   ListView.OnItemClickListener {
+                   ListView.OnItemClickListener,
+                   BaseProjectAdapter.AnimationCallback {
 
     private static final String TAG = "BaseProjectFragment";
 
-    private final static int LIST_VIEW_POS   = 0;
-    private final static int DETAIL_VIEW_POS = 1;
+    private static final int LIST_VIEW_POS   = 0;
+    private static final int DETAIL_VIEW_POS = 1;
 
-    private final static int SORT_BY_DUE_DATE    = 0;
-    private final static int SORT_BY_NAME        = 1;
-    private final static int SORT_BY_DESCRIPTION = 2;
-    private final static int SORT_BY_COLOR       = 3;
+    private static final int SORT_BY_DUE_DATE    = 0;
+    private static final int SORT_BY_NAME        = 1;
+    private static final int SORT_BY_DESCRIPTION = 2;
+    private static final int SORT_BY_COLOR       = 3;
 
-    private final static int LOAD_LIMIT = 25;
+    private static final int LOAD_LIMIT = 25;
 
     private SwipeRefreshLayout mRefreshLayoutList;
     private TextView           mLoadProjects;
@@ -78,6 +81,7 @@ public abstract class BaseProjectFragment extends Fragment
     private BaseProjectAdapter mProjectAdapter;
     private Parcelable         mListViewState;
     private Context            mContext;
+    private Bundle             savedState;
 
     private boolean mQueriedList       = false;
     private boolean mQueriedDetail     = false;
@@ -87,7 +91,7 @@ public abstract class BaseProjectFragment extends Fragment
     private boolean mArchive;
     private boolean mTrash;
 
-    private static final int EXCEPTION_OCCURED   = 0;
+    private static final int EXCEPTION_OCCURRED  = 0;
     private static final int LOADED_MORE_ITEMS   = 1;
     private static final int FIRST_LOAD          = 2;
     private static final int ALL_PROJECTS_LOADED = 3;
@@ -96,18 +100,12 @@ public abstract class BaseProjectFragment extends Fragment
     private int mSelectedPosition = 0;
     private int mSortBy           = 0;
     private int mCurrentPage      = 0;
-
-    private Bundle savedState;
+    private int mNumRemoved       = 0;
 
     private ExecutorService mExecutor;
+    private Runnable        mQueryRunnable;
 
-    private Runnable mQueryRunnable = new Runnable() {
-        @Override
-        public void run() {
-
-            queryProjectsInBackground(uiHandler);
-        }
-    };
+    private Animation removeAnimation;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -118,6 +116,35 @@ public abstract class BaseProjectFragment extends Fragment
         mLayoutResourceId = args.getInt("resourceId");
         mArchive = args.getBoolean("archive");
         mTrash = args.getBoolean("trash");
+
+        removeAnimation =
+                AnimationUtils.loadAnimation(getActivity(), android.R.anim.slide_out_right);
+        removeAnimation.setDuration(350);
+        removeAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+                mProjectAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        mQueryRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                queryProjectsInBackground(mUiHandler);
+            }
+        };
 
         View rootView = inflater.inflate(mLayoutResourceId, container, false);
 
@@ -154,6 +181,7 @@ public abstract class BaseProjectFragment extends Fragment
         if (savedState != null) {
             mLayoutResourceId = savedState.getInt("resourceId");
             mCurrentPage = savedState.getInt("currentPage");
+            mNumRemoved = savedState.getInt("numRemoved");
             mListViewState = savedState.getParcelable("listViewState");
             mListView.setAdapter(null);
             mListView.removeFooterView(mFooterView);
@@ -201,6 +229,7 @@ public abstract class BaseProjectFragment extends Fragment
 
         args.putInt("resourceId", mLayoutResourceId);
         args.putInt("currentPage", mCurrentPage);
+        args.putInt("numRemoved", mNumRemoved);
         args.putParcelable("listViewState", mListViewState);
 
         return args;
@@ -436,6 +465,7 @@ public abstract class BaseProjectFragment extends Fragment
 
         mListViewState = null;
         mCurrentPage = 0;
+        mNumRemoved = 0;
         refresh();
     }
 
@@ -501,9 +531,10 @@ public abstract class BaseProjectFragment extends Fragment
         }
     }
 
-    private Handler uiHandler = new Handler() {
+    private Handler mUiHandler =new Handler() {
+
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage (Message msg){
 
             mRefreshLayoutList.setRefreshing(false);
             mLoadProjects.setVisibility(View.GONE);
@@ -511,7 +542,7 @@ public abstract class BaseProjectFragment extends Fragment
             List<Project> projects;
 
             switch (msg.what) {
-                case EXCEPTION_OCCURED:
+                case EXCEPTION_OCCURRED:
                     ParseException e = (ParseException) msg.obj;
                     Log.e(TAG,
                           "Error code = " + Integer.toString(e.getCode()));
@@ -534,7 +565,7 @@ public abstract class BaseProjectFragment extends Fragment
                             ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
                                                                        getActivity(),
                                                                        projects,
-                                                                       mListView);
+                                                                       BaseProjectFragment.this);
                     mListView.setAdapter(mProjectAdapter);
 
                     if (mListViewState != null) {
@@ -563,7 +594,9 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
             }
         }
-    };
+    }
+
+    ;
 
 
     private void queryProjects() {
@@ -615,17 +648,17 @@ public abstract class BaseProjectFragment extends Fragment
 
                 // pagination
                 if (mIsLoadingMore) {
-                    projectQuery.setSkip(mCurrentPage * LOAD_LIMIT);
+                    projectQuery.setSkip((mCurrentPage * LOAD_LIMIT) - mNumRemoved);
                 }
             }
             else {
                 if (mListView.getAdapter() == null ||
                     mListView.getAdapter().getCount() - mListView.getFooterViewsCount() < 1) {
                     projectQuery.setSkip(0);
-                    projectQuery.setLimit((mCurrentPage +1) * LOAD_LIMIT);
+                    projectQuery.setLimit(((mCurrentPage + 1) * LOAD_LIMIT) - mNumRemoved);
                 }
                 else {
-                    projectQuery.setSkip(mCurrentPage * LOAD_LIMIT);
+                    projectQuery.setSkip((mCurrentPage * LOAD_LIMIT) - mNumRemoved);
                     projectQuery.setLimit(LOAD_LIMIT);
                 }
             }
@@ -652,7 +685,7 @@ public abstract class BaseProjectFragment extends Fragment
             }
         }
         catch (ParseException e) {
-            Message msg = handler.obtainMessage(EXCEPTION_OCCURED, e);
+            Message msg = handler.obtainMessage(EXCEPTION_OCCURRED, e);
             handler.sendMessage(msg);
         }
     }
@@ -664,5 +697,15 @@ public abstract class BaseProjectFragment extends Fragment
         Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
         intent.putExtra("project", project);
         startActivity(intent);
+    }
+
+    @Override
+    public void showRemoveAnimation(Project project) {
+
+        int pos = mProjectAdapter.getPosition(project);
+        mProjectAdapter.remove(project);
+        int visiblePos = mListView.getFirstVisiblePosition();
+        mListView.getChildAt(pos - visiblePos).startAnimation(removeAnimation);
+        mNumRemoved++;
     }
 }

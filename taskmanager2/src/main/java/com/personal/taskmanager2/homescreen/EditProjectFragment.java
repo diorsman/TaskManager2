@@ -31,7 +31,7 @@ import com.personal.taskmanager2.DatePickerFragment;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.TimePickerFragment;
 import com.personal.taskmanager2.adapters.CategoryAdapter;
-import com.personal.taskmanager2.parseObjects.Project;
+import com.personal.taskmanager2.model.parse.Project;
 
 import java.text.DateFormat;
 import java.util.Arrays;
