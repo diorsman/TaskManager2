@@ -1,13 +1,15 @@
 package com.personal.taskmanager2.projectDetails;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 
-public class ProjectDetailActivity extends Activity {
+public class ProjectDetailActivity extends ActionBarActivity {
 
     private static final String TAG = "ProjectDetailActivity";
 
@@ -19,6 +21,13 @@ public class ProjectDetailActivity extends Activity {
 
         Project project = getIntent().getExtras().getParcelable("project");
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator ());
+        toolbar.setBackgroundColor(getResources().getColor(project.getColorRsrc()));
+        toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                                 .add(R.id.container,
@@ -26,14 +35,6 @@ public class ProjectDetailActivity extends Activity {
                                 .commit();
         }
     }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.project_detail, menu);
-        return true;
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

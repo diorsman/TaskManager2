@@ -1,18 +1,17 @@
 package com.personal.taskmanager2.homescreen;
 
-import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,23 +76,6 @@ public class EditProjectFragment extends android.app.Fragment
 
         super.onCreate(savedInstanceState);
         mProject = getArguments().getParcelable("project");
-        setUpActionBar();
-        setHasOptionsMenu(true);
-    }
-
-    private void setUpActionBar() {
-        // set nav mode
-        getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
-        // set title
-        getActionBar().setDisplayShowTitleEnabled(true);
-        getActionBar().setTitle("Editing Project");
-        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(mProject.getColorRsrc())));
-    }
-
-    private ActionBar getActionBar() {
-
-        return getActivity().getActionBar();
     }
 
     @Override
@@ -146,14 +128,29 @@ public class EditProjectFragment extends android.app.Fragment
         mSpinner.setAdapter(adapter);
         mSpinner.setSelection(colorValues.indexOf(mProject.getColor()));
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.edit_project, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onPrepareOptionsMenu(Menu menu) {
+        setUpActionBar();
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    private void setUpActionBar() {
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.getMenu().clear();
+        View spinner = toolbar.findViewById(R.id.actionbar_spinner);
+        if (spinner != null) {
+            toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
+        }
+        toolbar.inflateMenu(R.menu.edit_project);
+        toolbar.setTitle("Editing Project");
+        toolbar.setBackgroundColor(getResources().getColor(mProject.getColorRsrc()));
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override

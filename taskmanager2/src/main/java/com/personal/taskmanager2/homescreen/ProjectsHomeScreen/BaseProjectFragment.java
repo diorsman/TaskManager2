@@ -1,6 +1,5 @@
 package com.personal.taskmanager2.homescreen.ProjectsHomeScreen;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -11,6 +10,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,8 +54,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public abstract class BaseProjectFragment extends Fragment
-        implements ActionBar.OnNavigationListener,
-                   SwipeRefreshLayout.OnRefreshListener,
+        implements SwipeRefreshLayout.OnRefreshListener,
                    AbsListView.OnScrollListener,
                    ListView.OnItemClickListener,
                    BaseProjectAdapter.AnimationCallback {
@@ -90,6 +91,8 @@ public abstract class BaseProjectFragment extends Fragment
 
     private boolean mArchive;
     private boolean mTrash;
+
+    private boolean mToolbarSpinnerViewCreated = false;
 
     private static final int EXCEPTION_OCCURRED  = 0;
     private static final int LOADED_MORE_ITEMS   = 1;
@@ -237,32 +240,83 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        inflater.inflate(R.menu.home_screen, menu);
-
         //action bar setup
         setUpActionBar();
 
         //search view setup
-        setUpSearchView(menu);
+        //setUpSearchView(menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setUpActionBar() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
+        toolbar.inflateMenu(R.menu.home_screen);
 
-        ActionBar actionBar = getActivity().getActionBar();
+        /*if (!mToolbarSpinnerViewCreated) {
+            View spinnerContainer =
+                    LayoutInflater.from(getActivity()).inflate(R.layout.action_bar_spinner,
+                                                               toolbar, false);
+            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            toolbar.addView(spinnerContainer, lp);
+            mToolbarSpinnerViewCreated = true;
+        }*/
 
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        initSpinnerAdapter(toolbar);
+    }
 
-        ArrayAdapter<String> actionBarSpinner = new ActionBarSpinner(actionBar.getThemedContext(),
+    private void initSpinnerAdapter(Toolbar toolbar) {
+        Spinner spinner = (Spinner) toolbar.findViewById(R.id.actionbar_spinner);
+        ActionBarActivity parent = (ActionBarActivity) getActivity();
+        ArrayAdapter<String> actionBarSpinner = new ActionBarSpinner(parent.getSupportActionBar().getThemedContext(),
                                                                      getResources().getStringArray(R.array.action_bar_spinner_items));
         actionBarSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(actionBarSpinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        //Default List View
+                        navItemSelected(LIST_VIEW_POS, mQueriedList);
+                        mQueriedList = true;
+                        mQueriedDetail = false;
+                        break;
+                    case 1:
+                        // Detail View
+                        navItemSelected(DETAIL_VIEW_POS, mQueriedDetail);
+                        mQueriedDetail = true;
+                        mQueriedList = false;
+                        break;
+                }
+            }
 
-        actionBar.setListNavigationCallbacks(actionBarSpinner, this);
-        actionBar.setSelectedNavigationItem(mSelectedPosition);
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_solid_example));
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        spinner.setSelection(mSelectedPosition);
+    }
+
+    private void navItemSelected(int position, boolean hasQueried) {
+
+        mSelectedPosition = position;
+        if (!hasQueried) {
+            if (mListView.getAdapter() != null && !mListView.getAdapter().isEmpty()) {
+                mListViewState = mListView.onSaveInstanceState();
+            }
+            mListView.setAdapter(null);
+            mListView.setEmptyView(mLoadProjects);
+            mNoProjects.setVisibility(View.GONE);
+            mIsLoadingMore = false;
+            mAllProjectsLoaded = false;
+            queryProjects();
+        }
     }
 
     private void setUpSearchView(Menu menu) {
@@ -493,48 +547,10 @@ public abstract class BaseProjectFragment extends Fragment
 
     }
 
-
-    @Override
-    public boolean onNavigationItemSelected(int position, long id) {
-
-        switch (position) {
-            case 0:
-                //Default List View
-                navItemSelected(LIST_VIEW_POS, mQueriedList);
-                mQueriedList = true;
-                mQueriedDetail = false;
-                return true;
-            case 1:
-                // Detail View
-                navItemSelected(DETAIL_VIEW_POS, mQueriedDetail);
-                mQueriedDetail = true;
-                mQueriedList = false;
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private void navItemSelected(int position, boolean hasQueried) {
-
-        mSelectedPosition = position;
-        if (!hasQueried) {
-            if (mListView.getAdapter() != null && !mListView.getAdapter().isEmpty()) {
-                mListViewState = mListView.onSaveInstanceState();
-            }
-            mListView.setAdapter(null);
-            mListView.setEmptyView(mLoadProjects);
-            mNoProjects.setVisibility(View.GONE);
-            mIsLoadingMore = false;
-            mAllProjectsLoaded = false;
-            queryProjects();
-        }
-    }
-
-    private Handler mUiHandler =new Handler() {
+    private Handler mUiHandler = new Handler() {
 
         @Override
-        public void handleMessage (Message msg){
+        public void handleMessage(Message msg) {
 
             mRefreshLayoutList.setRefreshing(false);
             mLoadProjects.setVisibility(View.GONE);
@@ -594,9 +610,7 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
             }
         }
-    }
-
-    ;
+    };
 
 
     private void queryProjects() {

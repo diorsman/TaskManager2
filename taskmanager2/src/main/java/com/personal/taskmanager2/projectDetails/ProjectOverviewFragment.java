@@ -1,10 +1,9 @@
 package com.personal.taskmanager2.projectDetails;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -121,19 +120,9 @@ public class ProjectOverviewFragment extends Fragment
         mArchiveProject.setOnClickListener(this);
         mDeleteProject.setOnClickListener(this);
 
-        setUpActionBar();
-
-        return rootView;
-    }
-
-    private void setUpActionBar() {
-
         setHasOptionsMenu(true);
 
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(mProject.getName());
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(mProject.getColorRsrc())));
-        actionBar.setDisplayShowHomeEnabled(false);
+        return rootView;
     }
 
     @Override
@@ -167,8 +156,9 @@ public class ProjectOverviewFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
-        inflater.inflate(R.menu.project_detail, menu);
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.inflateMenu(R.menu.project_overview);
+        toolbar.setTitle(mProject.getName());
 
         super.onCreateOptionsMenu(menu, inflater);
     }

@@ -1,6 +1,7 @@
 package com.personal.taskmanager2.homescreen.ProjectsHomeScreen;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.personal.taskmanager2.R;
@@ -24,8 +25,7 @@ public class TrashFragment extends BaseProjectFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
 
-        for (int i = 0; i < 1; i++) {
-            menu.getItem(i).setVisible(false);
-        }
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.getMenu().clear();
     }
 }

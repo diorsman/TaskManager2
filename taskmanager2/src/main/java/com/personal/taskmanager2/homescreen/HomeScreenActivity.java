@@ -1,10 +1,11 @@
 package com.personal.taskmanager2.homescreen;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -15,7 +16,7 @@ import com.personal.taskmanager2.homescreen.ProjectsHomeScreen.MyProjectsFragmen
 import com.personal.taskmanager2.homescreen.ProjectsHomeScreen.TrashFragment;
 import com.personal.taskmanager2.signIn.SignInActivity;
 
-public class HomeScreenActivity extends Activity
+public class HomeScreenActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private static final String TAG = "HomeScreenActivity";
@@ -31,6 +32,11 @@ public class HomeScreenActivity extends Activity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home_screen);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mNavigationDrawerFragment =
                 (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);

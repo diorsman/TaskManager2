@@ -14,4 +14,8 @@
     <color name="card_ui_selected">#ebebeb</color>
     <color name="nav_drawer_item_selected">#40aaaaaa</color>
     <color name="actionbar_subtitle">#CCffffff</color>
+
+    <color name="theme_primary">#3F51B5</color>
+    <color name="theme_primary_dark">#303F9F</color>
+    <color name="theme_accent">#FF4081</color>
 </resources>

@@ -1,10 +1,9 @@
 package com.personal.taskmanager2.projectDetails;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -95,10 +94,9 @@ public class ProjectDetailFragment extends Fragment {
     private void setUpActionBar() {
 
         setHasOptionsMenu(true);
-
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(mProject.getName() + " Details");
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(mProject.getColorRsrc())));
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.getMenu().clear();
+        toolbar.setTitle(toolbar.getTitle() + " Details");
     }
 
     @Override

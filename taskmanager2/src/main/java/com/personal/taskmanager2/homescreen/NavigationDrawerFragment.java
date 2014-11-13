@@ -1,7 +1,6 @@
 package com.personal.taskmanager2.homescreen;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
@@ -9,12 +8,13 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +30,8 @@ import com.personal.taskmanager2.R;
  */
 public class NavigationDrawerFragment extends Fragment
         implements View.OnClickListener {
+
+    private static final String TAG = "NavigationDrawerFragment";
 
     /**
      * Remember the position of the selected item.
@@ -73,10 +75,6 @@ public class NavigationDrawerFragment extends Fragment
     private CharSequence mEmail;
     private CharSequence mName;
 
-    public NavigationDrawerFragment() {
-
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -115,7 +113,6 @@ public class NavigationDrawerFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
-        // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
     }
 
@@ -224,16 +221,15 @@ public class NavigationDrawerFragment extends Fragment
                                       GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
-        ActionBar actionBar = getActionBar();
+        /*ActionBar actionBar = ();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        actionBar.setHomeButtonEnabled(true);*/
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the navigation drawer and the action bar app icon.
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_navigation_drawer,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -246,8 +242,9 @@ public class NavigationDrawerFragment extends Fragment
                 }
 
                 mIsNavVisible = false;
-                setActionBarArrowDependingOnFragmentsBackStack(); // choose correct nav drawer icon
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                getActivity().invalidateOptionsMenu();
+
+                syncState();
             }
 
             @Override
@@ -270,8 +267,9 @@ public class NavigationDrawerFragment extends Fragment
                 }
 
                 mIsNavVisible = true;
-                mDrawerToggle.setDrawerIndicatorEnabled(true); // use default nav drawer icon
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                getActivity().invalidateOptionsMenu();
+
+                syncState();
             }
 
             @Override
@@ -294,6 +292,8 @@ public class NavigationDrawerFragment extends Fragment
                         getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
                     }
                 }
+
+                syncState();
             }
         };
 
@@ -351,40 +351,15 @@ public class NavigationDrawerFragment extends Fragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // If the drawer is open, show the global app actions in the action bar. See also
-        // showGlobalContextActionBar, which controls the top-left area of the action bar.
-        if (mIsNavVisible) {
-            showGlobalContextActionBar();
-            return;
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public void onPrepareOptionsMenu(Menu menu) {
-
-        if (mIsNavVisible) {
-            showGlobalContextActionBar();
-        }
-        hideItems(menu, !mIsNavVisible);
+        setUpActionBar(!mIsNavVisible);
         super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        int itemId = item.getItemId();
-
-        return !(itemId == R.id.action_refresh) &&
-               super.onOptionsItemSelected(item);
-
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
 
     // If there is a fragment in the backstack, change nav drawer icon to up arrow
     private void setActionBarArrowDependingOnFragmentsBackStack() {
@@ -394,27 +369,24 @@ public class NavigationDrawerFragment extends Fragment
         mDrawerToggle.setDrawerIndicatorEnabled(shouldEnableDrawerIndicator);
     }
 
-    /**
-     * Per the navigation drawer design guidelines, updates the action bar to show the global app
-     * 'context', rather than just what's in the current screen.
-     */
-    private void showGlobalContextActionBar() {
+    private void setUpActionBar(boolean visible) {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
-    }
-
-    private ActionBar getActionBar() {
-
-        return getActivity().getActionBar();
-    }
-
-    private void hideItems(Menu menu, boolean visible) {
-
-        for (int i = 0; i < menu.size(); i++) {
-            menu.getItem(i).setVisible(visible);
+        Menu menu = toolbar.getMenu();
+        if (visible) {
+            toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.VISIBLE);
+            if (menu.size() == 0) {
+                toolbar.inflateMenu(R.menu.home_screen);
+            }
+            ((ActionBarActivity) getActivity()).getSupportActionBar()
+                                               .setDisplayShowTitleEnabled(false);
+        }
+        else {
+            toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
+            menu.clear();
+            ((ActionBarActivity) getActivity()).getSupportActionBar()
+                                               .setDisplayShowTitleEnabled(true);
+            toolbar.setTitle("TaskManager");
         }
     }
 
