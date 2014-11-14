@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -15,12 +16,11 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.homescreen.HomeScreenActivity;
-import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
 
 public class SignInFragment extends Fragment implements View.OnClickListener {
 
-    private EditTextNoErrorMsg mEmailView;
-    private EditTextNoErrorMsg mPasswordView;
+    private EditText mEmailView;
+    private EditText mPasswordView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,8 +36,8 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         rootView.findViewById(R.id.forgotPassword).setOnClickListener(this);
 
         // get views
-        mEmailView = (EditTextNoErrorMsg) rootView.findViewById(R.id.emailTextBox);
-        mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.passwordTextBox);
+        mEmailView = (EditText) rootView.findViewById(R.id.emailTextBox);
+        mPasswordView = (EditText) rootView.findViewById(R.id.passwordTextBox);
 
         // temporary, will remove later
         mEmailView.setText("demo@demo.com");
@@ -79,12 +79,12 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                 // error checking
                 if (emailAddress.isEmpty()) {
                     progress.dismiss();
-                    mEmailView.setError("");
+                    mEmailView.setError("Enter Email");
                     return;
                 }
                 if (password.isEmpty()) {
                     progress.dismiss();
-                    mPasswordView.setError("");
+                    mPasswordView.setError("Enter Password");
                     return;
                 }
 

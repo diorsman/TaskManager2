@@ -9,7 +9,7 @@ consume the full space available. -->
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_actionbar"/>
+    <include layout="@layout/toolbar_actionbar_home"/>
 
     <android.support.v4.widget.DrawerLayout
 

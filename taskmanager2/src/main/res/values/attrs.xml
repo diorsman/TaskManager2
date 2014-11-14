@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="actionBarIconColor" format="color"/>
+
+    <declare-styleable name="FloatingActionButton">
+        <attr name="floatingIcon" format="reference"/>
+        <attr name="floatingColor" format="color"/>
+        <attr name="floatingColorPressed" format="color" />
+        <attr name="floatingShadowRadius" format="float"/>
+        <attr name="floatingShadowDx" format="float"/>
+        <attr name="floatingShadowDy" format="float"/>
+        <attr name="floatingShadowColor" format="integer"/>
+    </declare-styleable>
 </resources>

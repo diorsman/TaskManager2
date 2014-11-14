@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.DateParser;
+import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 
 import java.util.List;
 
@@ -22,9 +23,9 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
 
     public DetailProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                AnimationCallback animationCallback) {
+                                ListViewAnimationHelper animationHelper) {
 
-        super(context, projectList, animationCallback);
+        super(context, projectList, animationHelper);
     }
 
     private static class ViewHolder {

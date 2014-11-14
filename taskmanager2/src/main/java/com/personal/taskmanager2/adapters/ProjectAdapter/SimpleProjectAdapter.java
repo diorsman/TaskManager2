@@ -16,6 +16,7 @@ import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.CharacterIcon;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.IconKey;
+import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,9 +33,9 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     public SimpleProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                AnimationCallback animationCallback) {
+                                ListViewAnimationHelper animationHelper) {
 
-        super(context, projectList, animationCallback);
+        super(context, projectList, animationHelper);
     }
 
     private static class ViewHolder {

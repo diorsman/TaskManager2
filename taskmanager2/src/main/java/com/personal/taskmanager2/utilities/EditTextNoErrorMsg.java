@@ -5,6 +5,9 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
+;
+;
+
 public class EditTextNoErrorMsg extends EditText {
 
     public EditTextNoErrorMsg(Context context, AttributeSet attrs) {

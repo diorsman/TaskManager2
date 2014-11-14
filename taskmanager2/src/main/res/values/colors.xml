@@ -8,14 +8,16 @@
     <color name="holo_blue_dark">#ff0099cc</color>
     <color name="action_bar_button_background">#44ffffff</color>
     <color name="background">#e5e5e5</color>
-    <color name="button_pressed">#cc0099cc</color>
-    <color name="button_focused">#cc0099cc</color>
     <color name="card_ui_background_shadow">#15000000</color>
     <color name="card_ui_selected">#ebebeb</color>
-    <color name="nav_drawer_item_selected">#40aaaaaa</color>
     <color name="actionbar_subtitle">#CCffffff</color>
 
-    <color name="theme_primary">#3F51B5</color>
-    <color name="theme_primary_dark">#303F9F</color>
+    <color name="theme_primary">#2196F3</color>
+    <color name="theme_primary_dark">#1976D2</color>
     <color name="theme_accent">#FF4081</color>
+    <color name="theme_primary_focused">#64B5F6</color>
+    <color name="nav_drawer_item_activated">#33aaaaaa</color>
+    <color name="nav_drawer_item_selected">#40aaaaaa</color>
+    <color name="nav_drawer_user_background">#3F51B5</color>
+    <color name="accent_activated">#F50057</color>
 </resources>

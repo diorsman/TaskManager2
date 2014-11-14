@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 
 import java.util.List;
 
@@ -21,21 +22,16 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
     private final Activity          mContext;
     private       List<Project>     mProjectList;
-    private       AnimationCallback mAnimationCallback;
-
-    public interface AnimationCallback {
-
-        public void showRemoveAnimation(Project project);
-    }
-
+    private ListViewAnimationHelper<Project> mAnimHelper;
 
     public BaseProjectAdapter(Activity context,
                               List<Project> projectList,
-                              AnimationCallback animationCallback) {
+                              ListViewAnimationHelper<Project> animationHelper) {
 
         mContext = context;
         mProjectList = projectList;
-        mAnimationCallback = animationCallback;
+        mAnimHelper = animationHelper;
+        mAnimHelper.setDataSource(mProjectList);
     }
 
     public void addItems(List<Project> items) {
@@ -46,11 +42,6 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
     public void remove(Project project) {
 
         mProjectList.remove(project);
-    }
-
-    public int getPosition(Project project) {
-
-        return mProjectList.indexOf(project);
     }
 
     public Context getContext() {
@@ -147,25 +138,25 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
                 case R.id.action_archive:
                     if (mProject.safeArchive(true, mContext)) {
-                        mAnimationCallback.showRemoveAnimation(mProject);
+                        mAnimHelper.showAnimation(mProject);
                     }
                     return true;
 
                 case R.id.remove_from_archive:
                     if (mProject.safeArchive(false, mContext)) {
-                        mAnimationCallback.showRemoveAnimation(mProject);
+                        mAnimHelper.showAnimation(mProject);
                     }
                     return true;
 
                 case R.id.remove_from_trash:
                     if (mProject.safeTrash(false, mContext)) {
-                        mAnimationCallback.showRemoveAnimation(mProject);
+                        mAnimHelper.showAnimation(mProject);
                     }
                     return true;
 
                 case R.id.delete:
                     if (mProject.safeTrash(true, mContext)) {
-                        mAnimationCallback.showRemoveAnimation(mProject);
+                        mAnimHelper.showAnimation(mProject);
                     }
                 default:
                     return false;

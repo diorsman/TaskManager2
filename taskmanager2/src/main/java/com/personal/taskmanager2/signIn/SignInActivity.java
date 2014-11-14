@@ -3,7 +3,6 @@ package com.personal.taskmanager2.signIn;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Toast;
 
 import com.parse.ParseUser;
@@ -21,7 +20,6 @@ public class SignInActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
-        toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
         setSupportActionBar(toolbar);
 
         ParseUser curr = ParseUser.getCurrentUser();

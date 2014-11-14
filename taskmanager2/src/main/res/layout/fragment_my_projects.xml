@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:background="@color/background"
-                android:animateLayoutChanges="true">
 
-    <include layout="@layout/project_list_view"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/background"
+        android:animateLayoutChanges="true">
 
-    <TextView
-        style="@style/no_projects_found"
-        android:id="@+id/no_projects_text"
-        android:text="@string/no_projects"
-        android:visibility="gone"/>
+        <include layout="@layout/project_list_view"/>
 
-</RelativeLayout>
+        <TextView
+            style="@style/no_projects_found"
+            android:id="@+id/no_projects_text"
+            android:text="@string/no_projects"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <com.personal.taskmanager2.utilities.FloatingActionButton
+        android:id="@+id/create_project"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        app:floatingColor="@color/theme_accent"
+        app:floatingColorPressed="@color/accent_activated"
+        app:floatingIcon="@drawable/ic_action_content_new_white"/>
+
+</FrameLayout>
 
 

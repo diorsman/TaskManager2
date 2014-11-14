@@ -2,12 +2,19 @@ package com.personal.taskmanager2.homescreen.ProjectsHomeScreen;
 
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.utilities.FloatingActionButton;
 
 public class MyProjectsFragment extends BaseProjectFragment {
 
     private static final String TAG = "MyProjectsFragment";
+
+    private FloatingActionButton mCreateButton;
 
     public static BaseProjectFragment newInstance() {
 
@@ -20,5 +27,26 @@ public class MyProjectsFragment extends BaseProjectFragment {
         frag.setArguments(args);
 
         return frag;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+
+        mCreateButton = (FloatingActionButton) rootView.findViewById(R.id.create_project);
+        mCreateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickFloatingButton();
+            }
+        });
+
+        return rootView;
+    }
+
+    private void onClickFloatingButton() {
+        Log.d(TAG, "Floating Button Clicked");
     }
 }

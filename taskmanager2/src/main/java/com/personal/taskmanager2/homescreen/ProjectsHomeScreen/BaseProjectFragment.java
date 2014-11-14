@@ -19,8 +19,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,6 +41,7 @@ import com.personal.taskmanager2.homescreen.AddProjects.JoinProjectFragment;
 import com.personal.taskmanager2.homescreen.SearchFragment;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
+import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.SearchViewFormatter;
 import com.personal.taskmanager2.utilities.Utilities;
 
@@ -56,8 +55,7 @@ import java.util.concurrent.Executors;
 public abstract class BaseProjectFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
                    AbsListView.OnScrollListener,
-                   ListView.OnItemClickListener,
-                   BaseProjectAdapter.AnimationCallback {
+                   ListView.OnItemClickListener {
 
     private static final String TAG = "BaseProjectFragment";
 
@@ -92,8 +90,6 @@ public abstract class BaseProjectFragment extends Fragment
     private boolean mArchive;
     private boolean mTrash;
 
-    private boolean mToolbarSpinnerViewCreated = false;
-
     private static final int EXCEPTION_OCCURRED  = 0;
     private static final int LOADED_MORE_ITEMS   = 1;
     private static final int FIRST_LOAD          = 2;
@@ -108,7 +104,9 @@ public abstract class BaseProjectFragment extends Fragment
     private ExecutorService mExecutor;
     private Runnable        mQueryRunnable;
 
-    private Animation removeAnimation;
+    private ListViewAnimationHelper<Project> mAnimHelper;
+    private static final int ANIM_DURATION = 350;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -120,26 +118,23 @@ public abstract class BaseProjectFragment extends Fragment
         mArchive = args.getBoolean("archive");
         mTrash = args.getBoolean("trash");
 
-        removeAnimation =
-                AnimationUtils.loadAnimation(getActivity(), android.R.anim.slide_out_right);
-        removeAnimation.setDuration(350);
-        removeAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        mAnimHelper = new ListViewAnimationHelper<>(android.R.anim.slide_out_right,
+                                                    ANIM_DURATION,
+                                                    getActivity(),
+                                                    new ListViewAnimationHelper.ListViewAnimationListener() {
+                                                        @Override
+                                                        public void onAnimationStart() {
+                                                        }
 
-            }
+                                                        @Override
+                                                        public void onAnimationEnd() {
+                                                            mNumRemoved++;
+                                                        }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                mProjectAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+                                                        @Override
+                                                        public void onAnimationRepeat() {
+                                                        }
+                                                    });
 
         mQueryRunnable = new Runnable() {
             @Override
@@ -207,7 +202,10 @@ public abstract class BaseProjectFragment extends Fragment
         super.onPause();
         mQueriedList = false;
         mQueriedDetail = false;
+        mExecutor.shutdownNow();
+        mExecutor.shutdown();
     }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -221,6 +219,7 @@ public abstract class BaseProjectFragment extends Fragment
 
         super.onDestroyView();
         savedState = saveState();
+        mExecutor.shutdownNow();
         mExecutor.shutdown();
     }
 
@@ -250,28 +249,24 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     private void setUpActionBar() {
+        ActionBarActivity parent = (ActionBarActivity) getActivity();
+        if (parent == null) {
+            return;
+        }
+        parent.getSupportActionBar().setDisplayShowTitleEnabled(false);
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.VISIBLE);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
         toolbar.inflateMenu(R.menu.home_screen);
-
-        /*if (!mToolbarSpinnerViewCreated) {
-            View spinnerContainer =
-                    LayoutInflater.from(getActivity()).inflate(R.layout.action_bar_spinner,
-                                                               toolbar, false);
-            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            toolbar.addView(spinnerContainer, lp);
-            mToolbarSpinnerViewCreated = true;
-        }*/
-
         initSpinnerAdapter(toolbar);
     }
 
     private void initSpinnerAdapter(Toolbar toolbar) {
         Spinner spinner = (Spinner) toolbar.findViewById(R.id.actionbar_spinner);
         ActionBarActivity parent = (ActionBarActivity) getActivity();
-        ArrayAdapter<String> actionBarSpinner = new ActionBarSpinner(parent.getSupportActionBar().getThemedContext(),
-                                                                     getResources().getStringArray(R.array.action_bar_spinner_items));
+        ArrayAdapter<String> actionBarSpinner =
+                new ActionBarSpinner(parent.getSupportActionBar().getThemedContext(),
+                                     getResources().getStringArray(R.array.action_bar_spinner_items));
         actionBarSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(actionBarSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -581,8 +576,10 @@ public abstract class BaseProjectFragment extends Fragment
                             ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
                                                                        getActivity(),
                                                                        projects,
-                                                                       BaseProjectFragment.this);
+                                                                       mAnimHelper);
                     mListView.setAdapter(mProjectAdapter);
+                    mAnimHelper.setListView(mListView);
+                    mAnimHelper.setAdapter(mProjectAdapter);
 
                     if (mListViewState != null) {
                         mListView.onRestoreInstanceState(mListViewState);
@@ -618,8 +615,9 @@ public abstract class BaseProjectFragment extends Fragment
         if (!mIsLoadingMore) {
             mRefreshLayoutList.setRefreshing(true);
         }
-
-        mExecutor.execute(mQueryRunnable);
+        if (!mExecutor.isShutdown()) {
+            mExecutor.execute(mQueryRunnable);
+        }
     }
 
     private void queryProjectsInBackground(Handler handler) {
@@ -711,15 +709,5 @@ public abstract class BaseProjectFragment extends Fragment
         Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
         intent.putExtra("project", project);
         startActivity(intent);
-    }
-
-    @Override
-    public void showRemoveAnimation(Project project) {
-
-        int pos = mProjectAdapter.getPosition(project);
-        mProjectAdapter.remove(project);
-        int visiblePos = mListView.getFirstVisiblePosition();
-        mListView.getChildAt(pos - visiblePos).startAnimation(removeAnimation);
-        mNumRemoved++;
     }
 }

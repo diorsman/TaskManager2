@@ -13,8 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -29,6 +27,7 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
+import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.SearchViewFormatter;
 
 import java.util.ArrayList;
@@ -36,28 +35,18 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class SearchFragment extends Fragment
-        implements AdapterView.OnItemClickListener,
-                   BaseProjectAdapter.AnimationCallback{
+        implements AdapterView.OnItemClickListener {
 
     private static final String TAG = "SearchFragment";
 
-    private ListView    mListView;
-    private TextView    mNoResults;
-    private ProgressBar mLoading;
+    private ListView           mListView;
+    private TextView           mNoResults;
+    private ProgressBar        mLoading;
     private BaseProjectAdapter mProjectAdapter;
 
     private String mQuery;
 
-    private Animation removeAnimation;
-
-    @Override
-    public void showRemoveAnimation(Project project) {
-
-        int pos = mProjectAdapter.getPosition(project);
-        mProjectAdapter.remove(project);
-        int visiblePos = mListView.getFirstVisiblePosition();
-        mListView.getChildAt(pos - visiblePos).startAnimation(removeAnimation);
-    }
+    private ListViewAnimationHelper<Project> mAnimHelper;
 
     public static SearchFragment newInstance(String query) {
 
@@ -88,26 +77,26 @@ public class SearchFragment extends Fragment
         setHasOptionsMenu(true);
         searchForProjects(mQuery);
 
-        removeAnimation =
-                AnimationUtils.loadAnimation(getActivity(), android.R.anim.slide_out_right);
-        removeAnimation.setDuration(350);
-        removeAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        mAnimHelper =
+                new ListViewAnimationHelper<>(android.R.anim.slide_out_right,
+                                              350,
+                                              getActivity(),
+                                              new ListViewAnimationHelper.ListViewAnimationListener() {
+                                                  @Override
+                                                  public void onAnimationStart() {
 
-            }
+                                                  }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
+                                                  @Override
+                                                  public void onAnimationEnd() {
 
-                mProjectAdapter.notifyDataSetChanged();
-            }
+                                                  }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                                                  @Override
+                                                  public void onAnimationRepeat() {
 
-            }
-        });
+                                                  }
+                                              });
 
         return rootView;
     }
@@ -193,10 +182,12 @@ public class SearchFragment extends Fragment
                         ProjectAdapterFactory.SIMPLE_ADAPTER,
                         getActivity(),
                         projects,
-                        SearchFragment.this);
+                        mAnimHelper);
                 mListView.setAdapter(mProjectAdapter);
                 mListView.setEmptyView(mNoResults);
                 mLoading.setVisibility(View.GONE);
+                mAnimHelper.setListView(mListView);
+                mAnimHelper.setAdapter(mProjectAdapter);
             }
         };
 

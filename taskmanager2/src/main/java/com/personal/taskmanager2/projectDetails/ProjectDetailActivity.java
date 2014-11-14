@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
@@ -24,7 +23,6 @@ public class ProjectDetailActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator ());
         toolbar.setBackgroundColor(getResources().getColor(project.getColorRsrc()));
-        toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
@@ -65,6 +64,7 @@ public class NavigationDrawerFragment extends Fragment
     private TextView     mProfile;
     private TextView     mSettings;
     private TextView     mHelp;
+    private TextView     mActivated;
 
     private int     mCurrentSelectedPosition;
     private boolean mFromSavedInstanceState;
@@ -72,8 +72,8 @@ public class NavigationDrawerFragment extends Fragment
     private boolean mIsNavVisible;
 
     // User Email Address
-    private CharSequence mEmail;
-    private CharSequence mName;
+    private String mEmail;
+    private String mName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,7 @@ public class NavigationDrawerFragment extends Fragment
         });
 
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
+        //selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -145,7 +145,8 @@ public class NavigationDrawerFragment extends Fragment
         mProfile.setOnClickListener(this);
         mSettings.setOnClickListener(this);
         mHelp.setOnClickListener(this);
-        setBold(mProjects);
+
+        selectItem(mCurrentSelectedPosition);
 
         return mDrawerView;
     }
@@ -156,43 +157,56 @@ public class NavigationDrawerFragment extends Fragment
         switch (view.getId()) {
             case R.id.projects:
                 selectItem(0);
-                setBold(mProjects);
                 break;
             case R.id.archive:
                 selectItem(1);
-                setBold(mArchive);
                 break;
             case R.id.trash:
                 selectItem(2);
-                setBold(mTrash);
                 break;
             case R.id.profile:
                 selectItem(3);
-                setBold(mProfile);
                 break;
             case R.id.settings:
                 selectItem(4);
-                setBold(mSettings);
                 break;
             case R.id.help:
                 selectItem(5);
-                setBold(mHelp);
         }
     }
 
-    private void setBold(TextView textView) {
-
-        Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
-        mProjects.setTypeface(typeface, Typeface.NORMAL);
-        mArchive.setTypeface(typeface, Typeface.NORMAL);
-        mTrash.setTypeface(typeface, Typeface.NORMAL);
-        mProfile.setTypeface(typeface, Typeface.NORMAL);
-        mSettings.setTypeface(typeface, Typeface.NORMAL);
-        mHelp.setTypeface(typeface, Typeface.NORMAL);
-        textView.setTypeface(typeface, Typeface.BOLD);
-    }
-
     private void selectItem(int position) {
+
+        if (mActivated != null) {
+            mActivated.setActivated(false);
+        }
+
+        switch (position) {
+            case 0:
+                mProjects.setActivated(true);
+                mActivated = mProjects;
+                break;
+            case 1:
+                mArchive.setActivated(true);
+                mActivated = mArchive;
+                break;
+            case 2:
+                mTrash.setActivated(true);
+                mActivated = mTrash;
+                break;
+            case 3:
+                mProfile.setActivated(true);
+                mActivated = mProfile;
+                break;
+            case 4:
+                mSettings.setActivated(true);
+                mActivated = mSettings;
+                break;
+            case 5:
+                mHelp.setActivated(true);
+                mActivated = mHelp;
+                break;
+        }
 
         mCurrentSelectedPosition = position;
 
@@ -370,18 +384,12 @@ public class NavigationDrawerFragment extends Fragment
     }
 
     private void setUpActionBar(boolean visible) {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-
-        Menu menu = toolbar.getMenu();
-        if (visible) {
-            toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.VISIBLE);
-            if (menu.size() == 0) {
-                toolbar.inflateMenu(R.menu.home_screen);
-            }
-            ((ActionBarActivity) getActivity()).getSupportActionBar()
-                                               .setDisplayShowTitleEnabled(false);
+        if (getActivity() == null) {
+            return;
         }
-        else {
+        if (!visible) {
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+            Menu menu = toolbar.getMenu();
             toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
             menu.clear();
             ((ActionBarActivity) getActivity()).getSupportActionBar()

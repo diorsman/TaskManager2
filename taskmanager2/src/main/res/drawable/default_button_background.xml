@@ -8,7 +8,7 @@
             <corners
                 android:radius="2dp" />
             <solid
-                android:color="#b30099cc" />
+                android:color="@color/theme_primary_focused" />
         </shape>
     </item>
 
@@ -18,7 +18,7 @@
             <corners
                 android:radius="2dp" />
             <solid
-                android:color="#b30099cc" />
+                android:color="@color/theme_primary_focused" />
         </shape>
     </item>
 
@@ -28,7 +28,7 @@
             <corners
                 android:radius="2dp" />
             <solid
-                android:color="#0099cc" />
+                android:color="@color/theme_primary" />
         </shape>
     </item>
 </selector>

@@ -1,8 +1,9 @@
 package com.personal.taskmanager2.homescreen;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,8 +38,6 @@ public class AccountSettingsFragment extends android.app.Fragment implements Vie
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-
-        (getActivity()).getActionBar().setTitle(getString(R.string.account_settings_title));
         View rootView = inflater.inflate(R.layout.fragment_account_settings,
                                          container,
                                          false);
@@ -57,24 +56,20 @@ public class AccountSettingsFragment extends android.app.Fragment implements Vie
         mName.setText(mCurrentUser.getString("Name"));
         mPhone.setText(mCurrentUser.getString("Phone"));
 
-        return rootView;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        return rootView;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        inflater.inflate(R.menu.home_screen, menu);
-        ActionBar actionBar = (getActivity()).getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(getString(R.string.account_settings_title));
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
+        toolbar.getMenu().clear();
+        ((ActionBarActivity) getActivity()).getSupportActionBar()
+                                           .setDisplayShowTitleEnabled(true);
+        toolbar.setTitle(getString(R.string.account_settings_title));
     }
 
     @Override
