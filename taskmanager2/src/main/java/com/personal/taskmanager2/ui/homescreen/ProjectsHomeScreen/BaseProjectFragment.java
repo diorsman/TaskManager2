@@ -199,8 +199,6 @@ public abstract class BaseProjectFragment extends Fragment
     public void onPause() {
 
         super.onPause();
-        mQueriedList = false;
-        mQueriedDetail = false;
         mExecutor.shutdownNow();
         mExecutor.shutdown();
     }
@@ -217,7 +215,9 @@ public abstract class BaseProjectFragment extends Fragment
     public void onDestroyView() {
 
         super.onDestroyView();
-        savedState = saveState();
+        //mQueriedList = false;
+        //mQueriedDetail = false;
+        //savedState = saveState();
         mExecutor.shutdownNow();
         mExecutor.shutdown();
     }
@@ -289,8 +289,6 @@ public abstract class BaseProjectFragment extends Fragment
 
             }
         });
-
-
         spinner.setSelection(mSelectedPosition);
     }
 

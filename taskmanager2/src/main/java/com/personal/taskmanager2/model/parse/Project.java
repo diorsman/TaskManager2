@@ -304,7 +304,7 @@ public class Project extends ParseObject implements Parcelable {
         if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
             fragmentManager.beginTransaction()
                            .addToBackStack(null)
-                           .replace(R.id.container, EditProjectFragment.newInstance(this))
+                           .add(R.id.container, EditProjectFragment.newInstance(this))
                            .commit();
         }
         else {

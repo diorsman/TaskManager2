@@ -1,5 +1,6 @@
 package com.personal.taskmanager2.ui.homescreen;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ public class HomeScreenActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private static final String TAG = "HomeScreenActivity";
+
+    private static int mSelectedItem = -1;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -52,34 +55,33 @@ public class HomeScreenActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
         switch (position) {
             case 0:
-                fragmentManager.beginTransaction()
-                               .replace(R.id.container,
-                                        MyProjectsFragment.newInstance())
-                               .commit();
+                openFrag(MyProjectsFragment.newInstance(), 0);
                 break;
             case 1:
-                fragmentManager.beginTransaction().replace(R.id.container,
-                                                           ArchiveFragment.newInstance()).commit();
+                openFrag(ArchiveFragment.newInstance(), 1);
                 break;
             case 2:
-                fragmentManager.beginTransaction()
-                               .replace(R.id.container, TrashFragment.newInstance())
-                               .commit();
+                openFrag(TrashFragment.newInstance(), 2);
                 break;
             case 3:
+                openFrag(AccountSettingsFragment.newInstance(), 3);
+                break;
             case 4:
-                fragmentManager.beginTransaction()
-                               .replace(R.id.container,
-                                        AccountSettingsFragment.newInstance())
-                               .commit();
+                openFrag(AccountSettingsFragment.newInstance(), 4);
                 break;
             case 5:
-                fragmentManager.beginTransaction().replace(R.id.container,
-                                                           HelpFragment.newInstance()).commit();
+                openFrag(HelpFragment.newInstance(), 5);
                 break;
+        }
+    }
+
+    private void openFrag(Fragment frag, int pos) {
+        if (pos != mSelectedItem) {
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, frag).commit();
+            mSelectedItem = pos;
         }
     }
 
@@ -119,5 +121,6 @@ public class HomeScreenActivity extends ActionBarActivity
 
         Toast.makeText(this, "You have been logged out.", Toast.LENGTH_SHORT).show();
         ParseUser.logOut();
+        mSelectedItem = -1;
     }
 }

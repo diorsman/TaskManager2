@@ -15,43 +15,39 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:layout_height="56dp"
+            android:layout_marginBottom="8dp"
+            android:paddingLeft="16dp"
             android:orientation="vertical"
             android:background="@color/nav_drawer_user_background">
 
             <TextView
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:id="@+id/nav_drawer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/white"/>
 
             <TextView
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="8dp"
                 android:id="@+id/nav_drawer_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:gravity="center"
+                android:textSize="14sp"
                 android:textColor="@android:color/white"/>
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/projects"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingLeft="6dp"
-            android:drawablePadding="6dp"
+            android:paddingLeft="16dp"
+            android:drawablePadding="32dp"
             android:drawableLeft="@drawable/ic_action_action_view_headline"
             android:text="@string/my_projects_title"
+            android:textSize="14sp"
             android:textColor="@android:color/primary_text_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
@@ -59,14 +55,13 @@
         <TextView
             android:id="@+id/archive"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingLeft="6dp"
-            android:drawablePadding="6dp"
+            android:paddingLeft="16dp"
+            android:drawablePadding="32dp"
             android:drawableLeft="@drawable/ic_action_content_archive"
             android:text="@string/archive_title"
+            android:textSize="14sp"
             android:textColor="@android:color/primary_text_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
@@ -74,31 +69,32 @@
         <TextView
             android:id="@+id/trash"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingLeft="6dp"
-            android:drawablePadding="6dp"
+            android:paddingLeft="16dp"
+            android:drawablePadding="32dp"
             android:drawableLeft="@drawable/ic_action_action_delete"
             android:text="@string/trash_title"
+            android:textSize="14sp"
             android:textColor="@android:color/primary_text_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 
-        <View style="@style/horizontal_divider"/>
+        <View
+            style="@style/horizontal_divider"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"/>
 
         <TextView
             android:id="@+id/profile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingLeft="6dp"
-            android:drawablePadding="6dp"
+            android:paddingLeft="16dp"
+            android:drawablePadding="32dp"
             android:drawableLeft="@drawable/ic_action_person"
             android:text="@string/account_settings_title"
+            android:textSize="14sp"
             android:textColor="@android:color/primary_text_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
@@ -107,14 +103,13 @@
         <TextView
             android:id="@+id/settings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingLeft="6dp"
-            android:drawablePadding="6dp"
+            android:paddingLeft="16dp"
+            android:drawablePadding="32dp"
             android:drawableLeft="@drawable/ic_action_settings"
             android:text="@string/action_settings"
+            android:textSize="14sp"
             android:textColor="@android:color/primary_text_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
@@ -123,14 +118,13 @@
         <TextView
             android:id="@+id/help"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:paddingLeft="6dp"
-            android:drawablePadding="6dp"
-            android:drawableLeft="@drawable/ic_action_help"
+            android:paddingLeft="16dp"
+            android:drawablePadding="32dp"
+            android:drawableLeft="@drawable/ic_action_action_help"
             android:text="@string/help_title"
+            android:textSize="14sp"
             android:textColor="@android:color/primary_text_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
