@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.utilities.CharCircleIcon;
+import com.personal.taskmanager2.ui.CharCircleIcon;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
@@ -33,7 +33,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     public SimpleProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                ListViewAnimationHelper animationHelper) {
+                                ListViewAnimationHelper<Project> animationHelper) {
 
         super(context, projectList, animationHelper);
     }
@@ -116,7 +116,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
                                   typeface);
             sIconMap.put(key, icon);
         }
-        colorSlice.setBackgroundDrawable(icon);
+        colorSlice.setBackground(icon);
 
         // set name
         lineOneView.setText(project.getName());

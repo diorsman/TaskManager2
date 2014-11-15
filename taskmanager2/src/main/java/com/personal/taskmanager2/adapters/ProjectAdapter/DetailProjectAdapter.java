@@ -23,7 +23,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
 
     public DetailProjectAdapter(Activity context,
                                 List<Project> projectList,
-                                ListViewAnimationHelper animationHelper) {
+                                ListViewAnimationHelper<Project> animationHelper) {
 
         super(context, projectList, animationHelper);
     }

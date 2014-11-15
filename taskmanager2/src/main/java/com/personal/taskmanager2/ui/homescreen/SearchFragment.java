@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen;
+package com.personal.taskmanager2.ui.homescreen;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +28,7 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
+import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 
 import java.util.ArrayList;
@@ -121,9 +122,7 @@ public class SearchFragment extends Fragment
     private void setUpSearchView(Toolbar toolbar) {
         //search view setup
         final MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        final android.support.v7.widget.SearchView
-                searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(
-                searchItem);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         searchView.setOnQueryTextFocusChangeListener(
                 new View.OnFocusChangeListener() {

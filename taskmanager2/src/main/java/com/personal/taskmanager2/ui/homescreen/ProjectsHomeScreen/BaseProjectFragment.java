@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen.ProjectsHomeScreen;
+package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -37,11 +37,11 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
-import com.personal.taskmanager2.homescreen.AddProjects.CreateProjectFragment;
-import com.personal.taskmanager2.homescreen.AddProjects.JoinProjectFragment;
-import com.personal.taskmanager2.homescreen.SearchFragment;
+import com.personal.taskmanager2.ui.homescreen.AddProjects.CreateProjectFragment;
+import com.personal.taskmanager2.ui.homescreen.AddProjects.JoinProjectFragment;
+import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
+import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.Utilities;
 

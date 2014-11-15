@@ -1,4 +1,4 @@
-package com.personal.taskmanager2;
+package com.personal.taskmanager2.ui;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;

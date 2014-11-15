@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.utilities;
+package com.personal.taskmanager2.ui;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

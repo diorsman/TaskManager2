@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.signIn;
+package com.personal.taskmanager2.ui.signIn;
 
 import android.app.DialogFragment;
 import android.os.Bundle;

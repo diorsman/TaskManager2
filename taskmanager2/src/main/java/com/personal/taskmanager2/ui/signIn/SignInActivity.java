@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.signIn;
+package com.personal.taskmanager2.ui.signIn;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

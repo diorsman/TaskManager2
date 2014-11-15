@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen;
+package com.personal.taskmanager2.ui.homescreen;
 
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -11,10 +11,10 @@ import android.widget.Toast;
 
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.homescreen.ProjectsHomeScreen.ArchiveFragment;
-import com.personal.taskmanager2.homescreen.ProjectsHomeScreen.MyProjectsFragment;
-import com.personal.taskmanager2.homescreen.ProjectsHomeScreen.TrashFragment;
-import com.personal.taskmanager2.signIn.SignInActivity;
+import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.ArchiveFragment;
+import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.MyProjectsFragment;
+import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.TrashFragment;
+import com.personal.taskmanager2.ui.signIn.SignInActivity;
 
 public class HomeScreenActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {

@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen.AddProjects;
+package com.personal.taskmanager2.ui.homescreen.AddProjects;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.BCrypt;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
-import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
+import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import org.json.JSONArray;

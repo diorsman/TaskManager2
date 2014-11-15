@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen;
+package com.personal.taskmanager2.ui.homescreen;
 
 
 import android.app.Activity;

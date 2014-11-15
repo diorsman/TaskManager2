@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme" >
         <activity
-            android:name=".signIn.SignInActivity"
+            android:name=".ui.signIn.SignInActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -22,17 +22,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".homescreen.HomeScreenActivity"
+            android:name=".ui.homescreen.HomeScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_home_screen" >
         </activity>
         <activity
-            android:name=".projectDetails.ProjectDetailActivity"
+            android:name=".ui.projectDetails.ProjectDetailActivity"
             android:label="@string/title_activity_project_detail"
-            android:parentActivityName=".homescreen.HomeScreenActivity" >
+            android:parentActivityName=".ui.homescreen.HomeScreenActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.personal.taskmanager2.homescreen.HomeScreenActivity" />
+                android:value=".ui.homescreen.HomeScreenActivity" />
         </activity>
     </application>
 

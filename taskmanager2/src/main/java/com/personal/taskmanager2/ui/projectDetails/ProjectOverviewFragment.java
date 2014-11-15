@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.projectDetails;
+package com.personal.taskmanager2.ui.projectDetails;
 
 import android.app.Activity;
 import android.app.Fragment;

@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen;
+package com.personal.taskmanager2.ui.homescreen;
 
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
@@ -26,9 +26,9 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.parse.ParseException;
-import com.personal.taskmanager2.DatePickerFragment;
+import com.personal.taskmanager2.ui.DatePickerFragment;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.TimePickerFragment;
+import com.personal.taskmanager2.ui.TimePickerFragment;
 import com.personal.taskmanager2.adapters.CategoryAdapter;
 import com.personal.taskmanager2.model.parse.Project;
 

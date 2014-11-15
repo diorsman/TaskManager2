@@ -1,4 +1,4 @@
-package com.personal.taskmanager2;
+package com.personal.taskmanager2.ui;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

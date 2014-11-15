@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.signIn;
+package com.personal.taskmanager2.ui.signIn;
 
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -12,9 +12,9 @@ import android.widget.Toast;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.personal.taskmanager2.homescreen.HomeScreenActivity;
+import com.personal.taskmanager2.ui.homescreen.HomeScreenActivity;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.utilities.EditTextNoErrorMsg;
+import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
 
 public class CreateAccountFragment extends DialogFragment
         implements View.OnClickListener {

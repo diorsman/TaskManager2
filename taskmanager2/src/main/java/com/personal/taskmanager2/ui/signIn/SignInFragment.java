@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.signIn;
+package com.personal.taskmanager2.ui.signIn;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -15,7 +15,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.homescreen.HomeScreenActivity;
+import com.personal.taskmanager2.ui.homescreen.HomeScreenActivity;
 
 public class SignInFragment extends Fragment implements View.OnClickListener {
 

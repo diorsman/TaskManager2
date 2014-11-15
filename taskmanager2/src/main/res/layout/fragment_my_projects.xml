@@ -23,7 +23,7 @@
 
     </RelativeLayout>
 
-    <com.personal.taskmanager2.utilities.FloatingActionButton
+    <com.personal.taskmanager2.ui.widget.FloatingActionButton
         android:id="@+id/create_project"
         android:layout_width="72dp"
         android:layout_height="72dp"

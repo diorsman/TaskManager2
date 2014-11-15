@@ -8,26 +8,26 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context="com.personal.taskmanager2.signIn.CreateAccountFragment" >
+                tools:context="com.personal.taskmanager2.ui.signIn.CreateAccountFragment" >
 
-    <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
+    <com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg
         style="@style/email_edit_text"
         android:id="@+id/accountCreateEmail"
         android:layout_below="@+id/accountCreateName"
         android:hint="@string/email_address"/>
 
-    <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
+    <com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg
         style="@style/password_edit_text"
         android:id="@+id/accountCreatePassword"
         android:layout_below="@+id/accountCreateEmail"
         android:hint="@string/password"/>
 
-    <com.personal.taskmanager2.utilities.EditTextNoErrorMsg
+    <com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg
         style="@style/account_create_name"
         android:id="@+id/accountCreateName"
         android:hint="@string/name">
         <requestFocus />
-    </com.personal.taskmanager2.utilities.EditTextNoErrorMsg>
+    </com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg>
 
     <Button
         style="@style/submit_button"

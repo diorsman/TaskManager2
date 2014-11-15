@@ -10,7 +10,7 @@
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:scrollbarStyle="outsideOverlay"
             android:clipToPadding="false"
-            tools:context="com.personal.taskmanager2.projectDetails.ProjectDetailFragment">
+            tools:context="com.personal.taskmanager2.ui.projectDetails.ProjectDetailFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

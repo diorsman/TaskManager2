@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.homescreen.ProjectsHomeScreen;
+package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
 
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.utilities.FloatingActionButton;
+import com.personal.taskmanager2.ui.widget.FloatingActionButton;
 
 public class MyProjectsFragment extends BaseProjectFragment {
 
