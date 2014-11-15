@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class SignInActivity extends ActionBarActivity {
 
@@ -18,7 +19,7 @@ public class SignInActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_sign_in);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(this);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
         setSupportActionBar(toolbar);
 

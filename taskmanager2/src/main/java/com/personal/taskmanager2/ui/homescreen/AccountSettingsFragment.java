@@ -2,7 +2,6 @@ package com.personal.taskmanager2.ui.homescreen;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +15,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class AccountSettingsFragment extends android.app.Fragment implements View.OnClickListener {
 
@@ -64,11 +64,10 @@ public class AccountSettingsFragment extends android.app.Fragment implements Vie
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
         toolbar.getMenu().clear();
-        ((ActionBarActivity) getActivity()).getSupportActionBar()
-                                           .setDisplayShowTitleEnabled(true);
+        Utilities.enableToolbarTitle(getActivity(), true, TAG);
         toolbar.setTitle(getString(R.string.account_settings_title));
     }
 

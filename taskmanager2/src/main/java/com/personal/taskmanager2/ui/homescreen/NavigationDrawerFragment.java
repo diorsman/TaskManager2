@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.utilities.Utilities;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -388,12 +388,11 @@ public class NavigationDrawerFragment extends Fragment
             return;
         }
         if (!visible) {
-            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+            Toolbar toolbar = Utilities.getToolbar(getActivity());
             Menu menu = toolbar.getMenu();
             toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
             menu.clear();
-            ((ActionBarActivity) getActivity()).getSupportActionBar()
-                                               .setDisplayShowTitleEnabled(true);
+            Utilities.enableToolbarTitle(getActivity(), true, TAG);
             toolbar.setTitle("TaskManager");
         }
     }

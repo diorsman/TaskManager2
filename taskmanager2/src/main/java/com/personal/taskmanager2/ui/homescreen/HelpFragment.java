@@ -2,7 +2,6 @@ package com.personal.taskmanager2.ui.homescreen;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class HelpFragment extends Fragment {
 
@@ -40,11 +40,10 @@ public class HelpFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
         toolbar.getMenu().clear();
-        ((ActionBarActivity) getActivity()).getSupportActionBar()
-                                           .setDisplayShowTitleEnabled(true);
+        Utilities.enableToolbarTitle(getActivity(), true, TAG);
         toolbar.setTitle(getString(R.string.help_title));
     }
 }

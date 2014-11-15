@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,6 +29,7 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
+import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class SearchFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
 
         setUpActionBar(toolbar);
         toolbar.inflateMenu(R.menu.search_screen);
@@ -113,8 +113,7 @@ public class SearchFragment extends Fragment
     }
 
     private void setUpActionBar(Toolbar toolbar) {
-        ((ActionBarActivity) getActivity()).getSupportActionBar()
-                                           .setDisplayShowTitleEnabled(true);
+        Utilities.enableToolbarTitle(getActivity(), true, TAG);
         toolbar.setTitle("Search: " + mQuery);
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
     }

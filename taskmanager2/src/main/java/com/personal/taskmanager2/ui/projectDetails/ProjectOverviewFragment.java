@@ -156,7 +156,7 @@ public class ProjectOverviewFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.inflateMenu(R.menu.project_overview);
         toolbar.setTitle(mProject.getName());
 

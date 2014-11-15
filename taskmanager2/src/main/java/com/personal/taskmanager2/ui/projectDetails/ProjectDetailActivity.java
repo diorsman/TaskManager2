@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class ProjectDetailActivity extends ActionBarActivity {
 
@@ -20,7 +21,7 @@ public class ProjectDetailActivity extends ActionBarActivity {
 
         Project project = getIntent().getExtras().getParcelable("project");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(this);
         toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator ());
         toolbar.setBackgroundColor(getResources().getColor(project.getColorRsrc()));
         setSupportActionBar(toolbar);

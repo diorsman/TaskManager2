@@ -15,6 +15,7 @@ import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.ArchiveFragmen
 import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.MyProjectsFragment;
 import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.TrashFragment;
 import com.personal.taskmanager2.ui.signIn.SignInActivity;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class HomeScreenActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -33,7 +34,7 @@ public class HomeScreenActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_home_screen);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(this);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

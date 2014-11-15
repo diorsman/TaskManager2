@@ -238,7 +238,7 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
 
         //action bar setup
         setUpActionBar(toolbar);
@@ -250,11 +250,7 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     private void setUpActionBar(Toolbar toolbar) {
-        ActionBarActivity parent = (ActionBarActivity) getActivity();
-        if (parent == null) {
-            return;
-        }
-        parent.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Utilities.enableToolbarTitle(getActivity(), false, TAG);
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.VISIBLE);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
         toolbar.inflateMenu(R.menu.home_screen);
@@ -472,7 +468,7 @@ public abstract class BaseProjectFragment extends Fragment
                     final String[] sColorValues =
                             {"Blue", "Orange", "Yellow", "Green", "Red", "Purple"};
                     user.fetchIfNeeded();
-                    for (int i = 1; i < 300; ++i) {
+                    for (int i = 1; i < 301; ++i) {
                         String projectName = "Project ";
                         projectName += Integer.toString(i);
                         String uid = Integer.toString(i);

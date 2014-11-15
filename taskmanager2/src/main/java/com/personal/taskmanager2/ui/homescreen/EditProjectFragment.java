@@ -7,7 +7,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,11 +25,12 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.parse.ParseException;
-import com.personal.taskmanager2.ui.DatePickerFragment;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.ui.TimePickerFragment;
 import com.personal.taskmanager2.adapters.CategoryAdapter;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.ui.DatePickerFragment;
+import com.personal.taskmanager2.ui.TimePickerFragment;
+import com.personal.taskmanager2.utilities.Utilities;
 
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -140,8 +140,8 @@ public class EditProjectFragment extends android.app.Fragment
     }
 
     private void setUpActionBar() {
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Utilities.enableToolbarTitle(getActivity(), true, TAG);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.getMenu().clear();
         View spinner = toolbar.findViewById(R.id.actionbar_spinner);
         if (spinner != null) {

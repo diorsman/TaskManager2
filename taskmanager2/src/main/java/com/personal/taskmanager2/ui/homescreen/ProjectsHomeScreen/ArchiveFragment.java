@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class ArchiveFragment extends BaseProjectFragment {
 
@@ -26,7 +27,7 @@ public class ArchiveFragment extends BaseProjectFragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
 
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.getMenu().clear();
     }
 }

@@ -243,22 +243,22 @@ public class Project extends ParseObject implements Parcelable {
 
         switch (color) {
             case "Blue":
-                setColorRsrc(android.R.color.holo_blue_dark);
+                setColorRsrc(R.color.project_blue);
                 break;
             case "Orange":
-                setColorRsrc(android.R.color.holo_orange_dark);
+                setColorRsrc(R.color.project_orange);
                 break;
             case "Yellow":
-                setColorRsrc(android.R.color.holo_orange_light);
+                setColorRsrc(R.color.project_yellow);
                 break;
             case "Green":
-                setColorRsrc(android.R.color.holo_green_dark);
+                setColorRsrc(R.color.project_green);
                 break;
             case "Red":
-                setColorRsrc(android.R.color.holo_red_dark);
+                setColorRsrc(R.color.project_red);
                 break;
             case "Purple":
-                setColorRsrc(android.R.color.holo_purple);
+                setColorRsrc(R.color.project_purple);
                 break;
         }
     }

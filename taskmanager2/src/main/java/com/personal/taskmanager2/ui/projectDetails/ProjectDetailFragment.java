@@ -94,7 +94,7 @@ public class ProjectDetailFragment extends Fragment {
     private void setUpActionBar() {
 
         setHasOptionsMenu(true);
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.getMenu().clear();
         toolbar.setTitle(toolbar.getTitle() + " Details");
     }

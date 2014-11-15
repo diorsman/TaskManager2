@@ -20,4 +20,10 @@
     <color name="nav_drawer_item_selected">#40aaaaaa</color>
     <color name="nav_drawer_user_background">#3F51B5</color>
     <color name="accent_activated">#F50057</color>
+    <color name="project_red">#F44336</color>
+    <color name="project_purple">#9C27B0</color>
+    <color name="project_blue">#3F51B5</color>
+    <color name="project_green">#4CAF50</color>
+    <color name="project_yellow">#FFC107</color>
+    <color name="project_orange">#FF9800</color>
 </resources>

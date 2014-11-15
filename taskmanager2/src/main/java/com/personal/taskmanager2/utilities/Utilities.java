@@ -1,10 +1,13 @@
 package com.personal.taskmanager2.utilities;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -84,4 +87,17 @@ public class Utilities {
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eget rutrum orci. Aenean neque justo, tincidunt sed felis nec, mollis aliquet dolor. Etiam at purus ornare, commodo felis a, cursus odio. Fusce venenatis nisi sed nisl consectetur, sed condimentum felis vestibulum. Aliquam bibendum, libero eu congue viverra, nibh velit molestie nibh, ac ullamcorper lectus nisi id sapien. Morbi at malesuada arcu. Nam ac sollicitudin tellus, nec pulvinar metus. Sed tristique sit amet ipsum nec eleifend.\n" +
             "\n" +
             "Curabitur suscipit ac sem vel cursus. Integer nec laoreet nunc. Phasellus congue pharetra est quis lobortis. Morbi id felis dolor. Suspendisse sollicitudin sodales urna, non rutrum dui imperdiet vitae. Mauris sed nisl tortor. Donec ut sem nec sapien facilisis lobortis sed dictum justo. Fusce volutpat, arcu at lobortis tincidunt, mauris eros auctor diam, sed placerat nulla mi ultrices felis. Sed dui erat, volutpat eu malesuada quis, efficitur id massa. Morbi nulla tortor, cursus nec vehicula quis, gravida ac lectus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;";
+
+    public static Toolbar getToolbar(Activity activity) {
+        return (Toolbar) activity.findViewById(R.id.toolbar);
+    }
+
+    public static void enableToolbarTitle(Activity activity, boolean enabled, String TAG) {
+        ActionBarActivity parent = (ActionBarActivity) activity;
+        if (parent == null) {
+            Log.e(TAG, "activity is null");
+            return;
+        }
+        parent.getSupportActionBar().setDisplayShowTitleEnabled(enabled);
+    }
 }
