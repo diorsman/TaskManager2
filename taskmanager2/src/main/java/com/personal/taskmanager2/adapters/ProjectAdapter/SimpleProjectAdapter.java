@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.utilities.CharacterIcon;
+import com.personal.taskmanager2.utilities.CharCircleIcon;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
@@ -25,7 +25,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     private static final String TAG = "SimpleProjectAdapter";
 
-    private static HashMap<IconKey, CharacterIcon> sIconMap = new HashMap<>();
+    private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
 
     Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
@@ -107,13 +107,13 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
         //check if icon already exists
         IconKey key = new IconKey(initLet, colorRsrc);
-        CharacterIcon icon = sIconMap.get(key);
+        CharCircleIcon icon = sIconMap.get(key);
 
         //create new icon if it does not exist
         if (icon == null) {
-            icon = new CharacterIcon(initLet,
-                                     getContext().getResources().getColor(colorRsrc),
-                                     typeface);
+            icon = new CharCircleIcon(initLet,
+                                  getContext().getResources().getColor(colorRsrc),
+                                  typeface);
             sIconMap.put(key, icon);
         }
         colorSlice.setBackgroundDrawable(icon);

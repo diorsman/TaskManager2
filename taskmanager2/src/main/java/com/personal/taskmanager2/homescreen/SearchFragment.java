@@ -1,11 +1,13 @@
 package com.personal.taskmanager2.homescreen;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.parse.ParseException;
@@ -28,7 +29,6 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
-import com.personal.taskmanager2.utilities.SearchViewFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,6 @@ public class SearchFragment extends Fragment
 
         mQuery = getArguments().getString("query");
 
-        setUpActionBar();
         setHasOptionsMenu(true);
         searchForProjects(mQuery);
 
@@ -101,40 +100,30 @@ public class SearchFragment extends Fragment
         return rootView;
     }
 
-    private void setUpActionBar() {
-
-        setHasOptionsMenu(true);
-
-        ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle("Search: " + mQuery);
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
 
-        inflater.inflate(R.menu.search_screen, menu);
-
-        setUpSearchView(menu);
+        setUpActionBar(toolbar);
+        toolbar.inflateMenu(R.menu.search_screen);
+        setUpSearchView(toolbar);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setUpSearchView(Menu menu) {
+    private void setUpActionBar(Toolbar toolbar) {
+        ((ActionBarActivity) getActivity()).getSupportActionBar()
+                                           .setDisplayShowTitleEnabled(true);
+        toolbar.setTitle("Search: " + mQuery);
+        toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
+    }
+
+    private void setUpSearchView(Toolbar toolbar) {
         //search view setup
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-
-        // Format search view
-        SearchViewFormatter formatter = new SearchViewFormatter();
-        formatter.setSearchBackGroundResource(R.drawable.textfield_search_view);
-        formatter.setSearchCloseIconResource(R.drawable.ic_action_cancel);
-        formatter.setSearchTextColorResource(android.R.color.white);
-        formatter.setSearchHintColorResource(android.R.color.white);
-        formatter.setSearchIconResource(R.drawable.ic_action_search, true, false);
-        formatter.format(searchView);
-
+        final MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
+        final android.support.v7.widget.SearchView
+                searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(
+                searchItem);
 
         searchView.setOnQueryTextFocusChangeListener(
                 new View.OnFocusChangeListener() {
@@ -144,19 +133,20 @@ public class SearchFragment extends Fragment
                             boolean hasFocus) {
 
                         if (!hasFocus) {
-                            searchItem.collapseActionView();
+                            MenuItemCompat.collapseActionView(searchItem);
+                            getActivity().invalidateOptionsMenu();
                         }
                     }
                 });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                searchItem.collapseActionView();
+                MenuItemCompat.collapseActionView(searchItem);
                 searchForProjects(query);
-                getActivity().getActionBar().setTitle("Search: " + query);
                 mQuery = query;
+                getActivity().invalidateOptionsMenu();
                 return true;
             }
 

@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +43,6 @@ import com.personal.taskmanager2.homescreen.SearchFragment;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
-import com.personal.taskmanager2.utilities.SearchViewFormatter;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -183,7 +183,6 @@ public abstract class BaseProjectFragment extends Fragment
             mListViewState = savedState.getParcelable("listViewState");
             mListView.setAdapter(null);
             mListView.removeFooterView(mFooterView);
-            Log.d(TAG, "mCurrentPage = " + mCurrentPage);
         }
 
         return rootView;
@@ -239,22 +238,23 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
         //action bar setup
-        setUpActionBar();
+        setUpActionBar(toolbar);
 
         //search view setup
-        //setUpSearchView(menu);
+        setUpSearchView(toolbar);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setUpActionBar() {
+    private void setUpActionBar(Toolbar toolbar) {
         ActionBarActivity parent = (ActionBarActivity) getActivity();
         if (parent == null) {
             return;
         }
         parent.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.VISIBLE);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
         toolbar.inflateMenu(R.menu.home_screen);
@@ -314,20 +314,10 @@ public abstract class BaseProjectFragment extends Fragment
         }
     }
 
-    private void setUpSearchView(Menu menu) {
+    private void setUpSearchView(Toolbar toolbar) {
         //search view setup
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-
-        // Format search view
-        SearchViewFormatter formatter = new SearchViewFormatter();
-        formatter.setSearchBackGroundResource(R.drawable.textfield_search_view);
-        formatter.setSearchCloseIconResource(R.drawable.ic_action_cancel);
-        formatter.setSearchTextColorResource(android.R.color.white);
-        formatter.setSearchHintColorResource(android.R.color.white);
-        formatter.setSearchIconResource(R.drawable.ic_action_search, true, false);
-        formatter.format(searchView);
-
+        final MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         searchView.setOnQueryTextFocusChangeListener(
                 new View.OnFocusChangeListener() {
@@ -337,7 +327,7 @@ public abstract class BaseProjectFragment extends Fragment
                             boolean hasFocus) {
 
                         if (!hasFocus) {
-                            searchItem.collapseActionView();
+                            MenuItemCompat.collapseActionView(searchItem);
                         }
                     }
                 });
@@ -346,7 +336,7 @@ public abstract class BaseProjectFragment extends Fragment
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                searchItem.collapseActionView();
+                MenuItemCompat.collapseActionView(searchItem);
 
                 getFragmentManager().beginTransaction()
                                     .replace(R.id.container,
@@ -371,10 +361,6 @@ public abstract class BaseProjectFragment extends Fragment
 
         switch (item.getItemId()) {
             case R.id.action_search:
-                return true;
-
-            case R.id.action_create:
-                menuSetup();
                 return true;
 
             case R.id.action_refresh:
@@ -562,7 +548,6 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
 
                 case LOADED_MORE_ITEMS:
-                    Log.d(TAG, "LOADED_MORE_ITEMS");
                     projects = (List<Project>) msg.obj;
                     mProjectAdapter.addItems(projects);
                     mProjectAdapter.notifyDataSetChanged();
@@ -570,7 +555,6 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
 
                 case FIRST_LOAD:
-                    Log.d(TAG, "First Load");
                     projects = (List<Project>) msg.obj;
                     mProjectAdapter =
                             ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
@@ -593,14 +577,12 @@ public abstract class BaseProjectFragment extends Fragment
                     break;
 
                 case ALL_PROJECTS_LOADED:
-                    Log.d(TAG, "ALL_PROJECTS_LOADED");
                     mListView.removeFooterView(mFooterView);
                     mIsLoadingMore = false;
                     mAllProjectsLoaded = true;
                     break;
 
                 case NO_PROJECTS_FOUND:
-                    Log.d(TAG, "NO_PROJECTS_FOUND");
                     mListView.setEmptyView(mNoProjects);
                     mListView.removeFooterView(mFooterView);
                     mLoadProjects.setVisibility(View.GONE);
@@ -653,7 +635,6 @@ public abstract class BaseProjectFragment extends Fragment
             }
             projectQuery.addAscendingOrder(Project.DUE_DATE_COL);
 
-            Log.d(TAG, "mCurrentPage = " + mCurrentPage);
             if (mListViewState == null) {
                 // set load limit
                 projectQuery.setLimit(LOAD_LIMIT);

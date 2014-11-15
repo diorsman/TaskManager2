@@ -32,7 +32,7 @@
         android:layout_marginRight="16dp"
         app:floatingColor="@color/theme_accent"
         app:floatingColorPressed="@color/accent_activated"
-        app:floatingIcon="@drawable/ic_action_content_new_white"/>
+        app:floatingIcon="@drawable/ic_action_content_add"/>
 
 </FrameLayout>
 

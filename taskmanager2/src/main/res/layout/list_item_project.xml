@@ -12,8 +12,8 @@
 
     <View
         android:id="@+id/project_list_color_slice"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true" />
 
