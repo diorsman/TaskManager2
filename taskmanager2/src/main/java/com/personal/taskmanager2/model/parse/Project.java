@@ -12,7 +12,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.ui.homescreen.EditProjectFragment;
+import com.personal.taskmanager2.ui.EditProjectFragment;
 import com.personal.taskmanager2.utilities.BCrypt;
 
 import org.json.JSONArray;

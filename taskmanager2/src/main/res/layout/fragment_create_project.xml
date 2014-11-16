@@ -12,7 +12,7 @@
         android:id="@+id/create_project_relative_layout"
         >
 
-        <com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg
+        <EditText
             style="@style/default_edit_text"
             android:id="@+id/project_name"
             android:hint="@string/project_name"
@@ -20,9 +20,9 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin">
             <requestFocus/>
-        </com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg>
+        </EditText>
 
-        <com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg
+        <EditText
             style="@style/default_edit_text"
             android:id="@+id/project_uid"
             android:layout_below="@+id/project_name"
@@ -30,7 +30,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-        <com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg
+        <EditText
             style="@style/password_edit_text"
             android:id="@+id/project_password"
             android:layout_below="@+id/project_uid"
@@ -54,7 +54,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/borderlessButtonStyle"
-                android:text="@string/due_date"/>
+                android:text="@string/due_date"
+                android:textColor="@color/primary_text_default_material_light"/>
 
             <Button
                 android:id="@+id/project_due_time"
@@ -62,7 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/borderlessButtonStyle"
-                android:text="@string/due_time"/>
+                android:text="@string/due_time"
+                android:textColor="@color/primary_text_default_material_light"/>
         </LinearLayout>
 
         <View
@@ -86,7 +88,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/borderlessButtonStyle"
-                android:text="@string/action_cancel"/>
+                android:text="@string/action_cancel"
+                android:textColor="@color/theme_primary"/>
 
             <Button
                 android:id="@+id/create_project"
@@ -94,7 +97,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 style="?android:attr/borderlessButtonStyle"
-                android:text="@string/action_create"/>
+                android:text="@string/action_create"
+                android:textColor="@color/theme_primary"/>
         </LinearLayout>
 
     </RelativeLayout>

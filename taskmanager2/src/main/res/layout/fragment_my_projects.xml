@@ -27,9 +27,10 @@
         android:id="@+id/create_project"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         app:floatingColor="@color/theme_accent"
         app:floatingColorPressed="@color/accent_activated"
         app:floatingIcon="@drawable/ic_action_content_add"/>

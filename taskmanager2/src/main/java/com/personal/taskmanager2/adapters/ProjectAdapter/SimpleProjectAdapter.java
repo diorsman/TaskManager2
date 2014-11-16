@@ -128,7 +128,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
         status.setVisibility(ProgressBar.VISIBLE);
         status.setProgress((int) progress);
         status.getProgressDrawable()
-              .setColorFilter(convertView.getResources().getColor(colorRsrc),
+              .setColorFilter(getContext().getResources().getColor(colorRsrc),
                               PorterDuff.Mode.SRC_IN);
 
         setTitleAppearance(lineOneView,

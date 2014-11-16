@@ -45,10 +45,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:drawablePadding="32dp"
-            android:drawableLeft="@drawable/ic_action_action_view_headline"
+            android:drawableLeft="@drawable/ic_action_view_headline"
             android:text="@string/my_projects_title"
             android:textSize="14sp"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 
@@ -59,10 +59,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:drawablePadding="32dp"
-            android:drawableLeft="@drawable/ic_action_content_archive"
+            android:drawableLeft="@drawable/ic_content_archive"
             android:text="@string/archive_title"
             android:textSize="14sp"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 
@@ -73,10 +73,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:drawablePadding="32dp"
-            android:drawableLeft="@drawable/ic_action_action_delete"
+            android:drawableLeft="@drawable/ic_action_delete"
             android:text="@string/trash_title"
             android:textSize="14sp"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 
@@ -92,10 +92,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:drawablePadding="32dp"
-            android:drawableLeft="@drawable/ic_action_person"
+            android:drawableLeft="@drawable/ic_social_person"
             android:text="@string/account_settings_title"
             android:textSize="14sp"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 
@@ -110,7 +110,7 @@
             android:drawableLeft="@drawable/ic_action_settings"
             android:text="@string/action_settings"
             android:textSize="14sp"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 
@@ -122,10 +122,10 @@
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:drawablePadding="32dp"
-            android:drawableLeft="@drawable/ic_action_action_help"
+            android:drawableLeft="@drawable/ic_action_help"
             android:text="@string/help_title"
             android:textSize="14sp"
-            android:textColor="@android:color/primary_text_light"
+            android:textColor="@color/primary_text_default_material_light"
             android:background="@drawable/nav_drawer_main_item_background"
             />
 

@@ -194,7 +194,7 @@
                 android:layout_below="@id/project_description"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/theme_primary_dark"
                 android:text="VIEW MORE"
                 android:fontFamily="sans-serif"/>
 

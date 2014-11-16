@@ -22,7 +22,7 @@ public class ProjectDetailActivity extends ActionBarActivity {
         Project project = getIntent().getExtras().getParcelable("project");
 
         Toolbar toolbar = Utilities.getToolbar(this);
-        toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator ());
+        toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator());
         toolbar.setBackgroundColor(getResources().getColor(project.getColorRsrc()));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -37,8 +37,13 @@ public class ProjectDetailActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

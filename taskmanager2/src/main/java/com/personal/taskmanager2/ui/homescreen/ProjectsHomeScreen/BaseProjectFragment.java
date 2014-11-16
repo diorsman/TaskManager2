@@ -2,6 +2,7 @@ package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,10 +38,10 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
+import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.CreateProjectFragment;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.JoinProjectFragment;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
-import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.Utilities;
@@ -107,6 +108,37 @@ public abstract class BaseProjectFragment extends Fragment
     private ListViewAnimationHelper<Project> mAnimHelper;
     private static final int ANIM_DURATION = 350;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // allows fragment to receive onCreateOptionsMenu
+        setHasOptionsMenu(true);
+
+        if (savedInstanceState != null && savedState == null) {
+            savedState = savedInstanceState.getBundle("state");
+        }
+
+        if (savedState != null) {
+            mLayoutResourceId = savedState.getInt("resourceId");
+            mCurrentPage = savedState.getInt("currentPage");
+            mNumRemoved = savedState.getInt("numRemoved");
+            mListViewState = savedState.getParcelable("listViewState");
+            mListView.setAdapter(null);
+            setFooterSpinnerVisibility(View.INVISIBLE);
+        }
+
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (getFragmentManager().getBackStackEntryCount() == 0) {
+                    if (mProjectAdapter != null) {
+                        mProjectAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -157,6 +189,7 @@ public abstract class BaseProjectFragment extends Fragment
         mListView.setOnScrollListener(this);
         mListView.setEmptyView(mLoadProjects);
         mListView.setOnItemClickListener(this);
+        mListView.addFooterView(mFooterView);
 
         mProjectAdapter = null;
 
@@ -168,22 +201,6 @@ public abstract class BaseProjectFragment extends Fragment
                                                    android.R.color.holo_red_light);
 
         mContext = getActivity();
-
-        // allows fragment to receive onCreateOptionsMenu
-        setHasOptionsMenu(true);
-
-        if (savedInstanceState != null && savedState == null) {
-            savedState = savedInstanceState.getBundle("state");
-        }
-
-        if (savedState != null) {
-            mLayoutResourceId = savedState.getInt("resourceId");
-            mCurrentPage = savedState.getInt("currentPage");
-            mNumRemoved = savedState.getInt("numRemoved");
-            mListViewState = savedState.getParcelable("listViewState");
-            mListView.setAdapter(null);
-            mListView.removeFooterView(mFooterView);
-        }
 
         return rootView;
     }
@@ -567,18 +584,20 @@ public abstract class BaseProjectFragment extends Fragment
                     if (mListView.getFooterViewsCount() == 0 &&
                         mProjectAdapter.getCount() >= LOAD_LIMIT) {
                         mListView.addFooterView(mFooterView);
+                        setFooterSpinnerVisibility(View.VISIBLE);
                     }
                     break;
 
                 case ALL_PROJECTS_LOADED:
-                    mListView.removeFooterView(mFooterView);
+                    //mListView.removeFooterView(mFooterView);
+                    setFooterSpinnerVisibility(View.INVISIBLE);
                     mIsLoadingMore = false;
                     mAllProjectsLoaded = true;
                     break;
 
                 case NO_PROJECTS_FOUND:
                     mListView.setEmptyView(mNoProjects);
-                    mListView.removeFooterView(mFooterView);
+                    setFooterSpinnerVisibility(View.INVISIBLE);
                     mLoadProjects.setVisibility(View.GONE);
                     break;
             }
@@ -684,5 +703,9 @@ public abstract class BaseProjectFragment extends Fragment
         Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
         intent.putExtra("project", project);
         startActivity(intent);
+    }
+
+    private void setFooterSpinnerVisibility(int visibility) {
+        mFooterView.findViewById(R.id.progress_bar).setVisibility(visibility);
     }
 }

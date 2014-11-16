@@ -12,7 +12,7 @@
                     android:width="45dp" />
 
                 <solid
-                    android:color="#9999cc00"/>
+                    android:color="@color/deep_orange_focused"/>
             </shape>
         </item>
 
@@ -37,7 +37,7 @@
                     android:width="45dp" />
 
                 <solid
-                    android:color="#9999cc00"/>
+                    android:color="@color/deep_orange_focused"/>
             </shape>
         </item>
 
@@ -62,7 +62,7 @@
                     android:width="45dp" />
 
                 <solid
-                    android:color="@android:color/holo_green_light"/>
+                    android:color="@color/deep_orange_primary"/>
             </shape>
         </item>
 

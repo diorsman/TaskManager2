@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.ui.homescreen;
+package com.personal.taskmanager2.ui;
 
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,6 @@ import com.parse.ParseException;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.CategoryAdapter;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.DatePickerFragment;
-import com.personal.taskmanager2.ui.TimePickerFragment;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.text.DateFormat;
@@ -62,7 +61,6 @@ public class EditProjectFragment extends android.app.Fragment
     private Calendar     mCalendar;
 
     public static EditProjectFragment newInstance(Project project) {
-
         Bundle args = new Bundle();
         args.putParcelable("project", project);
 
@@ -73,8 +71,8 @@ public class EditProjectFragment extends android.app.Fragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mProject = getArguments().getParcelable("project");
     }
 
@@ -128,15 +126,12 @@ public class EditProjectFragment extends android.app.Fragment
         mSpinner.setAdapter(adapter);
         mSpinner.setSelection(colorValues.indexOf(mProject.getColor()));
 
-        setHasOptionsMenu(true);
-
         return rootView;
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         setUpActionBar();
-        super.onPrepareOptionsMenu(menu);
     }
 
     private void setUpActionBar() {
@@ -150,12 +145,10 @@ public class EditProjectFragment extends android.app.Fragment
         toolbar.inflateMenu(R.menu.edit_project);
         toolbar.setTitle("Editing Project");
         toolbar.setBackgroundColor(getResources().getColor(mProject.getColorRsrc()));
-        getActivity().invalidateOptionsMenu();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 getFragmentManager().popBackStack();

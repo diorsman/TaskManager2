@@ -3,6 +3,7 @@ package com.personal.taskmanager2.ui.homescreen;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -97,7 +98,7 @@ public class NavigationDrawerFragment extends Fragment
         mName = curUser.getString("Name");
 
         // Keep Track of backstack and set nav drawer icon accordingly
-        getFragmentManager().addOnBackStackChangedListener(new android.app.FragmentManager.OnBackStackChangedListener() {
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
 
@@ -179,6 +180,7 @@ public class NavigationDrawerFragment extends Fragment
 
         if (mActivated != null) {
             mActivated.setActivated(false);
+            mActivated.setTextColor(getResources().getColor(R.color.primary_text_default_material_light));
         }
 
         switch (position) {
@@ -207,7 +209,7 @@ public class NavigationDrawerFragment extends Fragment
                 mActivated = mHelp;
                 break;
         }
-
+        mActivated.setTextColor(getResources().getColor(R.color.theme_primary));
         mCurrentSelectedPosition = position;
 
         if (mDrawerLayout != null) {

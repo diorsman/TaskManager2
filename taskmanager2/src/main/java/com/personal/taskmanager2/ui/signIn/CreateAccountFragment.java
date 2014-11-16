@@ -1,41 +1,49 @@
 package com.personal.taskmanager2.ui.signIn;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.personal.taskmanager2.ui.homescreen.HomeScreenActivity;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
+import com.personal.taskmanager2.ui.homescreen.HomeScreenActivity;
 
 public class CreateAccountFragment extends DialogFragment
         implements View.OnClickListener {
 
-    private EditTextNoErrorMsg mName;
-    private EditTextNoErrorMsg mEmail;
-    private EditTextNoErrorMsg mPassword;
-    private ProgressBar        mProgress;
+    private EditText    mName;
+    private EditText    mEmail;
+    private EditText    mPassword;
+    private ProgressBar mProgress;
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return dialog;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getDialog().setTitle(R.string.create_account);
         View rootView = inflater.inflate(R.layout.fragment_create_account, container);
 
         rootView.findViewById(R.id.createNewAccount).setOnClickListener(this);
 
-        mName = (EditTextNoErrorMsg) rootView.findViewById(R.id.accountCreateName);
-        mEmail = (EditTextNoErrorMsg) rootView.findViewById(R.id.accountCreateEmail);
-        mPassword = (EditTextNoErrorMsg) rootView.findViewById(R.id.accountCreatePassword);
+        mName = (EditText) rootView.findViewById(R.id.accountCreateName);
+        mEmail = (EditText) rootView.findViewById(R.id.accountCreateEmail);
+        mPassword = (EditText) rootView.findViewById(R.id.accountCreatePassword);
         mProgress = (ProgressBar) rootView.findViewById(R.id.accountCreateProgress);
 
         mProgress.setVisibility(View.INVISIBLE);

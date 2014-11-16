@@ -9,8 +9,7 @@
     <string name="create_account">Create Account</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="name">Name</string>
-    <string name="instructions">Please enter your email address below.\n
-        An email will be sent with instructions to\nreset your password</string>
+    <string name="instructions">Please enter your email address below. An email will be sent with instructions to reset your password.</string>
     <string name="submit">Submit</string>
 
     <!-- Activity/Fragment Titles -->
