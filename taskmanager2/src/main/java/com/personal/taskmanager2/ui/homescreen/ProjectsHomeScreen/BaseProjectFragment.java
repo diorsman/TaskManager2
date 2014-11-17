@@ -123,7 +123,7 @@ public abstract class BaseProjectFragment extends Fragment
             mNumRemoved = savedState.getInt("numRemoved");
             mListViewState = savedState.getParcelable("listViewState");
             mListView.setAdapter(null);
-            setFooterSpinnerVisibility(View.INVISIBLE);
+            setFooterSpinnerVisibility(View.VISIBLE);
         }
 
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -190,6 +190,7 @@ public abstract class BaseProjectFragment extends Fragment
         mListView.setEmptyView(mLoadProjects);
         mListView.setOnItemClickListener(this);
         mListView.addFooterView(mFooterView);
+        setFooterSpinnerVisibility(View.VISIBLE);
 
         mProjectAdapter = null;
 
@@ -392,36 +393,11 @@ public abstract class BaseProjectFragment extends Fragment
         }
     }
 
-    private void menuSetup() {
-
-        View view = getActivity().findViewById(R.id.action_search);
-        PopupMenu menu = new PopupMenu(getActivity(), view);
-        menu.inflate(R.menu.add_projects);
-        menu.show();
-        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                switch (item.getItemId()) {
-                    case R.id.action_create:
-                        CreateProjectFragment.newInstance().show(getFragmentManager(),
-                                                                 "CreateProjectFragment");
-                        return true;
-                    case R.id.action_join:
-                        JoinProjectFragment.newInstance().show(getFragmentManager(),
-                                                               "JoinProjectFragment");
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
-    }
-
     private void refresh() {
 
         mIsLoadingMore = false;
         mAllProjectsLoaded = false;
+        setFooterSpinnerVisibility(View.VISIBLE);
         queryProjects();
     }
 

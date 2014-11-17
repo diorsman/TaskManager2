@@ -1,7 +1,6 @@
 package com.personal.taskmanager2.ui.signIn;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.ui.BaseDialogFragment;
 
-public class ForgotPasswordFragment extends DialogFragment {
+public class ForgotPasswordFragment extends BaseDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

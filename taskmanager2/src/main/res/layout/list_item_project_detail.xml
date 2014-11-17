@@ -61,11 +61,20 @@
         android:ellipsize="end"
         android:fontFamily="sans-serif"/>
 
+    <ImageButton
+        android:id="@+id/expand_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:src="@drawable/ic_hardware_keyboard_arrow_down"
+        android:layout_below="@id/project_detail_description"
+        android:layout_centerHorizontal="true"/>
+
     <TextView
         android:id="@+id/project_detail_status"
         android:textSize="15sp"
         android:textColor="@color/secondary_text_default_material_light"
-        android:layout_below="@id/project_detail_description"
+        android:layout_below="@id/expand_description"
         android:layout_alignLeft="@id/project_detail_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

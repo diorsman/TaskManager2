@@ -4,21 +4,35 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/view_switcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/create_project_relative_layout"
-        >
+        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/dialog_padding">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dialog_padding"
+            android:layout_marginRight="@dimen/dialog_padding"
+            android:text="@string/create_project_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_text_default_material_light"/>
 
         <EditText
             style="@style/default_edit_text"
             android:id="@+id/project_name"
             android:hint="@string/project_name"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_vertical_margin">
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="@dimen/dialog_padding"
+            android:layout_marginRight="@dimen/dialog_padding"
+            android:layout_below="@id/title">
+
             <requestFocus/>
         </EditText>
 
@@ -27,16 +41,16 @@
             android:id="@+id/project_uid"
             android:layout_below="@+id/project_name"
             android:hint="@string/project_uid"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+            android:layout_marginLeft="@dimen/dialog_padding"
+            android:layout_marginRight="@dimen/dialog_padding"/>
 
         <EditText
             style="@style/password_edit_text"
             android:id="@+id/project_password"
             android:layout_below="@+id/project_uid"
             android:hint="@string/password"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"/>
+            android:layout_marginLeft="@dimen/dialog_padding"
+            android:layout_marginRight="@dimen/dialog_padding"/>
 
         <LinearLayout
             android:id="@+id/linearLayout1"
@@ -44,9 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/project_password"
             android:orientation="horizontal"
-            style="?android:attr/buttonBarStyle"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin">
+            android:layout_marginLeft="@dimen/dialog_padding"
+            android:layout_marginRight="@dimen/dialog_padding">
 
             <Button
                 android:id="@+id/project_due_date"
@@ -67,39 +80,53 @@
                 android:textColor="@color/primary_text_default_material_light"/>
         </LinearLayout>
 
-        <View
-            android:id="@+id/divider"
-            style="@style/horizontal_divider"
+        <Space
+            android:id="@+id/space"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+        <Button
+            android:id="@+id/create_project"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignEnd="@id/space"
+            android:layout_alignRight="@id/space"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_below="@id/linearLayout1"
-            android:paddingLeft="-16dp"
-            android:paddingRight="-16dp"/>
+            android:minWidth="64dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/action_create"
+            android:textColor="@color/theme_primary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            style="?android:attr/buttonBarStyle">
 
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="?android:attr/borderlessButtonStyle"
-                android:text="@string/action_cancel"
-                android:textColor="@color/theme_primary"/>
-
-            <Button
-                android:id="@+id/create_project"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="?android:attr/borderlessButtonStyle"
-                android:text="@string/action_create"
-                android:textColor="@color/theme_primary"/>
-        </LinearLayout>
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_below="@id/linearLayout1"
+            android:layout_toLeftOf="@id/create_project"
+            android:layout_toStartOf="@id/create_project"
+            android:minWidth="64dp"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/action_cancel"
+            android:textColor="@color/theme_primary"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:textAllCaps="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
 
     </RelativeLayout>
 

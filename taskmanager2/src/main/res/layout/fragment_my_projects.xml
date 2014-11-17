@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
 
     <RelativeLayout
@@ -33,7 +34,33 @@
         android:layout_marginEnd="16dp"
         app:floatingColor="@color/theme_accent"
         app:floatingColorPressed="@color/accent_activated"
-        app:floatingIcon="@drawable/ic_action_content_add"/>
+        app:floatingIcon="@drawable/ic_content_add"/>
+
+    <com.personal.taskmanager2.ui.widget.FloatingActionButton
+        android:id="@+id/add_new_project"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="88dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:floatingColor="@color/teal_primary"
+        app:floatingColorPressed="@color/teal_focused"
+        app:floatingIcon="@drawable/ic_content_create"
+        android:visibility="invisible"/>
+
+    <com.personal.taskmanager2.ui.widget.FloatingActionButton
+        android:id="@+id/join_project"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="160dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:floatingColor="@color/cyan_primary"
+        app:floatingColorPressed="@color/cyan_focused"
+        app:floatingIcon="@drawable/ic_social_person_add"
+        android:visibility="invisible"/>
 
 </FrameLayout>
 

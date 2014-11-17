@@ -1,6 +1,5 @@
 package com.personal.taskmanager2.ui.homescreen.AddProjects;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -17,9 +17,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.ui.BaseDialogFragment;
+import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
 import com.personal.taskmanager2.utilities.BCrypt;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
-import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import org.json.JSONArray;
@@ -28,7 +29,7 @@ import org.json.JSONException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class JoinProjectFragment extends DialogFragment
+public class JoinProjectFragment extends BaseDialogFragment
         implements View.OnClickListener {
 
     private static final String TAG = "JoinProjectFragment";
@@ -40,8 +41,8 @@ public class JoinProjectFragment extends DialogFragment
     private static final int ALREADY_JOINED_PROJECT = 4;
 
     private ViewSwitcher       mViewSwitcher;
-    private EditTextNoErrorMsg mUidView;
-    private EditTextNoErrorMsg mPasswordView;
+    private EditText           mUidView;
+    private EditText mPasswordView;
 
 
     public static JoinProjectFragment newInstance() {
@@ -54,12 +55,11 @@ public class JoinProjectFragment extends DialogFragment
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getDialog().setTitle(R.string.join_project_title);
         View rootView = inflater.inflate(R.layout.fragment_join_project, container, false);
 
         mViewSwitcher = (ViewSwitcher) rootView.findViewById(R.id.view_switcher);
-        mUidView = (EditTextNoErrorMsg) rootView.findViewById(R.id.joinProjectUID);
-        mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.joinProjectPassword);
+        mUidView = (EditText) rootView.findViewById(R.id.joinProjectUID);
+        mPasswordView = (EditText) rootView.findViewById(R.id.joinProjectPassword);
         Button join = (Button) rootView.findViewById(R.id.join_project);
         Button cancel = (Button) rootView.findViewById(R.id.cancel);
 

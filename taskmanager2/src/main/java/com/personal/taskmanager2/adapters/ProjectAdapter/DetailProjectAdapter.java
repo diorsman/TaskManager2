@@ -36,6 +36,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         TextView    lineThreeView;
         TextView    lineFourView;
         ImageButton overFlowButton;
+        ImageButton viewMoreButton;
     }
 
     @Override
@@ -44,9 +45,10 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         View colorSlice;
         TextView lineOneView;
         TextView lineTwoView;
-        TextView lineThreeView;
+        final TextView lineThreeView;
         TextView lineFourView;
         ImageButton overFlowButton;
+        final ImageButton viewMoreButton;
 
         if (convertView == null) {
             LayoutInflater inflater =
@@ -59,6 +61,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
             lineThreeView = (TextView) convertView.findViewById(R.id.project_detail_description);
             lineFourView = (TextView) convertView.findViewById(R.id.project_detail_status);
             overFlowButton = (ImageButton) convertView.findViewById(R.id.project_detail_overflow);
+            viewMoreButton = (ImageButton) convertView.findViewById(R.id.expand_description);
 
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.colorSlice = colorSlice;
@@ -67,6 +70,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
             viewHolder.lineThreeView = lineThreeView;
             viewHolder.lineFourView = lineFourView;
             viewHolder.overFlowButton = overFlowButton;
+            viewHolder.viewMoreButton = viewMoreButton;
             convertView.setTag(viewHolder);
         }
         else {
@@ -77,6 +81,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
             lineThreeView = viewHolder.lineThreeView;
             lineFourView = viewHolder.lineFourView;
             overFlowButton = viewHolder.overFlowButton;
+            viewMoreButton = viewHolder.viewMoreButton;
         }
 
         Project project = getItem(position);
@@ -105,10 +110,19 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
                            R.style.completed_detail,
                            R.style.not_completed_detail);
 
-        /*if (!project.getStatus()) {
-            lineOneView.setTextColor(getContext().getResources()
-                                                 .getColor(project.getColorRsrc()));
-        }*/
+        viewMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lineThreeView.getMaxLines() == 3) {
+                    lineThreeView.setMaxLines(Integer.MAX_VALUE);
+                    viewMoreButton.setImageResource(R.drawable.ic_hardware_keyboard_arrow_up);
+                }
+                else {
+                    lineThreeView.setMaxLines(3);
+                    viewMoreButton.setImageResource(R.drawable.ic_hardware_keyboard_arrow_down);
+                }
+            }
+        });
 
         return convertView;
     }

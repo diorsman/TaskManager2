@@ -1,13 +1,10 @@
 package com.personal.taskmanager2.ui.signIn;
 
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -16,22 +13,16 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.ui.BaseDialogFragment;
 import com.personal.taskmanager2.ui.homescreen.HomeScreenActivity;
 
-public class CreateAccountFragment extends DialogFragment
+public class CreateAccountFragment extends BaseDialogFragment
         implements View.OnClickListener {
 
     private EditText    mName;
     private EditText    mEmail;
     private EditText    mPassword;
     private ProgressBar mProgress;
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return dialog;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

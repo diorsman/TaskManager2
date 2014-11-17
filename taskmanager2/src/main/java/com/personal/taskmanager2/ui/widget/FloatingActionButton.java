@@ -22,15 +22,15 @@ public class FloatingActionButton extends View {
 
     private static final String TAG = "FloatingActionButton";
 
-    private Paint  mButtonPaint;
-    private Paint  mDrawablePaint;
-    private int    mColor;
-    private int    mColorPressed;
-    private float  mRadius;
-    private float  mDx;
-    private float  mDy;
-    private int    mShadowColor;
-    private Bitmap mBitmap;
+    private Paint           mButtonPaint;
+    private Paint           mDrawablePaint;
+    private int             mColor;
+    private int             mColorPressed;
+    private float           mRadius;
+    private float           mDx;
+    private float           mDy;
+    private int             mShadowColor;
+    private Bitmap          mBitmap;
 
     public FloatingActionButton(Context context) {
         this(context, null);
@@ -55,7 +55,8 @@ public class FloatingActionButton extends View {
                 mBitmap = ((BitmapDrawable) d).getBitmap();
             }
             mColor = a.getColor(R.styleable.FloatingActionButton_floatingColor, Color.WHITE);
-            mColorPressed = a.getColor(R.styleable.FloatingActionButton_floatingColorPressed, Color.GRAY);
+            mColorPressed =
+                    a.getColor(R.styleable.FloatingActionButton_floatingColorPressed, Color.GRAY);
             mRadius = a.getFloat(R.styleable.FloatingActionButton_floatingShadowRadius, 10.0f);
             mDx = a.getFloat(R.styleable.FloatingActionButton_floatingShadowDx, 0.0f);
             mDy = a.getFloat(R.styleable.FloatingActionButton_floatingShadowDy, 3.5f);
@@ -88,7 +89,7 @@ public class FloatingActionButton extends View {
         return mColor;
     }
 
-    public void setColorPressed (int color) {
+    public void setColorPressed(int color) {
         mColorPressed = color;
         invalidate();
     }
@@ -138,6 +139,4 @@ public class FloatingActionButton extends View {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
-
-
 }

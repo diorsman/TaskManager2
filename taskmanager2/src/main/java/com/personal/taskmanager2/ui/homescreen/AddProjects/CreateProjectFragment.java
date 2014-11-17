@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -19,12 +20,13 @@ import android.widget.ViewSwitcher;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.personal.taskmanager2.ui.DatePickerFragment;
 import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.ui.TimePickerFragment;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.utilities.EmptyEditTextException;
+import com.personal.taskmanager2.ui.BaseDialogFragment;
+import com.personal.taskmanager2.ui.DatePickerFragment;
+import com.personal.taskmanager2.ui.TimePickerFragment;
 import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
+import com.personal.taskmanager2.utilities.EmptyEditTextException;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.text.DateFormat;
@@ -34,7 +36,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 
-public class CreateProjectFragment extends DialogFragment
+public class CreateProjectFragment extends BaseDialogFragment
         implements View.OnClickListener,
                    DatePickerDialog.OnDateSetListener,
                    TimePickerDialog.OnTimeSetListener {
@@ -46,13 +48,13 @@ public class CreateProjectFragment extends DialogFragment
     private static final int CREATE_PROJECT     = 2;
     private static final int EXCEPTION_OCCURRED = 3;
 
-    private EditTextNoErrorMsg mNameView;
-    private EditTextNoErrorMsg mUidView;
-    private EditTextNoErrorMsg mPasswordView;
-    private Calendar           mCalendar;
-    private Button             mTimeButton;
-    private Button             mDateButton;
-    private ViewSwitcher       mViewSwitcher;
+    private EditText     mNameView;
+    private EditText     mUidView;
+    private EditText     mPasswordView;
+    private Calendar     mCalendar;
+    private Button       mTimeButton;
+    private Button       mDateButton;
+    private ViewSwitcher mViewSwitcher;
 
     public static CreateProjectFragment newInstance() {
 
@@ -64,13 +66,11 @@ public class CreateProjectFragment extends DialogFragment
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-
-        getDialog().setTitle(R.string.create_project_title);
         View rootView = inflater.inflate(R.layout.fragment_create_project, container, false);
 
-        mNameView = (EditTextNoErrorMsg) rootView.findViewById(R.id.project_name);
-        mUidView = (EditTextNoErrorMsg) rootView.findViewById(R.id.project_uid);
-        mPasswordView = (EditTextNoErrorMsg) rootView.findViewById(R.id.project_password);
+        mNameView = (EditText) rootView.findViewById(R.id.project_name);
+        mUidView = (EditText) rootView.findViewById(R.id.project_uid);
+        mPasswordView = (EditText) rootView.findViewById(R.id.project_password);
         mDateButton = (Button) rootView.findViewById(R.id.project_due_date);
         mTimeButton = (Button) rootView.findViewById(R.id.project_due_time);
         Button submitButton = (Button) rootView.findViewById(R.id.create_project);

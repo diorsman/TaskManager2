@@ -16,11 +16,11 @@ public class CharCircleIcon extends ShapeDrawable {
     private char  mCharacter;
     private Paint mTextPaint;
 
-    public CharCircleIcon(char charater, int color, Typeface typeface) {
+    public CharCircleIcon(char character, int color, Typeface typeface) {
         super(new OvalShape());
         this.getPaint().setColor(color);
 
-        mCharacter = charater;
+        mCharacter = character;
         mTextPaint = new Paint();
 
         //text paint settings
