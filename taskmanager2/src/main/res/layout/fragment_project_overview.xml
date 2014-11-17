@@ -152,14 +152,16 @@
                 android:layout_below="@id/divider1"
                 android:layout_marginBottom="5dp"
                 android:text="Overview"
-                android:fontFamily="sans-serif-light"/>
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/primary_text_default_material_light"/>
 
             <TextView
                 android:id="@+id/project_overview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/project_completion_overview_label"
-                android:fontFamily="sans-serif"/>
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primary_text_default_material_light"/>
 
 
             <View
@@ -167,7 +169,8 @@
                 style="@style/horizontal_divider"
                 android:layout_below="@id/project_overview"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                />
 
             <TextView
                 android:id="@+id/description_label"
@@ -176,7 +179,8 @@
                 android:text="@string/project_description"
                 android:layout_below="@id/divider2"
                 android:layout_marginBottom="5dp"
-                android:fontFamily="sans-serif-light"/>
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/primary_text_default_material_light"/>
 
             <TextView
                 android:id="@+id/project_description"
@@ -185,7 +189,8 @@
                 android:layout_below="@id/description_label"
                 android:maxLines="3"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif"/>
+                android:fontFamily="sans-serif"
+                android:textColor="@color/primary_text_default_material_light"/>
 
             <TextView
                 android:id="@+id/view_more"
@@ -213,7 +218,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/divider3"
             android:text="Tasks"
-            android:fontFamily="sans-serif-light"/>
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/primary_text_default_material_light"/>
 
     </RelativeLayout>
 
