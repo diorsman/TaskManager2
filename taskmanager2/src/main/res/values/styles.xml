@@ -10,11 +10,15 @@
     </style>
 
     <style name="Theme" parent="ThemeBase">
-        <item name="android:buttonStyle">@style/Widget.Button</item>
+        <item name="android:buttonStyle">@style/button_style</item>
         <item name="android:imageButtonStyle">@style/Widget.ImageButton</item>
     </style>
 
-    <style name="Widget.Button" parent="android:Widget.Holo.Light.Button">
+    <style name="toolbar_spinner_item_style">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="button_style" parent="android:Widget.Holo.Light.Button">
         <item name="android:background">@drawable/default_button_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
@@ -61,7 +65,7 @@
     </style>
 
     <!-- Submission Button -->
-    <style name="submit_button" parent="Widget.Button">
+    <style name="submit_button" parent="button_style">
 
 
         <item name="android:layout_marginTop">5dp</item>
@@ -86,7 +90,7 @@
 
 
     <!-- Create Project -->
-    <style name="create_project_button" parent="Widget.Button">
+    <style name="create_project_button" parent="button_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">5dp</item>
@@ -155,7 +159,7 @@
         <item name="android:paddingBottom">15dp</item>
     </style>
 
-    <style name="edit_project_buttons" parent="Widget.Button">
+    <style name="edit_project_buttons" parent="button_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>

@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
@@ -181,6 +182,10 @@ public class NavigationDrawerFragment extends Fragment
         if (mActivated != null) {
             mActivated.setActivated(false);
             mActivated.setTextColor(getResources().getColor(R.color.primary_text_default_material_light));
+            int[] attrs = new int[]{R.attr.selectableItemBackground};
+            TypedArray ta = getActivity().getTheme().obtainStyledAttributes(attrs);
+            mActivated.setBackground(ta.getDrawable(0));
+            ta.recycle();
         }
 
         switch (position) {
@@ -210,6 +215,7 @@ public class NavigationDrawerFragment extends Fragment
                 break;
         }
         mActivated.setTextColor(getResources().getColor(R.color.theme_primary));
+        mActivated.setBackgroundColor(getResources().getColor(R.color.nav_drawer_item_selected));
         mCurrentSelectedPosition = position;
 
         if (mDrawerLayout != null) {

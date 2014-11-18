@@ -21,7 +21,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     private FloatingActionButton mAddProjectButton;
     private FloatingActionButton mJoinProjectButton;
 
-    private boolean mOpenAdd  = false;
+    private boolean mOpenAdd = false;
 
     public static BaseProjectFragment newInstance() {
 
@@ -29,6 +29,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         args.putInt("resourceId", R.layout.fragment_my_projects);
         args.putBoolean("archive", false);
         args.putBoolean("trash", false);
+        args.putString("title", "My Projects");
 
         BaseProjectFragment frag = new MyProjectsFragment();
         frag.setArguments(args);
@@ -68,7 +69,6 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                 break;
         }
     }
-
 
 
     private void createProjectsButtonClick() {

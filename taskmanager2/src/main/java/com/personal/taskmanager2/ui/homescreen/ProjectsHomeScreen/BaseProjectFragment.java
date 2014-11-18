@@ -26,7 +26,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +38,6 @@ import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.homescreen.AddProjects.CreateProjectFragment;
-import com.personal.taskmanager2.ui.homescreen.AddProjects.JoinProjectFragment;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
@@ -69,6 +66,8 @@ public abstract class BaseProjectFragment extends Fragment
     private static final int SORT_BY_COLOR       = 3;
 
     private static final int LOAD_LIMIT = 25;
+
+    private String mToolbarTitle;
 
     private SwipeRefreshLayout mRefreshLayoutList;
     private TextView           mLoadProjects;
@@ -149,6 +148,7 @@ public abstract class BaseProjectFragment extends Fragment
         mLayoutResourceId = args.getInt("resourceId");
         mArchive = args.getBoolean("archive");
         mTrash = args.getBoolean("trash");
+        mToolbarTitle = args.getString("title");
 
         mAnimHelper = new ListViewAnimationHelper<>(android.R.anim.slide_out_right,
                                                     ANIM_DURATION,
@@ -280,8 +280,8 @@ public abstract class BaseProjectFragment extends Fragment
         ActionBarActivity parent = (ActionBarActivity) getActivity();
         ArrayAdapter<String> actionBarSpinner =
                 new ActionBarSpinner(parent.getSupportActionBar().getThemedContext(),
-                                     getResources().getStringArray(R.array.action_bar_spinner_items));
-        actionBarSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                     getResources().getStringArray(R.array.action_bar_spinner_items),
+                                     mToolbarTitle);
         spinner.setAdapter(actionBarSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -383,7 +383,6 @@ public abstract class BaseProjectFragment extends Fragment
                 openSortDialog();
                 return true;
 
-            /* Remember to Remove */
             case R.id.action_create_more_projects:
                 createProjects();
                 return true;
@@ -399,43 +398,6 @@ public abstract class BaseProjectFragment extends Fragment
         mAllProjectsLoaded = false;
         setFooterSpinnerVisibility(View.VISIBLE);
         queryProjects();
-    }
-
-    private void openSortDialog() {
-
-        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
-        dialog.setTitle("Sort By");
-        dialog.setSingleChoiceItems(R.array.sort_by_array,
-                                    mSortBy,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(
-                                                DialogInterface dialogInterface,
-                                                int which) {
-
-                                            switch (which) {
-                                                case SORT_BY_DUE_DATE:
-                                                    mSortBy = SORT_BY_DUE_DATE;
-                                                    break;
-                                                case SORT_BY_NAME:
-                                                    mSortBy = SORT_BY_NAME;
-                                                    break;
-                                                case SORT_BY_DESCRIPTION:
-                                                    mSortBy =
-                                                            SORT_BY_DESCRIPTION;
-                                                    break;
-                                                case SORT_BY_COLOR:
-                                                    mSortBy = SORT_BY_COLOR;
-                                                    break;
-                                            }
-
-                                            dialogInterface.dismiss();
-                                            mCurrentPage = 0;
-                                            refresh();
-                                        }
-                                    }
-                                   );
-        dialog.show();
     }
 
     private void createProjects() {
@@ -480,6 +442,43 @@ public abstract class BaseProjectFragment extends Fragment
         };
         Thread thread = new Thread(runnable);
         thread.start();
+    }
+
+    private void openSortDialog() {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+        dialog.setTitle("Sort By");
+        dialog.setSingleChoiceItems(R.array.sort_by_array,
+                                    mSortBy,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(
+                                                DialogInterface dialogInterface,
+                                                int which) {
+
+                                            switch (which) {
+                                                case SORT_BY_DUE_DATE:
+                                                    mSortBy = SORT_BY_DUE_DATE;
+                                                    break;
+                                                case SORT_BY_NAME:
+                                                    mSortBy = SORT_BY_NAME;
+                                                    break;
+                                                case SORT_BY_DESCRIPTION:
+                                                    mSortBy =
+                                                            SORT_BY_DESCRIPTION;
+                                                    break;
+                                                case SORT_BY_COLOR:
+                                                    mSortBy = SORT_BY_COLOR;
+                                                    break;
+                                            }
+
+                                            dialogInterface.dismiss();
+                                            mCurrentPage = 0;
+                                            refresh();
+                                        }
+                                    }
+                                   );
+        dialog.show();
     }
 
     @Override

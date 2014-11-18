@@ -25,7 +25,6 @@ import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.BaseDialogFragment;
 import com.personal.taskmanager2.ui.DatePickerFragment;
 import com.personal.taskmanager2.ui.TimePickerFragment;
-import com.personal.taskmanager2.ui.widget.EditTextNoErrorMsg;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
 import com.personal.taskmanager2.utilities.Utilities;
 
@@ -153,7 +152,7 @@ public class CreateProjectFragment extends BaseDialogFragment
                 switch (msg.what) {
 
                     case BLANK_EDIT_TEXT:
-                        EditTextNoErrorMsg view = (EditTextNoErrorMsg) msg.obj;
+                        EditText view = (EditText) msg.obj;
                         mViewSwitcher.setDisplayedChild(0);
                         view.setError("");
                         break;
