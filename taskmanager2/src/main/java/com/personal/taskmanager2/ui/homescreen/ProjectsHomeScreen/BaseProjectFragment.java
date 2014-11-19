@@ -282,6 +282,7 @@ public abstract class BaseProjectFragment extends Fragment
                 new ActionBarSpinner(parent.getSupportActionBar().getThemedContext(),
                                      getResources().getStringArray(R.array.action_bar_spinner_items),
                                      mToolbarTitle);
+        actionBarSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(actionBarSpinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
