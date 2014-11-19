@@ -1,12 +1,12 @@
 package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.CreateProjectFragment;
@@ -72,51 +72,93 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
 
     private void createProjectsButtonClick() {
-        Animation openAnim, closeAnim;
-        openAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_left_to_right);
-        closeAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_right_to_left);
+
 
         if (!mOpenAdd) {
-
-            openAnim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mAddProjectButton.setVisibility(View.VISIBLE);
-                    mJoinProjectButton.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mCreateButton.setIcon(getResources().getDrawable(R.drawable.ic_navigation_close));
-                    mOpenAdd = true;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-            mCreateButton.startAnimation(openAnim);
+            rotateClockwise();
         }
         else {
-            closeAnim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mAddProjectButton.setVisibility(View.INVISIBLE);
-                    mJoinProjectButton.setVisibility(View.INVISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mCreateButton.setIcon(getResources().getDrawable(R.drawable.ic_action_content_add));
-                    mOpenAdd = false;
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            mCreateButton.startAnimation(closeAnim);
+            rotateCounterClockwise();
         }
+    }
+
+    private void rotateClockwise() {
+        mCreateButton.animate()
+                     .setDuration(250)
+                     .rotation(90)
+                     .setListener(new AnimatorListenerAdapter() {
+                         @Override
+                         public void onAnimationStart(Animator animation) {
+                             fadeInViews();
+                         }
+
+                         @Override
+                         public void onAnimationEnd(Animator animation) {
+                             mCreateButton.setIcon(getResources().getDrawable(R.drawable.ic_navigation_close));
+                             mOpenAdd = true;
+                         }
+                     });
+    }
+
+    private void rotateCounterClockwise() {
+        mCreateButton.animate()
+                     .setDuration(250)
+                     .rotation(-90)
+                     .setListener(new AnimatorListenerAdapter() {
+                         @Override
+                         public void onAnimationStart(Animator animation) {
+                             fadeOutViews();
+                         }
+
+                         @Override
+                         public void onAnimationEnd(Animator animation) {
+                             mCreateButton.setIcon(getResources().getDrawable(R.drawable.ic_navigation_add));
+                             mOpenAdd = false;
+                         }
+                     });
+    }
+
+    private void fadeInViews() {
+        mAddProjectButton.animate()
+                         .setDuration(250)
+                         .alpha(1f)
+                         .setListener(new AnimatorListenerAdapter() {
+                             @Override
+                             public void onAnimationEnd(Animator animation) {
+                                 mAddProjectButton.setVisibility(View.VISIBLE);
+                             }
+                         });
+
+        mJoinProjectButton.animate()
+                          .setDuration(250)
+                          .alpha(1f)
+                          .setListener(new AnimatorListenerAdapter() {
+                              @Override
+                              public void onAnimationEnd(Animator animation) {
+                                  mJoinProjectButton.setVisibility(View.VISIBLE);
+                              }
+                          });
+    }
+
+    private void fadeOutViews() {
+        mAddProjectButton.animate()
+                         .setDuration(250)
+                         .alpha(0f)
+                         .setListener(new AnimatorListenerAdapter() {
+                             @Override
+                             public void onAnimationEnd(Animator animation) {
+                                 mAddProjectButton.setVisibility(View.GONE);
+                             }
+                         });
+
+        mJoinProjectButton.animate()
+                          .setDuration(250)
+                          .alpha(0f)
+                          .setListener(new AnimatorListenerAdapter() {
+                              @Override
+                              public void onAnimationEnd(Animator animation) {
+                                  mJoinProjectButton.setVisibility(View.GONE);
+                              }
+                          });
     }
 }

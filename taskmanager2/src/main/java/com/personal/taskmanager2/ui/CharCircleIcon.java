@@ -9,7 +9,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.Shape;
 
 /**
- * Created by Omid on 11/14/14.
+ * Created by Omid Ghomeshi on 11/14/14.
  */
 public class CharCircleIcon extends ShapeDrawable {
 
