@@ -24,7 +24,7 @@
     </RelativeLayout>
 
     <com.personal.taskmanager2.ui.widget.FloatingActionButton
-        android:id="@+id/create_project"
+        android:id="@+id/create_project_fab"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="bottom|end"
@@ -36,7 +36,7 @@
         app:floatingIcon="@drawable/ic_navigation_add"/>
 
     <com.personal.taskmanager2.ui.widget.FloatingActionButton
-        android:id="@+id/add_new_project"
+        android:id="@+id/add_project_fab"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="bottom|end"
@@ -49,7 +49,7 @@
         android:visibility="invisible"/>
 
     <com.personal.taskmanager2.ui.widget.FloatingActionButton
-        android:id="@+id/join_project"
+        android:id="@+id/join_project_fab"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="bottom|end"

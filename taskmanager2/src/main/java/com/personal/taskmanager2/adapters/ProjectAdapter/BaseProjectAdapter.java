@@ -20,9 +20,9 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
     private static final String TAG = "BaseProjectAdapter";
 
-    private final Activity          mContext;
-    private       List<Project>     mProjectList;
-    private ListViewAnimationHelper<Project> mAnimHelper;
+    private final Activity                         mContext;
+    private       List<Project>                    mProjectList;
+    private       ListViewAnimationHelper<Project> mAnimHelper;
 
     public BaseProjectAdapter(Activity context,
                               List<Project> projectList,
@@ -31,7 +31,6 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
         mContext = context;
         mProjectList = projectList;
         mAnimHelper = animationHelper;
-        mAnimHelper.setDataSource(mProjectList);
     }
 
     public void addItems(List<Project> items) {
@@ -39,9 +38,19 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
         mProjectList.addAll(items);
     }
 
+    public void remove(int pos) {
+
+        mProjectList.remove(pos);
+    }
+
     public void remove(Project project) {
 
         mProjectList.remove(project);
+    }
+
+    public int getPosition(Project project) {
+
+        return mProjectList.indexOf(project);
     }
 
     public Context getContext() {
@@ -138,25 +147,25 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
                 case R.id.action_archive:
                     if (mProject.safeArchive(true, mContext)) {
-                        mAnimHelper.showAnimation(mProject);
+                        mAnimHelper.showRemoveAnimation(mProject);
                     }
                     return true;
 
                 case R.id.remove_from_archive:
                     if (mProject.safeArchive(false, mContext)) {
-                        mAnimHelper.showAnimation(mProject);
+                        mAnimHelper.showRemoveAnimation(mProject);
                     }
                     return true;
 
                 case R.id.remove_from_trash:
                     if (mProject.safeTrash(false, mContext)) {
-                        mAnimHelper.showAnimation(mProject);
+                        mAnimHelper.showRemoveAnimation(mProject);
                     }
                     return true;
 
                 case R.id.delete:
                     if (mProject.safeTrash(true, mContext)) {
-                        mAnimHelper.showAnimation(mProject);
+                        mAnimHelper.showRemoveAnimation(mProject);
                     }
                 default:
                     return false;

@@ -15,11 +15,11 @@ public class ProjectDetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Project project = getIntent().getExtras().getParcelable("project");
+        setTheme(Utilities.getThemeFromProjectColor(project.getColorRsrc()));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_detail);
-
-        Project project = getIntent().getExtras().getParcelable("project");
 
         Toolbar toolbar = Utilities.getToolbar(this);
         toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator());
@@ -34,6 +34,7 @@ public class ProjectDetailActivity extends ActionBarActivity {
                                 .commit();
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

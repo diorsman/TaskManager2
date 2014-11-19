@@ -1,5 +1,7 @@
 package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -105,7 +107,6 @@ public abstract class BaseProjectFragment extends Fragment
     private Runnable        mQueryRunnable;
 
     private ListViewAnimationHelper<Project> mAnimHelper;
-    private static final int ANIM_DURATION = 350;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,7 @@ public abstract class BaseProjectFragment extends Fragment
             mNumRemoved = savedState.getInt("numRemoved");
             mListViewState = savedState.getParcelable("listViewState");
             mListView.setAdapter(null);
-            setFooterSpinnerVisibility(View.VISIBLE);
+            setFooterProgressVisibility(View.VISIBLE);
         }
 
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -150,23 +151,13 @@ public abstract class BaseProjectFragment extends Fragment
         mTrash = args.getBoolean("trash");
         mToolbarTitle = args.getString("title");
 
-        mAnimHelper = new ListViewAnimationHelper<>(android.R.anim.slide_out_right,
-                                                    ANIM_DURATION,
-                                                    getActivity(),
-                                                    new ListViewAnimationHelper.ListViewAnimationListener() {
-                                                        @Override
-                                                        public void onAnimationStart() {
-                                                        }
-
-                                                        @Override
-                                                        public void onAnimationEnd() {
-                                                            mNumRemoved++;
-                                                        }
-
-                                                        @Override
-                                                        public void onAnimationRepeat() {
-                                                        }
-                                                    });
+        mAnimHelper = new ListViewAnimationHelper<>(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProjectAdapter.notifyDataSetChanged();
+                mNumRemoved++;
+            }
+        });
 
         mQueryRunnable = new Runnable() {
             @Override
@@ -190,7 +181,7 @@ public abstract class BaseProjectFragment extends Fragment
         mListView.setEmptyView(mLoadProjects);
         mListView.setOnItemClickListener(this);
         mListView.addFooterView(mFooterView);
-        setFooterSpinnerVisibility(View.VISIBLE);
+        setFooterProgressVisibility(View.INVISIBLE);
 
         mProjectAdapter = null;
 
@@ -233,9 +224,6 @@ public abstract class BaseProjectFragment extends Fragment
     public void onDestroyView() {
 
         super.onDestroyView();
-        //mQueriedList = false;
-        //mQueriedDetail = false;
-        //savedState = saveState();
         mExecutor.shutdownNow();
         mExecutor.shutdown();
     }
@@ -397,7 +385,7 @@ public abstract class BaseProjectFragment extends Fragment
 
         mIsLoadingMore = false;
         mAllProjectsLoaded = false;
-        setFooterSpinnerVisibility(View.VISIBLE);
+        setFooterProgressVisibility(View.VISIBLE);
         queryProjects();
     }
 
@@ -548,32 +536,33 @@ public abstract class BaseProjectFragment extends Fragment
                                                                        getActivity(),
                                                                        projects,
                                                                        mAnimHelper);
+                    mAnimHelper.setAdapter(mProjectAdapter);
                     mListView.setAdapter(mProjectAdapter);
                     mAnimHelper.setListView(mListView);
-                    mAnimHelper.setAdapter(mProjectAdapter);
 
                     if (mListViewState != null) {
                         mListView.onRestoreInstanceState(mListViewState);
                         mListViewState = null;
                     }
 
-                    if (mListView.getFooterViewsCount() == 0 &&
-                        mProjectAdapter.getCount() >= LOAD_LIMIT) {
+                    if (mListView.getFooterViewsCount() == 0) {
                         mListView.addFooterView(mFooterView);
-                        setFooterSpinnerVisibility(View.VISIBLE);
+                    }
+
+                    if (mProjectAdapter.getCount() >= LOAD_LIMIT) {
+                        setFooterProgressVisibility(View.VISIBLE);
                     }
                     break;
 
                 case ALL_PROJECTS_LOADED:
-                    //mListView.removeFooterView(mFooterView);
-                    setFooterSpinnerVisibility(View.INVISIBLE);
+                    setFooterProgressVisibility(View.INVISIBLE);
                     mIsLoadingMore = false;
                     mAllProjectsLoaded = true;
                     break;
 
                 case NO_PROJECTS_FOUND:
                     mListView.setEmptyView(mNoProjects);
-                    setFooterSpinnerVisibility(View.INVISIBLE);
+                    setFooterProgressVisibility(View.INVISIBLE);
                     mLoadProjects.setVisibility(View.GONE);
                     break;
             }
@@ -681,7 +670,7 @@ public abstract class BaseProjectFragment extends Fragment
         startActivity(intent);
     }
 
-    private void setFooterSpinnerVisibility(int visibility) {
+    private void setFooterProgressVisibility(int visibility) {
         mFooterView.findViewById(R.id.progress_bar).setVisibility(visibility);
     }
 }

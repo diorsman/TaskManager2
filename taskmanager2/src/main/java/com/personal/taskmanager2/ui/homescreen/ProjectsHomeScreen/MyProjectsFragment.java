@@ -43,9 +43,9 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                              Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
 
-        mCreateButton = (FloatingActionButton) rootView.findViewById(R.id.create_project);
-        mAddProjectButton = (FloatingActionButton) rootView.findViewById(R.id.add_new_project);
-        mJoinProjectButton = (FloatingActionButton) rootView.findViewById(R.id.join_project);
+        mCreateButton = (FloatingActionButton) rootView.findViewById(R.id.create_project_fab);
+        mAddProjectButton = (FloatingActionButton) rootView.findViewById(R.id.add_project_fab);
+        mJoinProjectButton = (FloatingActionButton) rootView.findViewById(R.id.join_project_fab);
         mCreateButton.setOnClickListener(this);
         mAddProjectButton.setOnClickListener(this);
         mJoinProjectButton.setOnClickListener(this);
@@ -56,14 +56,14 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.create_project:
+            case R.id.create_project_fab:
                 createProjectsButtonClick();
                 break;
-            case R.id.add_new_project:
+            case R.id.add_project_fab:
                 createProjectsButtonClick();
                 CreateProjectFragment.newInstance().show(getFragmentManager(), null);
                 break;
-            case R.id.join_project:
+            case R.id.join_project_fab:
                 createProjectsButtonClick();
                 JoinProjectFragment.newInstance().show(getFragmentManager(), null);
                 break;
@@ -141,16 +141,6 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     }
 
     private void fadeOutViews() {
-        mAddProjectButton.animate()
-                         .setDuration(250)
-                         .alpha(0f)
-                         .setListener(new AnimatorListenerAdapter() {
-                             @Override
-                             public void onAnimationEnd(Animator animation) {
-                                 mAddProjectButton.setVisibility(View.GONE);
-                             }
-                         });
-
         mJoinProjectButton.animate()
                           .setDuration(250)
                           .alpha(0f)
@@ -160,5 +150,15 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                                   mJoinProjectButton.setVisibility(View.GONE);
                               }
                           });
+
+        mAddProjectButton.animate()
+                         .setDuration(250)
+                         .alpha(0f)
+                         .setListener(new AnimatorListenerAdapter() {
+                             @Override
+                             public void onAnimationEnd(Animator animation) {
+                                 mAddProjectButton.setVisibility(View.GONE);
+                             }
+                         });
     }
 }

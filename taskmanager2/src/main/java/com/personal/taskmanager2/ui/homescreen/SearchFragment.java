@@ -1,5 +1,6 @@
 package com.personal.taskmanager2.ui.homescreen;
 
+import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -78,25 +79,8 @@ public class SearchFragment extends Fragment
         searchForProjects(mQuery);
 
         mAnimHelper =
-                new ListViewAnimationHelper<>(android.R.anim.slide_out_right,
-                                              350,
-                                              getActivity(),
-                                              new ListViewAnimationHelper.ListViewAnimationListener() {
-                                                  @Override
-                                                  public void onAnimationStart() {
-
-                                                  }
-
-                                                  @Override
-                                                  public void onAnimationEnd() {
-
-                                                  }
-
-                                                  @Override
-                                                  public void onAnimationRepeat() {
-
-                                                  }
-                                              });
+                new ListViewAnimationHelper<>(new AnimatorListenerAdapter() {
+                });
 
         return rootView;
     }
@@ -175,7 +159,6 @@ public class SearchFragment extends Fragment
                 mListView.setEmptyView(mNoResults);
                 mLoading.setVisibility(View.GONE);
                 mAnimHelper.setListView(mListView);
-                mAnimHelper.setAdapter(mProjectAdapter);
             }
         };
 

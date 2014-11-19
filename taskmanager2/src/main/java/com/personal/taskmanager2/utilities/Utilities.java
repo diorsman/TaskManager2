@@ -100,4 +100,23 @@ public class Utilities {
         }
         parent.getSupportActionBar().setDisplayShowTitleEnabled(enabled);
     }
+
+    public static int getThemeFromProjectColor(int color) {
+        switch (color) {
+            case R.color.project_blue:
+                return R.style.theme_blue;
+            case R.color.project_red:
+                return R.style.theme_red;
+            case R.color.project_green:
+                return R.style.theme_green;
+            case R.color.project_orange:
+                return R.style.theme_orange;
+            case R.color.project_purple:
+                return R.style.theme_purple;
+            case R.color.project_yellow:
+                return R.style.theme_yellow;
+            default:
+                throw new IllegalArgumentException("Illegal Project Color");
+        }
+    }
 }
