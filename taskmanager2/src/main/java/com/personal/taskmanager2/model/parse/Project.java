@@ -36,7 +36,6 @@ public class Project extends ParseObject implements Parcelable {
     public static final String COMPLETE_TASKS_COL = "CompletedTasks";
     public static final String STATUS_COL         = "Status";
     public static final String COLOR_COL          = "Color";
-    public static final String COLOR_RSRC_COL     = "ColorRsrc";
     public static final String ARCHIVED_COL       = "Archived";
     public static final String TRASH_COL          = "Trash";
 
@@ -240,37 +239,6 @@ public class Project extends ParseObject implements Parcelable {
     public void setColor(String color) {
 
         put(COLOR_COL, color);
-
-        switch (color) {
-            case "Blue":
-                setColorRsrc(R.color.project_blue);
-                break;
-            case "Orange":
-                setColorRsrc(R.color.project_orange);
-                break;
-            case "Yellow":
-                setColorRsrc(R.color.project_yellow);
-                break;
-            case "Green":
-                setColorRsrc(R.color.project_green);
-                break;
-            case "Red":
-                setColorRsrc(R.color.project_red);
-                break;
-            case "Purple":
-                setColorRsrc(R.color.project_purple);
-                break;
-        }
-    }
-
-    public int getColorRsrc() {
-
-        return getInt(COLOR_RSRC_COL);
-    }
-
-    private void setColorRsrc(int colorRsrc) {
-
-        put(COLOR_RSRC_COL, colorRsrc);
     }
 
     public boolean getArchive() {

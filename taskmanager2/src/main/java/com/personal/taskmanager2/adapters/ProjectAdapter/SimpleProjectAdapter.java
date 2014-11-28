@@ -17,6 +17,7 @@ import com.personal.taskmanager2.ui.CharCircleIcon;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
+import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +104,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
 
 
         char initLet = project.getAdminName().charAt(0);
-        int colorRsrc = project.getColorRsrc();
+        int colorRsrc = Utilities.getColorRsrcFromColor(project.getColor());
 
         //check if icon already exists
         IconKey key = new IconKey(initLet, colorRsrc);
@@ -112,8 +113,8 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
         //create new icon if it does not exist
         if (icon == null) {
             icon = new CharCircleIcon(initLet,
-                                  getContext().getResources().getColor(colorRsrc),
-                                  typeface);
+                                      getContext().getResources().getColor(colorRsrc),
+                                      typeface);
             sIconMap.put(key, icon);
         }
         colorSlice.setBackground(icon);

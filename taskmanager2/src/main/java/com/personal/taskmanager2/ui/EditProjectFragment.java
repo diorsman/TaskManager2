@@ -144,7 +144,7 @@ public class EditProjectFragment extends android.app.Fragment
         }
         toolbar.inflateMenu(R.menu.edit_project);
         toolbar.setTitle("Editing Project");
-        toolbar.setBackgroundColor(getResources().getColor(mProject.getColorRsrc()));
+        toolbar.setBackgroundColor(getResources().getColor(Utilities.getColorRsrcFromColor(mProject.getColor())));
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
+import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         completedTasks += numTasks + " of " + totalTasks + " tasks";
 
         // Set color and title
-        colorSlice.setBackgroundResource(project.getColorRsrc());
+        colorSlice.setBackgroundResource(Utilities.getColorRsrcFromColor(project.getColor()));
 
         lineOneView.setText(project.getName());
 

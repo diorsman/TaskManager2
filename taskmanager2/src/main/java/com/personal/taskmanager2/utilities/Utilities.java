@@ -116,7 +116,26 @@ public class Utilities {
             case R.color.project_yellow:
                 return R.style.theme_yellow;
             default:
-                throw new IllegalArgumentException("Illegal Project Color");
+                throw new IllegalArgumentException("Invalid Project Color");
+        }
+    }
+
+    public static int getColorRsrcFromColor(String color) {
+        switch (color) {
+            case "Blue":
+                return R.color.project_blue;
+            case "Red":
+                return R.color.project_red;
+            case "Orange":
+                return R.color.project_orange;
+            case "Yellow":
+                return R.color.project_yellow;
+            case "Purple":
+                return R.color.project_purple;
+            case "Green":
+                return R.color.project_green;
+            default:
+                throw new IllegalArgumentException("Invalid Project Color");
         }
     }
 }

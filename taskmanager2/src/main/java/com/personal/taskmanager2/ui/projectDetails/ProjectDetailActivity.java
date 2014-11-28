@@ -16,14 +16,15 @@ public class ProjectDetailActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Project project = getIntent().getExtras().getParcelable("project");
-        setTheme(Utilities.getThemeFromProjectColor(project.getColorRsrc()));
+        int colorRsrc = Utilities.getColorRsrcFromColor(project.getColor());
+        setTheme(Utilities.getThemeFromProjectColor(colorRsrc));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_detail);
 
         Toolbar toolbar = Utilities.getToolbar(this);
         toolbar.setNavigationIcon(getV7DrawerToggleDelegate().getThemeUpIndicator());
-        toolbar.setBackgroundColor(getResources().getColor(project.getColorRsrc()));
+        toolbar.setBackgroundColor(getResources().getColor(colorRsrc));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
