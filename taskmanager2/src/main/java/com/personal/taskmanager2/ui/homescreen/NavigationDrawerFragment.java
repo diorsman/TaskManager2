@@ -415,4 +415,12 @@ public class NavigationDrawerFragment extends Fragment
          */
         void onNavigationDrawerItemSelected(int position);
     }
+
+    public boolean isDrawerOpen() {
+        return mDrawerLayout.isDrawerOpen(mDrawerView);
+    }
+
+    public void closeDrawer(){
+        mDrawerLayout.closeDrawer(mDrawerView);
+    }
 }

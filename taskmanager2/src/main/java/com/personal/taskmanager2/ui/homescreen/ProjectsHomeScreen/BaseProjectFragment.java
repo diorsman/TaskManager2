@@ -110,8 +110,6 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // allows fragment to receive onCreateOptionsMenu
-        setHasOptionsMenu(true);
 
         if (savedInstanceState != null && savedState == null) {
             savedState = savedInstanceState.getBundle("state");
@@ -194,6 +192,8 @@ public abstract class BaseProjectFragment extends Fragment
 
         mContext = getActivity();
 
+        setHasOptionsMenu(true);
+
         return rootView;
     }
 
@@ -208,8 +208,6 @@ public abstract class BaseProjectFragment extends Fragment
     public void onPause() {
 
         super.onPause();
-        mExecutor.shutdownNow();
-        mExecutor.shutdown();
     }
 
 
@@ -300,7 +298,6 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     private void navItemSelected(int position, boolean hasQueried) {
-
         mSelectedPosition = position;
         if (!hasQueried) {
             if (mListView.getAdapter() != null && !mListView.getAdapter().isEmpty()) {
@@ -340,10 +337,8 @@ public abstract class BaseProjectFragment extends Fragment
                 MenuItemCompat.collapseActionView(searchItem);
 
                 getFragmentManager().beginTransaction()
-                                    .replace(R.id.container,
-                                             SearchFragment.newInstance(query))
-                                    .addToBackStack(
-                                            TAG)
+                                    .addToBackStack(null)
+                                    .add(R.id.container, SearchFragment.newInstance(query))
                                     .commit();
                 return true;
             }
@@ -571,17 +566,15 @@ public abstract class BaseProjectFragment extends Fragment
 
 
     private void queryProjects() {
-
         if (!mIsLoadingMore) {
             mRefreshLayoutList.setRefreshing(true);
         }
-        if (!mExecutor.isShutdown()) {
+        if (!mExecutor.isShutdown() || !mExecutor.isTerminated()) {
             mExecutor.execute(mQueryRunnable);
         }
     }
 
     private void queryProjectsInBackground(Handler handler) {
-
         try {
             ParseQuery<Project> projectAdmin = ParseQuery.getQuery(Project.class);
             projectAdmin.whereEqualTo(Project.ADMIN_COL, ParseUser.getCurrentUser());

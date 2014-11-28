@@ -98,6 +98,7 @@ public class SearchFragment extends Fragment
 
     private void setUpActionBar(Toolbar toolbar) {
         Utilities.enableToolbarTitle(getActivity(), true, TAG);
+        toolbar.getMenu().clear();
         toolbar.setTitle("Search: " + mQuery);
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
     }

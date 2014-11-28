@@ -4,6 +4,7 @@ package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     private FloatingActionButton mCreateButton;
     private FloatingActionButton mAddProjectButton;
     private FloatingActionButton mJoinProjectButton;
+
+    private Handler mHandler = new Handler();
 
     private boolean mOpenAdd = false;
 
@@ -85,7 +88,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     private void rotateClockwise() {
         mCreateButton.animate()
                      .setDuration(250)
-                     .rotation(90)
+                     .rotation(45)
                      .setListener(new AnimatorListenerAdapter() {
                          @Override
                          public void onAnimationStart(Animator animation) {
@@ -94,7 +97,6 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
                          @Override
                          public void onAnimationEnd(Animator animation) {
-                             mCreateButton.setIcon(getResources().getDrawable(R.drawable.ic_navigation_close));
                              mOpenAdd = true;
                          }
                      });
@@ -103,7 +105,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     private void rotateCounterClockwise() {
         mCreateButton.animate()
                      .setDuration(250)
-                     .rotation(-90)
+                     .rotation(0)
                      .setListener(new AnimatorListenerAdapter() {
                          @Override
                          public void onAnimationStart(Animator animation) {
@@ -112,7 +114,6 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
                          @Override
                          public void onAnimationEnd(Animator animation) {
-                             mCreateButton.setIcon(getResources().getDrawable(R.drawable.ic_navigation_add));
                              mOpenAdd = false;
                          }
                      });
@@ -120,45 +121,64 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
     private void fadeInViews() {
         mAddProjectButton.animate()
-                         .setDuration(250)
-                         .alpha(1f)
+                         .setDuration(125)
+                         .scaleX(1)
+                         .scaleY(1)
                          .setListener(new AnimatorListenerAdapter() {
                              @Override
-                             public void onAnimationEnd(Animator animation) {
+                             public void onAnimationStart(Animator animation) {
                                  mAddProjectButton.setVisibility(View.VISIBLE);
                              }
                          });
 
-        mJoinProjectButton.animate()
-                          .setDuration(250)
-                          .alpha(1f)
-                          .setListener(new AnimatorListenerAdapter() {
-                              @Override
-                              public void onAnimationEnd(Animator animation) {
-                                  mJoinProjectButton.setVisibility(View.VISIBLE);
-                              }
-                          });
+        mHandler.postDelayed(mJoinProjectFadeIn, 125 / 2);
     }
+
+    Runnable mJoinProjectFadeIn = new Runnable() {
+        @Override
+        public void run() {
+            mJoinProjectButton.animate()
+                              .setDuration(125)
+                              .scaleX(1)
+                              .scaleY(1)
+                              .setListener(new AnimatorListenerAdapter() {
+                                  @Override
+                                  public void onAnimationStart(Animator animation) {
+                                      mJoinProjectButton.setVisibility(View.VISIBLE);
+                                  }
+                              });
+        }
+    };
+
 
     private void fadeOutViews() {
         mJoinProjectButton.animate()
-                          .setDuration(250)
-                          .alpha(0f)
+                          .setDuration(125)
+                          .scaleX(0)
+                          .scaleY(0)
                           .setListener(new AnimatorListenerAdapter() {
                               @Override
                               public void onAnimationEnd(Animator animation) {
-                                  mJoinProjectButton.setVisibility(View.GONE);
+                                  mJoinProjectButton.setVisibility(View.INVISIBLE);
                               }
                           });
 
-        mAddProjectButton.animate()
-                         .setDuration(250)
-                         .alpha(0f)
-                         .setListener(new AnimatorListenerAdapter() {
-                             @Override
-                             public void onAnimationEnd(Animator animation) {
-                                 mAddProjectButton.setVisibility(View.GONE);
-                             }
-                         });
+        mHandler.postDelayed(mAddProjectFadeOut, 125 / 2);
     }
+
+    Runnable mAddProjectFadeOut = new Runnable() {
+        @Override
+        public void run() {
+            mAddProjectButton.animate()
+                             .setDuration(125)
+                             .scaleX(0)
+                             .scaleY(0)
+                             .setListener(new AnimatorListenerAdapter() {
+                                 @Override
+                                 public void onAnimationEnd(Animator animation) {
+                                     mAddProjectButton.setVisibility(View.INVISIBLE);
+                                 }
+                             });
+        }
+    };
 }

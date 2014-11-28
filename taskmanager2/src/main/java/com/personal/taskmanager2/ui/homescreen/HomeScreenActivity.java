@@ -100,7 +100,11 @@ public class HomeScreenActivity extends ActionBarActivity
     @Override
     public void onBackPressed() {
 
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
+        if (mNavigationDrawerFragment.isDrawerOpen()) {
+            mNavigationDrawerFragment.closeDrawer();
+        }
+
+        else if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         }
         else {
@@ -114,7 +118,7 @@ public class HomeScreenActivity extends ActionBarActivity
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
         finish();
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        //overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     private void logOut() {

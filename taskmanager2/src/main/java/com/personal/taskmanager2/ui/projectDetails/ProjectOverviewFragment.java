@@ -132,6 +132,10 @@ public class ProjectOverviewFragment extends Fragment
             case R.id.content_overview:
                 getFragmentManager().beginTransaction()
                                     .addToBackStack(TAG)
+                                    .setCustomAnimations(R.animator.fragment_scale_in,
+                                                         R.animator.fragment_scale_out,
+                                                         R.animator.fragment_scale_in,
+                                                         R.animator.fragment_scale_out)
                                     .replace(R.id.container,
                                              ProjectDetailFragment.newInstance(mProject))
                                     .commit();

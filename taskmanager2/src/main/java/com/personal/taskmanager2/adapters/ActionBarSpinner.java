@@ -1,6 +1,7 @@
 package com.personal.taskmanager2.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,5 +38,13 @@ public class ActionBarSpinner extends ArrayAdapter<String> {
         subtitle.setText(getItem(position));
         title.setText(mTitle);
         return convertView;
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        View view = super.getDropDownView(position, convertView, parent);
+        TextView textVew = (TextView) view.findViewById(android.R.id.text1);
+        textVew.setTextColor(Color.BLACK);
+        return view;
     }
 }
