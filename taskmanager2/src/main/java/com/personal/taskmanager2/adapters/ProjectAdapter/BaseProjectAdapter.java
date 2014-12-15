@@ -3,6 +3,7 @@ package com.personal.taskmanager2.adapters.ProjectAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -12,8 +13,12 @@ import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.ui.CharCircleIcon;
+import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
+import com.personal.taskmanager2.utilities.Utilities;
 
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnClickListener {
@@ -23,6 +28,8 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
     private final Activity                         mContext;
     private       List<Project>                    mProjectList;
     private       ListViewAnimationHelper<Project> mAnimHelper;
+    private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
+    Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
     public BaseProjectAdapter(Activity context,
                               List<Project> projectList,
@@ -192,6 +199,24 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
 
         button.setOnClickListener(this);
         button.setTag(project);
+    }
+
+    protected void initAvatar(View avatar, Project project) {
+        char initLet = project.getAdminName().charAt(0);
+        int colorRsrc = Utilities.getColorRsrcFromColor(project.getColor());
+
+        //check if icon already exists
+        IconKey key = new IconKey(initLet, colorRsrc);
+        CharCircleIcon icon = sIconMap.get(key);
+
+        //create new icon if it does not exist
+        if (icon == null) {
+            icon = new CharCircleIcon(initLet,
+                                      getContext().getResources().getColor(colorRsrc),
+                                      typeface);
+            sIconMap.put(key, icon);
+        }
+        avatar.setBackground(icon);
     }
 
 }

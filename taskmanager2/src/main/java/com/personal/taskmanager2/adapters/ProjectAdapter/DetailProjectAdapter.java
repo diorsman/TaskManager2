@@ -12,7 +12,6 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.DateParser;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
-import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.List;
 
@@ -37,7 +36,6 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         TextView    lineThreeView;
         TextView    lineFourView;
         ImageButton overFlowButton;
-        ImageButton viewMoreButton;
     }
 
     @Override
@@ -45,24 +43,22 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
 
         View colorSlice;
         TextView lineOneView;
-        TextView lineTwoView;
+        final TextView lineTwoView;
         final TextView lineThreeView;
         TextView lineFourView;
         ImageButton overFlowButton;
-        final ImageButton viewMoreButton;
 
         if (convertView == null) {
             LayoutInflater inflater =
                     (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_item_project_detail, parent, false);
 
-            colorSlice = convertView.findViewById(R.id.project_detail_color);
+            colorSlice = convertView.findViewById(R.id.project_list_color_slice);
             lineOneView = (TextView) convertView.findViewById(R.id.project_detail_name);
             lineTwoView = (TextView) convertView.findViewById(R.id.project_detail_due_date);
             lineThreeView = (TextView) convertView.findViewById(R.id.project_detail_description);
             lineFourView = (TextView) convertView.findViewById(R.id.project_detail_status);
             overFlowButton = (ImageButton) convertView.findViewById(R.id.project_detail_overflow);
-            viewMoreButton = (ImageButton) convertView.findViewById(R.id.expand_description);
 
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.colorSlice = colorSlice;
@@ -71,7 +67,6 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
             viewHolder.lineThreeView = lineThreeView;
             viewHolder.lineFourView = lineFourView;
             viewHolder.overFlowButton = overFlowButton;
-            viewHolder.viewMoreButton = viewMoreButton;
             convertView.setTag(viewHolder);
         }
         else {
@@ -82,7 +77,6 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
             lineThreeView = viewHolder.lineThreeView;
             lineFourView = viewHolder.lineFourView;
             overFlowButton = viewHolder.overFlowButton;
-            viewMoreButton = viewHolder.viewMoreButton;
         }
 
         Project project = getItem(position);
@@ -94,11 +88,9 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         int totalTasks = project.getNumTotalTask();
         completedTasks += numTasks + " of " + totalTasks + " tasks";
 
-        // Set color and title
-        colorSlice.setBackgroundResource(Utilities.getColorRsrcFromColor(project.getColor()));
+        initAvatar(colorSlice, project);
 
         lineOneView.setText(project.getName());
-
 
         //set due date
         dateParser.parse(project.getDueDate(), lineTwoView);
@@ -110,20 +102,6 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
                            project,
                            R.style.completed_detail,
                            R.style.not_completed_detail);
-
-        viewMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lineThreeView.getMaxLines() == 3) {
-                    lineThreeView.setMaxLines(Integer.MAX_VALUE);
-                    viewMoreButton.setImageResource(R.drawable.ic_hardware_keyboard_arrow_up);
-                }
-                else {
-                    lineThreeView.setMaxLines(3);
-                    viewMoreButton.setImageResource(R.drawable.ic_hardware_keyboard_arrow_down);
-                }
-            }
-        });
 
         return convertView;
     }

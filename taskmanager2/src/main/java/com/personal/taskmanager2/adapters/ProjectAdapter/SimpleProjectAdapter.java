@@ -3,7 +3,6 @@ package com.personal.taskmanager2.adapters.ProjectAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,22 +12,15 @@ import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.CharCircleIcon;
 import com.personal.taskmanager2.utilities.DateParser;
-import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.Utilities;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class SimpleProjectAdapter extends BaseProjectAdapter {
 
     private static final String TAG = "SimpleProjectAdapter";
-
-    private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
-
-    Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
     private DateParser dateParser = new DateParser(DateParser.DEFAULT);
 
@@ -102,22 +94,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
             progress *= 100;
         }
 
-
-        char initLet = project.getAdminName().charAt(0);
-        int colorRsrc = Utilities.getColorRsrcFromColor(project.getColor());
-
-        //check if icon already exists
-        IconKey key = new IconKey(initLet, colorRsrc);
-        CharCircleIcon icon = sIconMap.get(key);
-
-        //create new icon if it does not exist
-        if (icon == null) {
-            icon = new CharCircleIcon(initLet,
-                                      getContext().getResources().getColor(colorRsrc),
-                                      typeface);
-            sIconMap.put(key, icon);
-        }
-        colorSlice.setBackground(icon);
+        initAvatar(colorSlice, project);
 
         // set name
         lineOneView.setText(project.getName());
@@ -129,7 +106,8 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
         status.setVisibility(ProgressBar.VISIBLE);
         status.setProgress((int) progress);
         status.getProgressDrawable()
-              .setColorFilter(getContext().getResources().getColor(colorRsrc),
+              .setColorFilter(getContext().getResources()
+                                          .getColor(Utilities.getColorRsrcFromColor(project.getColor())),
                               PorterDuff.Mode.SRC_IN);
 
         setTitleAppearance(lineOneView,

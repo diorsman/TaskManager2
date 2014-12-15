@@ -45,7 +45,7 @@ android {
     buildTypes {
         release {
             debuggable false
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             resValue "string", "parse_application_id", parse_application_id
             resValue "string", "parse_client_key", parse_client_key
@@ -53,7 +53,7 @@ android {
         }
         debug {
             debuggable true
-            runProguard false
+            minifyEnabled false
             resValue "string", "parse_application_id", parse_application_id
             resValue "string", "parse_client_key", parse_client_key
         }
@@ -66,4 +66,5 @@ dependencies {
     compile files('libs/Parse-1.7.1/bolts-android-1.1.3.jar')
     compile 'com.android.support:support-v4:21.0.+'
     compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:cardview-v7:21.0.+'
 }
