@@ -1,183 +1,115 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.view.MenuItem;
+import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.PopupMenu;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.CharCircleIcon;
 import com.personal.taskmanager2.utilities.IconKey;
-import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnClickListener {
+/**
+ * Created by Omid Ghomeshi on 12/18/14.
+ */
+public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<E> {
+
+    public interface OnItemClickListener {
+
+        public void onAvatarClick(int position);
+
+        public void onItemClick(View v);
+
+        public void onItemLongClick(View v);
+    }
 
     private static final String TAG = "BaseProjectAdapter";
 
-    private final Activity                         mContext;
-    private       List<Project>                    mProjectList;
-    private       ListViewAnimationHelper<Project> mAnimHelper;
+    private Context            mContext;
+    private List<Project>      mProjectList;
+    private SparseBooleanArray mSelectedItems;
+
     private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
     Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
 
-    public BaseProjectAdapter(Activity context,
+    protected OnItemClickListener mClickListener;
+
+    public BaseProjectAdapter(Context context,
                               List<Project> projectList,
-                              ListViewAnimationHelper<Project> animationHelper) {
-
-        mContext = context;
+                              OnItemClickListener listener) {
         mProjectList = projectList;
-        mAnimHelper = animationHelper;
-    }
-
-    public void addItems(List<Project> items) {
-
-        mProjectList.addAll(items);
-    }
-
-    public void remove(int pos) {
-
-        mProjectList.remove(pos);
-    }
-
-    public void remove(Project project) {
-
-        mProjectList.remove(project);
-    }
-
-    public int getPosition(Project project) {
-
-        return mProjectList.indexOf(project);
-    }
-
-    public Context getContext() {
-
-        return mContext;
+        mContext = context;
+        mSelectedItems = new SparseBooleanArray();
+        mClickListener = listener;
     }
 
     @Override
-    public int getCount() {
-
+    public int getItemCount() {
         return mProjectList.size();
     }
 
-    @Override
     public Project getItem(int position) {
-
         return mProjectList.get(position);
     }
 
-    @Override
-    public long getItemId(int position) {
-
-        return position;
+    protected Context getContext() {
+        return mContext;
     }
 
-    @Override
-    public void onClick(View v) {
-
-        Project project = (Project) v.getTag();
-        switch (v.getId()) {
-            case R.id.project_list_overflow:
-            case R.id.project_detail_overflow:
-                startPopUpMenu(project, v);
-                break;
-        }
+    public void selectItem(int position) {
+        mSelectedItems.put(position, true);
+        notifyItemChanged(position);
     }
 
-    private void startPopUpMenu(Project project, View view) {
-
-        PopupMenu overflowMenu = new PopupMenu(mContext, view);
-
-        // inflate appropriate menu depending on status
-        if (project.getArchive()) {
-            overflowMenu.inflate(R.menu.archive_overflow);
-        }
-        else if (project.getTrash()) {
-            overflowMenu.inflate(R.menu.trash_overflow);
-        }
-        else {
-            if (project.getStatus()) {
-                overflowMenu.inflate(R.menu.project_overflow_not_complete);
-            }
-            else {
-                overflowMenu.inflate(R.menu.project_overflow_complete);
-            }
-        }
-
-        overflowMenu.show();
-        overflowMenu.setOnMenuItemClickListener(new ProjectMenuItemClick(project));
+    public void unselectedItem(int position) {
+        mSelectedItems.delete(position);
+        notifyItemChanged(position);
     }
 
-    private class ProjectMenuItemClick implements PopupMenu.OnMenuItemClickListener {
+    public boolean isItemSelected(int position) {
+        return mSelectedItems.get(position);
+    }
 
-        private Project mProject;
+    public int getNumSelected() {
+        return mSelectedItems.size();
+    }
 
-        public ProjectMenuItemClick(Project project) {
+    public void clearSelection() {
+        mSelectedItems.clear();
+        notifyDataSetChanged();
+    }
 
-            mProject = project;
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-
-            switch (menuItem.getItemId()) {
-                case R.id.action_edit_project:
-                    mProject.safeEdit(mContext.getFragmentManager(), mContext);
-                    return true;
-
-                case R.id.action_share_project:
-                    mProject.share(mContext);
-                    return true;
-
-                case R.id.action_mark_complete:
-                    if (mProject.safeChangeStatus(true, mContext)) {
-                        notifyDataSetChanged();
-                    }
-                    return true;
-
-                case R.id.action_mark_not_complete:
-                    if (mProject.safeChangeStatus(false, mContext)) {
-                        notifyDataSetChanged();
-                    }
-                    return true;
-
-                case R.id.action_archive:
-                    if (mProject.safeArchive(true, mContext)) {
-                        mAnimHelper.showRemoveAnimation(mProject);
-                    }
-                    return true;
-
-                case R.id.remove_from_archive:
-                    if (mProject.safeArchive(false, mContext)) {
-                        mAnimHelper.showRemoveAnimation(mProject);
-                    }
-                    return true;
-
-                case R.id.remove_from_trash:
-                    if (mProject.safeTrash(false, mContext)) {
-                        mAnimHelper.showRemoveAnimation(mProject);
-                    }
-                    return true;
-
-                case R.id.delete:
-                    if (mProject.safeTrash(true, mContext)) {
-                        mAnimHelper.showRemoveAnimation(mProject);
-                    }
-                default:
-                    return false;
+    protected View initView(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_project,
+                                                                     parent,
+                                                                     false);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onItemClick(v);
             }
-        }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mClickListener.onItemLongClick(v);
+                return true;
+            }
+        });
+
+        return view;
     }
 
     protected void setTitleAppearance(TextView textView,
@@ -195,28 +127,33 @@ public abstract class BaseProjectAdapter extends BaseAdapter implements View.OnC
         }
     }
 
-    protected void initButton(ImageButton button, Project project) {
+    protected void initAvatar(View avatar, Project project, final int position) {
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onAvatarClick(position);
+            }
+        });
 
-        button.setOnClickListener(this);
-        button.setTag(project);
-    }
-
-    protected void initAvatar(View avatar, Project project) {
-        char initLet = project.getAdminName().charAt(0);
-        int colorRsrc = Utilities.getColorRsrcFromColor(project.getColor());
-
-        //check if icon already exists
-        IconKey key = new IconKey(initLet, colorRsrc);
-        CharCircleIcon icon = sIconMap.get(key);
-
-        //create new icon if it does not exist
-        if (icon == null) {
-            icon = new CharCircleIcon(initLet,
-                                      getContext().getResources().getColor(colorRsrc),
-                                      typeface);
-            sIconMap.put(key, icon);
+        if (isItemSelected(position)) {
+            avatar.setBackground(getContext().getResources().getDrawable(R.drawable.checked_item));
         }
-        avatar.setBackground(icon);
-    }
+        else {
+            char initLet = project.getAdminName().charAt(0);
+            int colorRsrc = Utilities.getColorRsrcFromColor(project.getColor());
 
+            //check if icon already exists
+            IconKey key = new IconKey(initLet, colorRsrc);
+            CharCircleIcon icon = sIconMap.get(key);
+
+            //create new icon if it does not exist
+            if (icon == null) {
+                icon = new CharCircleIcon(initLet,
+                                          mContext.getResources().getColor(colorRsrc),
+                                          typeface);
+                sIconMap.put(key, icon);
+            }
+            avatar.setBackground(icon);
+        }
+    }
 }

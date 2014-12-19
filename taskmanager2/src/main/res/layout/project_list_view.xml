@@ -12,16 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/project_list_view"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:clickable="true"
-            android:scrollbarStyle="outsideOverlay"
-            android:clipToPadding="false"
-            android:footerDividersEnabled="false"/>
+        <!--<ListView-->
+            <!--android:id="@+id/project_list_view"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:paddingTop="8dp"-->
+            <!--android:paddingBottom="8dp"-->
+            <!--android:clickable="true"-->
+            <!--android:scrollbarStyle="outsideOverlay"-->
+            <!--android:clipToPadding="false"-->
+            <!--android:footerDividersEnabled="false"/>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/project_recycler_view"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -33,6 +39,6 @@
         android:gravity="center"
         android:text="@string/loading_projects"
         android:textColor="@color/primary_text_default_material_light"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 </RelativeLayout>

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 
 import java.util.List;
 
@@ -18,13 +17,13 @@ public class ProjectAdapterFactory {
     public static BaseProjectAdapter createProjectAdapter(int adapterType,
                                                           Activity context,
                                                           List<Project> projects,
-                                                          ListViewAnimationHelper<Project> animationHelper) {
+                                                          BaseProjectAdapter.OnItemClickListener listener) {
 
         if (adapterType == SIMPLE_ADAPTER) {
-            return new SimpleProjectAdapter(context, projects, animationHelper);
+            return new SimpleProjectAdapter(context, projects, listener);
         }
         else if (adapterType == DETAIL_ADAPTER) {
-            return new DetailProjectAdapter(context, projects, animationHelper);
+            return new DetailProjectAdapter(context, projects, listener);
         }
         else {
             Log.e(TAG, "Passed in incorrect adapter type.");

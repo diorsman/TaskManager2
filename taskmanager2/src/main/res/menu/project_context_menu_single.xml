@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_edit_project"
+        android:title="@string/action_edit_project"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_share_project"
+        android:title="@string/shared_project"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_mark_complete"
+        android:title="@string/action_mark_complete"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/action_mark_not_complete"
+          android:title="@string/action_mark_not_complete"/>
+
+    <item
+        android:id="@+id/action_archive"
+        android:title="@string/archive_project"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete_project"
+        app:showAsAction="ifRoom"/>
+</menu>

@@ -1,86 +1,45 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.utilities.DateParser;
-import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.Utilities;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class SimpleProjectAdapter extends BaseProjectAdapter {
+/**
+ * Created by Omid Ghomeshi on 12/18/14.
+ */
+public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapter.ViewHolder> {
 
     private static final String TAG = "SimpleProjectAdapter";
 
-    private DateParser dateParser = new DateParser(DateParser.DEFAULT);
+    private final static DateFormat SIMPLE_DATE_FORMAT =
+            new SimpleDateFormat("MM/dd/yyyy 'at' hh:mm a");
 
-    public SimpleProjectAdapter(Activity context,
-                                List<Project> projectList,
-                                ListViewAnimationHelper<Project> animationHelper) {
-
-        super(context, projectList, animationHelper);
-    }
-
-    private static class ViewHolder {
-
-        public View        colorSlice;
-        public TextView    lineOneView;
-        public TextView    lineTwoView;
-        public ProgressBar status;
-        public ImageButton overFlowButton;
+    public SimpleProjectAdapter(Context context, List<Project> projectList, OnItemClickListener listener) {
+        super(context, projectList, listener);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent,
+                                         int viewType) {
+        View view = initView(parent);
+        return new ViewHolder(view);
+    }
 
-        View colorSlice;
-        TextView lineOneView;
-        TextView lineTwoView;
-        ProgressBar status;
-        ImageButton overFlowButton;
-
-        if (convertView == null) {
-            // inflate row
-            LayoutInflater inflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_project, parent, false);
-
-            colorSlice = convertView.findViewById(R.id.project_list_color_slice);
-            lineOneView = (TextView) convertView.findViewById(R.id.project_list_name);
-            lineTwoView = (TextView) convertView.findViewById(R.id.project_list_due_date);
-            status = (ProgressBar) convertView.findViewById(R.id.project_list_status);
-            overFlowButton = (ImageButton) convertView.findViewById(R.id.project_list_overflow);
-
-            //set up view holder
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.colorSlice = colorSlice;
-            viewHolder.lineOneView = lineOneView;
-            viewHolder.lineTwoView = lineTwoView;
-            viewHolder.status = status;
-            viewHolder.overFlowButton = overFlowButton;
-            convertView.setTag(viewHolder);
-        }
-        else {
-            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-            colorSlice = viewHolder.colorSlice;
-            lineOneView = viewHolder.lineOneView;
-            lineTwoView = viewHolder.lineTwoView;
-            status = viewHolder.status;
-            overFlowButton = viewHolder.overFlowButton;
-        }
-
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Project project = getItem(position);
-        initButton(overFlowButton, project);
 
         double progress;
         if (project.getStatus()) {
@@ -94,28 +53,45 @@ public class SimpleProjectAdapter extends BaseProjectAdapter {
             progress *= 100;
         }
 
-        initAvatar(colorSlice, project);
-
         // set name
-        lineOneView.setText(project.getName());
+        holder.lineOneView.setText(project.getName());
 
         //set due date
-        dateParser.parse(project.getDueDate(), lineTwoView);
+        //dateParser.parse(project.getDueDate(), holder.lineTwoView);
+        holder.lineTwoView.setText(SIMPLE_DATE_FORMAT.format(project.getDueDate()));
 
         //set progress
-        status.setVisibility(ProgressBar.VISIBLE);
-        status.setProgress((int) progress);
-        status.getProgressDrawable()
+        holder.status.setVisibility(ProgressBar.VISIBLE);
+        holder.status.setProgress((int) progress);
+        holder.status.getProgressDrawable()
               .setColorFilter(getContext().getResources()
                                           .getColor(Utilities.getColorRsrcFromColor(project.getColor())),
                               PorterDuff.Mode.SRC_IN);
 
-        setTitleAppearance(lineOneView,
+        setTitleAppearance(holder.lineOneView,
                            project,
                            R.style.completed_default,
                            R.style.not_completed_default);
 
-
-        return convertView;
+        holder.itemView.setActivated(isItemSelected(position));
+        initAvatar(holder.colorSlice, project, position);
     }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public View        colorSlice;
+        public TextView    lineOneView;
+        public TextView    lineTwoView;
+        public ProgressBar status;
+
+        public ViewHolder(final View itemView) {
+            super(itemView);
+
+            colorSlice = itemView.findViewById(R.id.project_list_color_slice);
+            lineOneView = (TextView) itemView.findViewById(R.id.project_list_name);
+            lineTwoView = (TextView) itemView.findViewById(R.id.project_list_due_date);
+            status = (ProgressBar) itemView.findViewById(R.id.project_list_status);
+        }
+    }
+
 }

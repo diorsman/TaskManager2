@@ -180,7 +180,7 @@ public class NavigationDrawerFragment extends Fragment
     private void selectItem(int position) {
 
         if (mActivated != null) {
-            mActivated.setActivated(false);
+            mActivated.setSelected(false);
             mActivated.setTextColor(getResources().getColor(R.color.primary_text_default_material_light));
             int[] attrs = new int[]{R.attr.selectableItemBackground};
             TypedArray ta = getActivity().getTheme().obtainStyledAttributes(attrs);
@@ -190,27 +190,27 @@ public class NavigationDrawerFragment extends Fragment
 
         switch (position) {
             case 0:
-                mProjects.setActivated(true);
+                mProjects.setSelected(true);
                 mActivated = mProjects;
                 break;
             case 1:
-                mArchive.setActivated(true);
+                mArchive.setSelected(true);
                 mActivated = mArchive;
                 break;
             case 2:
-                mTrash.setActivated(true);
+                mTrash.setSelected(true);
                 mActivated = mTrash;
                 break;
             case 3:
-                mProfile.setActivated(true);
+                mProfile.setSelected(true);
                 mActivated = mProfile;
                 break;
             case 4:
-                mSettings.setActivated(true);
+                mSettings.setSelected(true);
                 mActivated = mSettings;
                 break;
             case 5:
-                mHelp.setActivated(true);
+                mHelp.setSelected(true);
                 mActivated = mHelp;
                 break;
         }

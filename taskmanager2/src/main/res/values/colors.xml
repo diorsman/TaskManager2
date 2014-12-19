@@ -26,4 +26,6 @@
     <color name="cyan_focused">#4DD0E1</color>
     <color name="deep_orange_primary">#FF5722</color>
     <color name="deep_orange_focused">#FF8A65</color>
+    <color name="light_gray">#ddd</color>
+    <color name="checked_gray">#212121</color>
 </resources>

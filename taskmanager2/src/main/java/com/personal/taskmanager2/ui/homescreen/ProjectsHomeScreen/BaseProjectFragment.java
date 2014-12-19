@@ -1,7 +1,5 @@
 package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -11,27 +9,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -40,22 +40,18 @@ import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.ui.DividerItemDecoration;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
-import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public abstract class BaseProjectFragment extends Fragment
-        implements SwipeRefreshLayout.OnRefreshListener,
-                   AbsListView.OnScrollListener,
-                   ListView.OnItemClickListener {
+        implements SwipeRefreshLayout.OnRefreshListener, BaseProjectAdapter.OnItemClickListener {
 
     private static final String TAG = "BaseProjectFragment";
 
@@ -67,69 +63,71 @@ public abstract class BaseProjectFragment extends Fragment
     private static final int SORT_BY_DESCRIPTION = 2;
     private static final int SORT_BY_COLOR       = 3;
 
-    private static final int LOAD_LIMIT = 25;
-
     private String mToolbarTitle;
 
     private SwipeRefreshLayout mRefreshLayoutList;
+    private RecyclerView       mRecyclerView;
     private TextView           mLoadProjects;
     private TextView           mNoProjects;
-    private ListView           mListView;
-    private View               mFooterView;
 
     private int mLayoutResourceId;
 
-    private BaseProjectAdapter mProjectAdapter;
-    private Parcelable         mListViewState;
+    private BaseProjectAdapter mAdapter;
     private Context            mContext;
-    private Bundle             savedState;
 
-    private boolean mQueriedList       = false;
-    private boolean mQueriedDetail     = false;
-    private boolean mIsLoadingMore     = false;
-    private boolean mAllProjectsLoaded = false;
+    private boolean mQueriedList   = false;
+    private boolean mQueriedDetail = false;
 
     private boolean mArchive;
     private boolean mTrash;
 
-    private static final int EXCEPTION_OCCURRED  = 0;
-    private static final int LOADED_MORE_ITEMS   = 1;
-    private static final int FIRST_LOAD          = 2;
-    private static final int ALL_PROJECTS_LOADED = 3;
-    private static final int NO_PROJECTS_FOUND   = 4;
-
     private int mSelectedPosition = 0;
     private int mSortBy           = 0;
-    private int mCurrentPage      = 0;
-    private int mNumRemoved       = 0;
 
-    private ExecutorService mExecutor;
-    private Runnable        mQueryRunnable;
+    private ActionMode mActionMode;
+    private ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            menu.clear();
+            MenuInflater inflater = actionMode.getMenuInflater();
+            inflater.inflate(R.menu.project_context_menu_single, menu);
+            return true;
+        }
 
-    private ListViewAnimationHelper<Project> mAnimHelper;
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            menu.clear();
+            MenuInflater inflater = actionMode.getMenuInflater();
+            if (mAdapter.getNumSelected() > 1) {
+                inflater.inflate(R.menu.project_context_menu_multiple, menu);
+            }
+            else {
+                inflater.inflate(R.menu.project_context_menu_single, menu);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            mAdapter.clearSelection();
+            mActionMode = null;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
-        if (savedInstanceState != null && savedState == null) {
-            savedState = savedInstanceState.getBundle("state");
-        }
-
-        if (savedState != null) {
-            mLayoutResourceId = savedState.getInt("resourceId");
-            mCurrentPage = savedState.getInt("currentPage");
-            mNumRemoved = savedState.getInt("numRemoved");
-            mListViewState = savedState.getParcelable("listViewState");
-            mListView.setAdapter(null);
-            setFooterProgressVisibility(View.VISIBLE);
-        }
 
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
                 if (getFragmentManager().getBackStackEntryCount() == 0) {
-                    if (mProjectAdapter != null) {
-                        mProjectAdapter.notifyDataSetChanged();
+                    if (mAdapter != null) {
+                        mAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -149,39 +147,19 @@ public abstract class BaseProjectFragment extends Fragment
         mTrash = args.getBoolean("trash");
         mToolbarTitle = args.getString("title");
 
-        mAnimHelper = new ListViewAnimationHelper<>(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mProjectAdapter.notifyDataSetChanged();
-                mNumRemoved++;
-            }
-        });
-
-        mQueryRunnable = new Runnable() {
-            @Override
-            public void run() {
-
-                queryProjectsInBackground(mUiHandler);
-            }
-        };
-
         View rootView = inflater.inflate(mLayoutResourceId, container, false);
 
         mRefreshLayoutList =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout_list_view);
         mLoadProjects = (TextView) rootView.findViewById(R.id.myProjectLoad);
-        mListView = (ListView) rootView.findViewById(R.id.project_list_view);
         mNoProjects = (TextView) rootView.findViewById(R.id.no_projects_text);
 
-        // ListView set up
-        mFooterView = inflater.inflate(R.layout.project_list_view_footer, null, false);
-        mListView.setOnScrollListener(this);
-        mListView.setEmptyView(mLoadProjects);
-        mListView.setOnItemClickListener(this);
-        mListView.addFooterView(mFooterView);
-        setFooterProgressVisibility(View.INVISIBLE);
-
-        mProjectAdapter = null;
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.project_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                                                                  DividerItemDecoration.VERTICAL_LIST));
 
         // refresh layout setup
         mRefreshLayoutList.setOnRefreshListener(this);
@@ -198,46 +176,57 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     @Override
-    public void onResume() {
-
-        super.onResume();
-        mExecutor = Executors.newSingleThreadExecutor();
+    public void onItemClick(View v) {
+        int position = mRecyclerView.getChildPosition(v);
+        if (mAdapter.isItemSelected(position)) {
+            unSelectItem(position);
+        }
+        else {
+            Intent intent =
+                    new Intent(BaseProjectFragment.this.getActivity(),
+                               ProjectDetailActivity.class);
+            intent.putExtra("project",
+                            mAdapter.getItem(position));
+            startActivity(intent);
+        }
     }
 
     @Override
-    public void onPause() {
-
-        super.onPause();
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-        super.onSaveInstanceState(outState);
-        outState.putBundle("state", saveState());
+    public void onItemLongClick(View v) {
+        toggleSelection(mRecyclerView.getChildPosition(v));
     }
 
     @Override
-    public void onDestroyView() {
-
-        super.onDestroyView();
-        mExecutor.shutdownNow();
-        mExecutor.shutdown();
+    public void onAvatarClick(int position) {
+        toggleSelection(position);
     }
 
-    private Bundle saveState() {
+    private void toggleSelection(int position) {
+        if (mAdapter.isItemSelected(position)) {
+            unSelectItem(position);
+        }
+        else {
+            mAdapter.selectItem(position);
+            if (mActionMode == null) {
+                mActionMode = Utilities.getToolbar(getActivity()).startActionMode(
+                        mActionModeCallBack);
+            }
+            else {
+                mActionMode.invalidate();
+            }
+        }
+    }
 
-        mListViewState = mListView.onSaveInstanceState();
-
-        Bundle args = new Bundle();
-
-        args.putInt("resourceId", mLayoutResourceId);
-        args.putInt("currentPage", mCurrentPage);
-        args.putInt("numRemoved", mNumRemoved);
-        args.putParcelable("listViewState", mListViewState);
-
-        return args;
+    private void unSelectItem(int position) {
+        mAdapter.unselectedItem(position);
+        if (mAdapter.getNumSelected() == 0) {
+            if (mActionMode != null) {
+                mActionMode.finish();
+            }
+        }
+        else {
+            mActionMode.invalidate();
+        }
     }
 
     @Override
@@ -300,14 +289,6 @@ public abstract class BaseProjectFragment extends Fragment
     private void navItemSelected(int position, boolean hasQueried) {
         mSelectedPosition = position;
         if (!hasQueried) {
-            if (mListView.getAdapter() != null && !mListView.getAdapter().isEmpty()) {
-                mListViewState = mListView.onSaveInstanceState();
-            }
-            mListView.setAdapter(null);
-            mListView.setEmptyView(mLoadProjects);
-            mNoProjects.setVisibility(View.GONE);
-            mIsLoadingMore = false;
-            mAllProjectsLoaded = false;
             queryProjects();
         }
     }
@@ -338,7 +319,7 @@ public abstract class BaseProjectFragment extends Fragment
 
                 getFragmentManager().beginTransaction()
                                     .addToBackStack(null)
-                                    .add(R.id.container, SearchFragment.newInstance(query))
+                                    .replace(R.id.container, SearchFragment.newInstance(query))
                                     .commit();
                 return true;
             }
@@ -360,7 +341,7 @@ public abstract class BaseProjectFragment extends Fragment
                 return true;
 
             case R.id.action_refresh:
-                refresh();
+                queryProjects();
                 return true;
 
             case R.id.action_sort_by:
@@ -374,14 +355,6 @@ public abstract class BaseProjectFragment extends Fragment
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void refresh() {
-
-        mIsLoadingMore = false;
-        mAllProjectsLoaded = false;
-        setFooterProgressVisibility(View.VISIBLE);
-        queryProjects();
     }
 
     private void createProjects() {
@@ -457,8 +430,7 @@ public abstract class BaseProjectFragment extends Fragment
                                             }
 
                                             dialogInterface.dismiss();
-                                            mCurrentPage = 0;
-                                            refresh();
+                                            queryProjects();
                                         }
                                     }
                                    );
@@ -467,203 +439,79 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onRefresh() {
-
-        mListViewState = null;
-        mCurrentPage = 0;
-        mNumRemoved = 0;
-        refresh();
+        queryProjects();
     }
 
+    private void queryProjects() {
+        ParseQuery<Project> projectQuery = initQuery();
+        setSortMethod(projectQuery);
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        mNoProjects.setVisibility(View.GONE);
+        mRefreshLayoutList.setRefreshing(true);
 
-        if (scrollState == SCROLL_STATE_IDLE && !mAllProjectsLoaded && !mIsLoadingMore) {
+        projectQuery.findInBackground(new FindCallback<Project>() {
+            @Override
+            public void done(List<Project> projectList, ParseException e) {
+                mRefreshLayoutList.setRefreshing(false);
+                mLoadProjects.setVisibility(View.GONE);
 
-            // Load next page of projects
-            if (mListView.getLastVisiblePosition() >= mListView.getCount() - 1) {
-                mCurrentPage++;
-                mIsLoadingMore = true;
-                queryProjects();
-            }
-
-        }
-    }
-
-    @Override
-    public void onScroll(AbsListView view,
-                         int firstVisibleItemIndex,
-                         int visibleItemCount,
-                         int totalItemCount) {
-
-    }
-
-    private Handler mUiHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-
-            mRefreshLayoutList.setRefreshing(false);
-            mLoadProjects.setVisibility(View.GONE);
-            mListView.setEmptyView(mNoProjects);
-            List<Project> projects;
-
-            switch (msg.what) {
-                case EXCEPTION_OCCURRED:
-                    ParseException e = (ParseException) msg.obj;
+                if (e == null) {
+                    if (!projectList.isEmpty()) {
+                        mAdapter = ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
+                                                                              getActivity(),
+                                                                              projectList,
+                                                                              BaseProjectFragment.this);
+                        mRecyclerView.setAdapter(mAdapter);
+                        mNoProjects.setVisibility(View.GONE);
+                    }
+                    else {
+                        mNoProjects.setVisibility(View.VISIBLE);
+                    }
+                }
+                else {
                     Log.e(TAG,
                           "Error code = " + Integer.toString(e.getCode()));
                     Log.e(TAG, "Error message " + e.getMessage());
                     Log.e(TAG, "Error occurred", e);
-                    break;
-
-                case LOADED_MORE_ITEMS:
-                    projects = (List<Project>) msg.obj;
-                    mProjectAdapter.addItems(projects);
-                    mProjectAdapter.notifyDataSetChanged();
-                    mIsLoadingMore = false;
-                    break;
-
-                case FIRST_LOAD:
-                    projects = (List<Project>) msg.obj;
-                    mProjectAdapter =
-                            ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
-                                                                       getActivity(),
-                                                                       projects,
-                                                                       mAnimHelper);
-                    mAnimHelper.setAdapter(mProjectAdapter);
-                    mListView.setAdapter(mProjectAdapter);
-                    mAnimHelper.setListView(mListView);
-
-                    if (mListViewState != null) {
-                        mListView.onRestoreInstanceState(mListViewState);
-                        mListViewState = null;
-                    }
-
-                    if (mListView.getFooterViewsCount() == 0) {
-                        mListView.addFooterView(mFooterView);
-                    }
-
-                    if (mProjectAdapter.getCount() >= LOAD_LIMIT) {
-                        setFooterProgressVisibility(View.VISIBLE);
-                    }
-                    break;
-
-                case ALL_PROJECTS_LOADED:
-                    setFooterProgressVisibility(View.INVISIBLE);
-                    mIsLoadingMore = false;
-                    mAllProjectsLoaded = true;
-                    break;
-
-                case NO_PROJECTS_FOUND:
-                    mListView.setEmptyView(mNoProjects);
-                    setFooterProgressVisibility(View.INVISIBLE);
-                    mLoadProjects.setVisibility(View.GONE);
-                    break;
+                }
             }
-        }
-    };
-
-
-    private void queryProjects() {
-        if (!mIsLoadingMore) {
-            mRefreshLayoutList.setRefreshing(true);
-        }
-        if (!mExecutor.isShutdown() || !mExecutor.isTerminated()) {
-            mExecutor.execute(mQueryRunnable);
-        }
+        });
     }
 
-    private void queryProjectsInBackground(Handler handler) {
-        try {
-            ParseQuery<Project> projectAdmin = ParseQuery.getQuery(Project.class);
-            projectAdmin.whereEqualTo(Project.ADMIN_COL, ParseUser.getCurrentUser());
+    private ParseQuery<Project> initQuery() {
+        ParseQuery<Project> projectAdmin = ParseQuery.getQuery(Project.class);
+        projectAdmin.whereEqualTo(Project.ADMIN_COL, ParseUser.getCurrentUser());
 
-            ParseQuery<Project> projectUser = ParseQuery.getQuery(Project.class);
-            projectUser.whereEqualTo(Project.USERS_ID_COL,
-                                     ParseUser.getCurrentUser().getObjectId());
+        ParseQuery<Project> projectUser = ParseQuery.getQuery(Project.class);
+        projectUser.whereEqualTo(Project.USERS_ID_COL,
+                                 ParseUser.getCurrentUser().getObjectId());
 
-            List<ParseQuery<Project>> orQueries = new ArrayList<>();
-            orQueries.add(projectAdmin);
-            orQueries.add(projectUser);
+        List<ParseQuery<Project>> orQueries = new ArrayList<>();
+        orQueries.add(projectAdmin);
+        orQueries.add(projectUser);
 
-            ParseQuery<Project> projectQuery = ParseQuery.or(orQueries);
-            projectQuery.whereEqualTo(Project.ARCHIVED_COL, mArchive);
-            projectQuery.whereEqualTo(Project.TRASH_COL, mTrash);
+        ParseQuery<Project> projectQuery = ParseQuery.or(orQueries);
+        projectQuery.whereEqualTo(Project.ARCHIVED_COL, mArchive);
+        projectQuery.whereEqualTo(Project.TRASH_COL, mTrash);
 
-            // set sort method
-            if (mSortBy == SORT_BY_DUE_DATE) {
-                projectQuery.orderByAscending(Project.DUE_DATE_COL);
-            }
-            else if (mSortBy == SORT_BY_COLOR) {
-                projectQuery.orderByAscending(Project.COLOR_COL);
-            }
-            else if (mSortBy == SORT_BY_NAME) {
-                projectQuery.orderByAscending(Project.NAME_COL);
-            }
-            else if (mSortBy == SORT_BY_DESCRIPTION) {
-                projectQuery.orderByAscending(Project.DESCRIPTION_COL);
-            }
-            projectQuery.addAscendingOrder(Project.DUE_DATE_COL);
+        projectQuery.setLimit(1000);
 
-            if (mListViewState == null) {
-                // set load limit
-                projectQuery.setLimit(LOAD_LIMIT);
-
-                // pagination
-                if (mIsLoadingMore) {
-                    projectQuery.setSkip((mCurrentPage * LOAD_LIMIT) - mNumRemoved);
-                }
-            }
-            else {
-                if (mListView.getAdapter() == null ||
-                    mListView.getAdapter().getCount() - mListView.getFooterViewsCount() < 1) {
-                    projectQuery.setSkip(0);
-                    projectQuery.setLimit(((mCurrentPage + 1) * LOAD_LIMIT) - mNumRemoved);
-                }
-                else {
-                    projectQuery.setSkip((mCurrentPage * LOAD_LIMIT) - mNumRemoved);
-                    projectQuery.setLimit(LOAD_LIMIT);
-                }
-            }
-
-            List<Project> projects = projectQuery.find();
-
-            if (!projects.isEmpty()) {
-                if (mProjectAdapter != null && !mAllProjectsLoaded && mIsLoadingMore) {
-                    Message msg = handler.obtainMessage(LOADED_MORE_ITEMS, projects);
-                    handler.sendMessage(msg);
-                }
-                else {
-                    Message msg = handler.obtainMessage(FIRST_LOAD, projects);
-                    handler.sendMessage(msg);
-                }
-            }
-            else if (!mAllProjectsLoaded && mIsLoadingMore) {
-                Message msg = handler.obtainMessage(ALL_PROJECTS_LOADED);
-                handler.sendMessage(msg);
-            }
-            else {
-                Message msg = handler.obtainMessage(NO_PROJECTS_FOUND);
-                handler.sendMessage(msg);
-            }
-        }
-        catch (ParseException e) {
-            Message msg = handler.obtainMessage(EXCEPTION_OCCURRED, e);
-            handler.sendMessage(msg);
-        }
+        return projectQuery;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        Project project = (Project) mListView.getItemAtPosition(position);
-        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
-    }
-
-    private void setFooterProgressVisibility(int visibility) {
-        mFooterView.findViewById(R.id.progress_bar).setVisibility(visibility);
+    private void setSortMethod(ParseQuery<Project> projectQuery) {
+        if (mSortBy == SORT_BY_DUE_DATE) {
+            projectQuery.orderByAscending(Project.DUE_DATE_COL);
+        }
+        else if (mSortBy == SORT_BY_COLOR) {
+            projectQuery.orderByAscending(Project.COLOR_COL);
+        }
+        else if (mSortBy == SORT_BY_NAME) {
+            projectQuery.orderByAscending(Project.NAME_COL);
+        }
+        else if (mSortBy == SORT_BY_DESCRIPTION) {
+            projectQuery.orderByAscending(Project.DESCRIPTION_COL);
+        }
+        projectQuery.addAscendingOrder(Project.DUE_DATE_COL);
     }
 }

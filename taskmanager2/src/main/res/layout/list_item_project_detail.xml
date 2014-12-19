@@ -6,7 +6,9 @@
     android:layout_height="wrap_content"
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:background="?selectableItemBackground"
+    android:clickable="true">
 
     <View
         android:id="@+id/project_list_color_slice"
@@ -57,17 +59,17 @@
         android:layout_marginRight="16dp"
         android:fontFamily="sans-serif"/>
 
-    <ImageButton
-        android:id="@+id/project_detail_overflow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/card_overflow_style"
-        android:contentDescription="@string/overflow"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/project_detail_overflow"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:background="@drawable/card_overflow_style"-->
+        <!--android:contentDescription="@string/overflow"-->
+        <!--android:focusable="false"-->
+        <!--android:focusableInTouchMode="false"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="16dp"/>-->
 
 </RelativeLayout>

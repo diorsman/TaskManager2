@@ -1,12 +1,13 @@
 package com.personal.taskmanager2.ui.homescreen;
 
-import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,8 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,29 +25,25 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
-import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
-import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
+import com.personal.taskmanager2.ui.DividerItemDecoration;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-public class SearchFragment extends Fragment
-        implements AdapterView.OnItemClickListener {
+public class SearchFragment extends Fragment {
 
     private static final String TAG = "SearchFragment";
 
-    private ListView           mListView;
-    private TextView           mNoResults;
-    private ProgressBar        mLoading;
-    private BaseProjectAdapter mProjectAdapter;
+    private TextView    mNoResults;
+    private ProgressBar mLoading;
+
+    private RecyclerView       mRecyclerView;
+    private BaseProjectAdapter mAdapter;
 
     private String mQuery;
-
-    private ListViewAnimationHelper<Project> mAnimHelper;
 
     public static SearchFragment newInstance(String query) {
 
@@ -68,8 +63,14 @@ public class SearchFragment extends Fragment
 
         View rootView = inflater.inflate(R.layout.fragment_search, container, false);
 
-        mListView = (ListView) rootView.findViewById(R.id.project_list_view);
-        mListView.setOnItemClickListener(this);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setVisibility(View.GONE);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                                                                  DividerItemDecoration.VERTICAL_LIST));
+
         mNoResults = (TextView) rootView.findViewById(R.id.no_projects_text);
         mLoading = (ProgressBar) rootView.findViewById(R.id.load_results);
 
@@ -77,10 +78,6 @@ public class SearchFragment extends Fragment
 
         setHasOptionsMenu(true);
         searchForProjects(mQuery);
-
-        mAnimHelper =
-                new ListViewAnimationHelper<>(new AnimatorListenerAdapter() {
-                });
 
         return rootView;
     }
@@ -143,23 +140,19 @@ public class SearchFragment extends Fragment
 
     private void searchForProjects(final String query) {
 
-        mListView.setEmptyView(mLoading);
+        //mListView.setEmptyView(mLoading);
         mNoResults.setVisibility(View.GONE);
+        mLoading.setVisibility(View.VISIBLE);
 
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
 
                 List<Project> projects = (List<Project>) msg.obj;
-                mProjectAdapter = ProjectAdapterFactory.createProjectAdapter(
-                        ProjectAdapterFactory.SIMPLE_ADAPTER,
-                        getActivity(),
-                        projects,
-                        mAnimHelper);
-                mListView.setAdapter(mProjectAdapter);
-                mListView.setEmptyView(mNoResults);
                 mLoading.setVisibility(View.GONE);
-                mAnimHelper.setListView(mListView);
+                //mAdapter = new SimpleProjectAdapter(getActivity(), projects);
+                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setVisibility(View.VISIBLE);
             }
         };
 
@@ -236,14 +229,5 @@ public class SearchFragment extends Fragment
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        Project project = (Project) mListView.getItemAtPosition(position);
-        Intent intent = new Intent(getActivity(), ProjectDetailActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
     }
 }

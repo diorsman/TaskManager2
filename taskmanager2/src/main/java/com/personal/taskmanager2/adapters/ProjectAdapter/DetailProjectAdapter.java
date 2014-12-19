@@ -1,86 +1,41 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.utilities.DateParser;
-import com.personal.taskmanager2.utilities.ListViewAnimationHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class DetailProjectAdapter extends BaseProjectAdapter {
+/**
+ * Created by Omid Ghomeshi on 12/18/14.
+ */
+public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapter.ViewHolder> {
 
-    private static final String TAG = "DetailProjectAdapter";
+    private final static DateFormat DETAIL_DATE_FORMAT =
+            new SimpleDateFormat("'Due' 'on' MMM dd, yyyy 'at' hh:mm a");
 
-    private DateParser dateParser = new DateParser(DateParser.DETAIL);
-
-    public DetailProjectAdapter(Activity context,
-                                List<Project> projectList,
-                                ListViewAnimationHelper<Project> animationHelper) {
-
-        super(context, projectList, animationHelper);
-    }
-
-    private static class ViewHolder {
-
-        View        colorSlice;
-        TextView    lineOneView;
-        TextView    lineTwoView;
-        TextView    lineThreeView;
-        TextView    lineFourView;
-        ImageButton overFlowButton;
+    public DetailProjectAdapter(Context context, List<Project> projectList, OnItemClickListener listener) {
+        super(context, projectList, listener);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent,
+                                         int viewType) {
+        View view = initView(parent);
+        return new ViewHolder(view);
+    }
 
-        View colorSlice;
-        TextView lineOneView;
-        final TextView lineTwoView;
-        final TextView lineThreeView;
-        TextView lineFourView;
-        ImageButton overFlowButton;
-
-        if (convertView == null) {
-            LayoutInflater inflater =
-                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_project_detail, parent, false);
-
-            colorSlice = convertView.findViewById(R.id.project_list_color_slice);
-            lineOneView = (TextView) convertView.findViewById(R.id.project_detail_name);
-            lineTwoView = (TextView) convertView.findViewById(R.id.project_detail_due_date);
-            lineThreeView = (TextView) convertView.findViewById(R.id.project_detail_description);
-            lineFourView = (TextView) convertView.findViewById(R.id.project_detail_status);
-            overFlowButton = (ImageButton) convertView.findViewById(R.id.project_detail_overflow);
-
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.colorSlice = colorSlice;
-            viewHolder.lineOneView = lineOneView;
-            viewHolder.lineTwoView = lineTwoView;
-            viewHolder.lineThreeView = lineThreeView;
-            viewHolder.lineFourView = lineFourView;
-            viewHolder.overFlowButton = overFlowButton;
-            convertView.setTag(viewHolder);
-        }
-        else {
-            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-            colorSlice = viewHolder.colorSlice;
-            lineOneView = viewHolder.lineOneView;
-            lineTwoView = viewHolder.lineTwoView;
-            lineThreeView = viewHolder.lineThreeView;
-            lineFourView = viewHolder.lineFourView;
-            overFlowButton = viewHolder.overFlowButton;
-        }
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
 
         Project project = getItem(position);
-        initButton(overFlowButton, project);
 
         //Get number of completed tasks
         String completedTasks = "Completed ";
@@ -88,21 +43,42 @@ public class DetailProjectAdapter extends BaseProjectAdapter {
         int totalTasks = project.getNumTotalTask();
         completedTasks += numTasks + " of " + totalTasks + " tasks";
 
-        initAvatar(colorSlice, project);
+        initAvatar(holder.colorSlice, project, position);
 
-        lineOneView.setText(project.getName());
+        holder.lineOneView.setText(project.getName());
 
         //set due date
-        dateParser.parse(project.getDueDate(), lineTwoView);
+        //dateParser.parse(project.getDueDate(), lineTwoView);
+        holder.lineTwoView.setText(DETAIL_DATE_FORMAT.format(project.getDueDate()));
 
-        lineThreeView.setText(project.getDescription());
-        lineFourView.setText(completedTasks);
+        holder.lineThreeView.setText(project.getDescription());
+        holder.lineFourView.setText(completedTasks);
 
-        setTitleAppearance(lineOneView,
+        setTitleAppearance(holder.lineOneView,
                            project,
                            R.style.completed_detail,
                            R.style.not_completed_detail);
 
-        return convertView;
+        holder.itemView.setActivated(isItemSelected(position));
     }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        View        colorSlice;
+        TextView    lineOneView;
+        TextView    lineTwoView;
+        TextView    lineThreeView;
+        TextView    lineFourView;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+
+            colorSlice = itemView.findViewById(R.id.project_list_color_slice);
+            lineOneView = (TextView) itemView.findViewById(R.id.project_detail_name);
+            lineTwoView = (TextView) itemView.findViewById(R.id.project_detail_due_date);
+            lineThreeView = (TextView) itemView.findViewById(R.id.project_detail_description);
+            lineFourView = (TextView) itemView.findViewById(R.id.project_detail_status);
+        }
+    }
+
 }
