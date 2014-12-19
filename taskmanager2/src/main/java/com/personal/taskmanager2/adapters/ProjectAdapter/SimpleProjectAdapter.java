@@ -33,7 +33,7 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
-        View view = initView(parent);
+        View view = initView(parent, R.layout.list_item_project);
         return new ViewHolder(view);
     }
 

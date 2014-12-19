@@ -28,7 +28,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
-        View view = initView(parent);
+        View view = initView(parent, R.layout.list_item_project_detail);
         return new ViewHolder(view);
     }
 
@@ -42,8 +42,6 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
         int numTasks = project.getNumCompletedTasks();
         int totalTasks = project.getNumTotalTask();
         completedTasks += numTasks + " of " + totalTasks + " tasks";
-
-        initAvatar(holder.colorSlice, project, position);
 
         holder.lineOneView.setText(project.getName());
 
@@ -60,6 +58,7 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
                            R.style.not_completed_detail);
 
         holder.itemView.setActivated(isItemSelected(position));
+        initAvatar(holder.colorSlice, project, position);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

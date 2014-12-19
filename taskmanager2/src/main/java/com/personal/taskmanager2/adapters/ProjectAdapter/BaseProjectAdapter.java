@@ -90,8 +90,8 @@ public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    protected View initView(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_project,
+    protected View initView(ViewGroup parent, int layout) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout,
                                                                      parent,
                                                                      false);
         view.setOnClickListener(new View.OnClickListener() {

@@ -7,7 +7,7 @@
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
     android:descendantFocusability="blocksDescendants"
-    android:background="?selectableItemBackground"
+    android:background="@drawable/list_view_selector"
     android:clickable="true">
 
     <View
