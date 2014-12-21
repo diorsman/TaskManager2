@@ -26,7 +26,7 @@ import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.DividerItemDecoration;
+import com.personal.taskmanager2.ui.widget.DividerItemDecoration;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.ArrayList;

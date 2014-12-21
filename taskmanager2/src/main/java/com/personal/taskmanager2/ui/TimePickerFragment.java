@@ -11,17 +11,6 @@ import java.util.Calendar;
 
 public class TimePickerFragment extends DialogFragment {
 
-    /*private Fragment mFragment;
-
-    public TimePickerFragment() {
-
-    }
-
-    public TimePickerFragment(Fragment callback) {
-
-        mFragment = callback;
-    }*/
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //Use current time is default values

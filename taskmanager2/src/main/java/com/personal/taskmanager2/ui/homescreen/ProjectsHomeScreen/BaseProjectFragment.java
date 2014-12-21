@@ -40,7 +40,7 @@ import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.DividerItemDecoration;
+import com.personal.taskmanager2.ui.widget.DividerItemDecoration;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.Utilities;

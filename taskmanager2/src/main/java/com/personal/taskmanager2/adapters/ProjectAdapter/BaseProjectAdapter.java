@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.CharCircleIcon;
+import com.personal.taskmanager2.ui.widget.CharCircleIcon;
 import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.Utilities;
 

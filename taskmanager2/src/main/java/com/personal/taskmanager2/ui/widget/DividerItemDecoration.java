@@ -1,4 +1,4 @@
-package com.personal.taskmanager2.ui;
+package com.personal.taskmanager2.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

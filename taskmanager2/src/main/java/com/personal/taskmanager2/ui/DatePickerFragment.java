@@ -11,13 +11,6 @@ import java.util.Calendar;
 
 public class DatePickerFragment extends DialogFragment {
 
-    //private OnDateSetListener mFragment;
-
-    /*public DatePickerFragment(Fragment callback) {
-
-        mFragment = (OnDateSetListener) callback;
-    }*/
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstaceState) {
 
