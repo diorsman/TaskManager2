@@ -1,10 +1,13 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,23 +25,27 @@ import java.util.List;
 /**
  * Created by Omid Ghomeshi on 12/18/14.
  */
-public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
+public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder>
         extends RecyclerView.Adapter<E> {
+
+    private static final String TAG = "BaseProjectAdapter";
 
     public interface OnItemClickListener {
 
-        public void onAvatarClick(int position);
+        public void onAvatarClick(View v, int position);
 
         public void onItemClick(View v);
 
         public void onItemLongClick(View v);
     }
 
-    private static final String TAG = "BaseProjectAdapter";
+    private static final int CHECK_ANIM = 1;
+    private static final int ORIG_ANIM  = 2;
 
     private Context            mContext;
     private List<Project>      mProjectList;
     private SparseBooleanArray mSelectedItems;
+    private SparseIntArray     mAnimItems;
 
     private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
     Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
@@ -51,6 +58,7 @@ public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
         mProjectList = projectList;
         mContext = context;
         mSelectedItems = new SparseBooleanArray();
+        mAnimItems = new SparseIntArray();
         mClickListener = listener;
     }
 
@@ -69,11 +77,13 @@ public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
 
     public void selectItem(int position) {
         mSelectedItems.put(position, true);
+        mAnimItems.put(position, CHECK_ANIM);
         notifyItemChanged(position);
     }
 
     public void unselectedItem(int position) {
         mSelectedItems.delete(position);
+        mAnimItems.put(position, ORIG_ANIM);
         notifyItemChanged(position);
     }
 
@@ -85,9 +95,19 @@ public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
         return mSelectedItems.size();
     }
 
-    public void clearSelection() {
+    public void clearSelection(int firstVisPos, int lastVisPos) {
+        int size = mSelectedItems.size();
+        for (int i = 0; i < size; ++i) {
+            int key = mSelectedItems.keyAt(i);
+            notifyItemChanged(key);
+            if (key >= firstVisPos && key <= lastVisPos) {
+                mAnimItems.put(key, ORIG_ANIM);
+            }
+            else {
+                mAnimItems.delete(key);
+            }
+        }
         mSelectedItems.clear();
-        notifyDataSetChanged();
     }
 
     protected View initView(ViewGroup parent, int layout) {
@@ -128,14 +148,15 @@ public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
     }
 
     protected void initAvatar(View avatar, Project project, final int position) {
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mClickListener.onAvatarClick(position);
-            }
-        });
-
         if (isItemSelected(position)) {
+            if (mAnimItems.get(position) == CHECK_ANIM) {
+                AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(),
+                                                                               R.animator.card_flip_left_in);
+                anim.setTarget(avatar);
+                anim.start();
+                mAnimItems.delete(position);
+            }
+
             avatar.setBackground(getContext().getResources().getDrawable(R.drawable.checked_item));
         }
         else {
@@ -153,7 +174,31 @@ public abstract class BaseProjectAdapter<E extends RecyclerView.ViewHolder>
                                           typeface);
                 sIconMap.put(key, icon);
             }
+
+            if (mAnimItems.get(position) == ORIG_ANIM) {
+                AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(),
+                                                                               R.animator.card_flip_right_in);
+                anim.setTarget(avatar);
+                anim.start();
+                mAnimItems.delete(position);
+            }
+
             avatar.setBackground(icon);
+        }
+    }
+
+    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public View     projectAvatar;
+        public TextView projectName;
+        public TextView projectDueDate;
+
+        public ViewHolder(final View itemView) {
+            super(itemView);
+
+            projectAvatar = itemView.findViewById(R.id.project_list_color_slice);
+            projectName = (TextView) itemView.findViewById(R.id.project_list_name);
+            projectDueDate = (TextView) itemView.findViewById(R.id.project_list_due_date);
         }
     }
 }

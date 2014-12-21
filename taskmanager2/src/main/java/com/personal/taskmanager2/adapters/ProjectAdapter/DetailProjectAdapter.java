@@ -1,7 +1,6 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -29,7 +28,14 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
         View view = initView(parent, R.layout.list_item_project_detail);
-        return new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
+        viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onAvatarClick(v, viewHolder.getPosition());
+            }
+        });
+        return viewHolder;
     }
 
     @Override
@@ -37,46 +43,38 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
 
         Project project = getItem(position);
 
+        holder.itemView.setActivated(isItemSelected(position));
+        initAvatar(holder.projectAvatar, project, position);
+
+        holder.projectName.setText(project.getName());
+        setTitleAppearance(holder.projectName,
+                           project,
+                           R.style.completed_detail,
+                           R.style.not_completed_detail);
+
+        //set due date
+        holder.projectDueDate.setText(DETAIL_DATE_FORMAT.format(project.getDueDate()));
+
+        holder.projectDescription.setText(project.getDescription());
+
         //Get number of completed tasks
         String completedTasks = "Completed ";
         int numTasks = project.getNumCompletedTasks();
         int totalTasks = project.getNumTotalTask();
         completedTasks += numTasks + " of " + totalTasks + " tasks";
-
-        holder.lineOneView.setText(project.getName());
-
-        //set due date
-        //dateParser.parse(project.getDueDate(), lineTwoView);
-        holder.lineTwoView.setText(DETAIL_DATE_FORMAT.format(project.getDueDate()));
-
-        holder.lineThreeView.setText(project.getDescription());
-        holder.lineFourView.setText(completedTasks);
-
-        setTitleAppearance(holder.lineOneView,
-                           project,
-                           R.style.completed_detail,
-                           R.style.not_completed_detail);
-
-        holder.itemView.setActivated(isItemSelected(position));
-        initAvatar(holder.colorSlice, project, position);
+        holder.projectTasks.setText(completedTasks);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends BaseProjectAdapter.ViewHolder {
 
-        View        colorSlice;
-        TextView    lineOneView;
-        TextView    lineTwoView;
-        TextView    lineThreeView;
-        TextView    lineFourView;
+        public TextView projectDescription;
+        public TextView projectTasks;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            colorSlice = itemView.findViewById(R.id.project_list_color_slice);
-            lineOneView = (TextView) itemView.findViewById(R.id.project_detail_name);
-            lineTwoView = (TextView) itemView.findViewById(R.id.project_detail_due_date);
-            lineThreeView = (TextView) itemView.findViewById(R.id.project_detail_description);
-            lineFourView = (TextView) itemView.findViewById(R.id.project_detail_status);
+            projectDescription = (TextView) itemView.findViewById(R.id.project_detail_description);
+            projectTasks = (TextView) itemView.findViewById(R.id.project_detail_status);
         }
     }
 

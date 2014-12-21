@@ -85,6 +85,11 @@ public abstract class BaseProjectFragment extends Fragment
     private int mSortBy           = 0;
 
     private ActionMode mActionMode;
+
+    public ActionMode getActionMode() {
+        return mActionMode;
+    }
+
     private ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -114,7 +119,10 @@ public abstract class BaseProjectFragment extends Fragment
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
-            mAdapter.clearSelection();
+            LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+            int firstVisPos = llm.findFirstVisibleItemPosition();
+            int lastVisPos = llm.findLastVisibleItemPosition();
+            mAdapter.clearSelection(firstVisPos, lastVisPos);
             mActionMode = null;
         }
     };
@@ -178,6 +186,7 @@ public abstract class BaseProjectFragment extends Fragment
     @Override
     public void onItemClick(View v) {
         int position = mRecyclerView.getChildPosition(v);
+
         if (mAdapter.isItemSelected(position)) {
             unSelectItem(position);
         }
@@ -193,11 +202,12 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onItemLongClick(View v) {
-        toggleSelection(mRecyclerView.getChildPosition(v));
+        int position = mRecyclerView.getChildPosition(v);
+        toggleSelection(position);
     }
 
     @Override
-    public void onAvatarClick(int position) {
+    public void onAvatarClick(View avatar,int position) {
         toggleSelection(position);
     }
 

@@ -2,11 +2,9 @@ package com.personal.taskmanager2.adapters.ProjectAdapter;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
@@ -34,13 +32,34 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
         View view = initView(parent, R.layout.list_item_project);
-        return new ViewHolder(view);
+        final ViewHolder viewHolder = new ViewHolder(view);
+        viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onAvatarClick(v, viewHolder.getPosition());
+            }
+        });
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Project project = getItem(position);
 
+        holder.itemView.setActivated(isItemSelected(position));
+        initAvatar(holder.projectAvatar, project, position);
+
+        // set name
+        holder.projectName.setText(project.getName());
+        setTitleAppearance(holder.projectName,
+                           project,
+                           R.style.completed_default,
+                           R.style.not_completed_default);
+
+        //set due date
+        holder.projectDueDate.setText(SIMPLE_DATE_FORMAT.format(project.getDueDate()));
+
+        //set progress
         double progress;
         if (project.getStatus()) {
             progress = 100;
@@ -53,44 +72,22 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
             progress *= 100;
         }
 
-        // set name
-        holder.lineOneView.setText(project.getName());
-
-        //set due date
-        //dateParser.parse(project.getDueDate(), holder.lineTwoView);
-        holder.lineTwoView.setText(SIMPLE_DATE_FORMAT.format(project.getDueDate()));
-
-        //set progress
-        holder.status.setVisibility(ProgressBar.VISIBLE);
-        holder.status.setProgress((int) progress);
-        holder.status.getProgressDrawable()
+        holder.projectStatus.setVisibility(ProgressBar.VISIBLE);
+        holder.projectStatus.setProgress((int) progress);
+        holder.projectStatus.getProgressDrawable()
               .setColorFilter(getContext().getResources()
                                           .getColor(Utilities.getColorRsrcFromColor(project.getColor())),
                               PorterDuff.Mode.SRC_IN);
-
-        setTitleAppearance(holder.lineOneView,
-                           project,
-                           R.style.completed_default,
-                           R.style.not_completed_default);
-
-        holder.itemView.setActivated(isItemSelected(position));
-        initAvatar(holder.colorSlice, project, position);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends BaseProjectAdapter.ViewHolder {
 
-        public View        colorSlice;
-        public TextView    lineOneView;
-        public TextView    lineTwoView;
-        public ProgressBar status;
+        public ProgressBar projectStatus;
 
         public ViewHolder(final View itemView) {
             super(itemView);
 
-            colorSlice = itemView.findViewById(R.id.project_list_color_slice);
-            lineOneView = (TextView) itemView.findViewById(R.id.project_list_name);
-            lineTwoView = (TextView) itemView.findViewById(R.id.project_list_due_date);
-            status = (ProgressBar) itemView.findViewById(R.id.project_list_status);
+            projectStatus = (ProgressBar) itemView.findViewById(R.id.project_list_status);
         }
     }
 

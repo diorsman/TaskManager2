@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.ArchiveFragment;
+import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.BaseProjectFragment;
 import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.MyProjectsFragment;
 import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.TrashFragment;
 import com.personal.taskmanager2.ui.signIn.SignInActivity;
@@ -100,10 +101,14 @@ public class HomeScreenActivity extends ActionBarActivity
     @Override
     public void onBackPressed() {
 
-        if (mNavigationDrawerFragment.isDrawerOpen()) {
+        Fragment frag = getFragmentManager().findFragmentById(R.id.container);
+        if (frag instanceof BaseProjectFragment &&
+            ((BaseProjectFragment) frag).getActionMode() != null) {
+            ((BaseProjectFragment) frag).getActionMode().finish();
+        }
+        else if (mNavigationDrawerFragment.isDrawerOpen()) {
             mNavigationDrawerFragment.closeDrawer();
         }
-
         else if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         }
