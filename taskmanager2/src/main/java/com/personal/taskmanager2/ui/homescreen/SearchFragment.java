@@ -25,6 +25,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
+import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.widget.DividerItemDecoration;
 import com.personal.taskmanager2.utilities.Utilities;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment implements BaseProjectAdapter.OnItemClickListener {
 
     private static final String TAG = "SearchFragment";
 
@@ -96,7 +97,7 @@ public class SearchFragment extends Fragment {
     private void setUpActionBar(Toolbar toolbar) {
         Utilities.enableToolbarTitle(getActivity(), true, TAG);
         toolbar.getMenu().clear();
-        toolbar.setTitle("Search: " + mQuery);
+        toolbar.setTitle(mQuery);
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
     }
 
@@ -150,7 +151,11 @@ public class SearchFragment extends Fragment {
 
                 List<Project> projects = (List<Project>) msg.obj;
                 mLoading.setVisibility(View.GONE);
-                //mAdapter = new SimpleProjectAdapter(getActivity(), projects);
+                mAdapter =
+                        ProjectAdapterFactory.createProjectAdapter(ProjectAdapterFactory.SIMPLE_ADAPTER,
+                                                                   getActivity(),
+                                                                   projects,
+                                                                   SearchFragment.this);
                 mRecyclerView.setAdapter(mAdapter);
                 mRecyclerView.setVisibility(View.VISIBLE);
             }
@@ -229,5 +234,20 @@ public class SearchFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onAvatarClick(View v, int position) {
+
+    }
+
+    @Override
+    public void onItemClick(View v) {
+
+    }
+
+    @Override
+    public void onItemLongClick(View v) {
+
     }
 }

@@ -28,4 +28,5 @@
     <color name="deep_orange_focused">#FF8A65</color>
     <color name="light_gray">#ddd</color>
     <color name="checked_gray">#212121</color>
+    <color name="cab_background">#607D8B</color>
 </resources>

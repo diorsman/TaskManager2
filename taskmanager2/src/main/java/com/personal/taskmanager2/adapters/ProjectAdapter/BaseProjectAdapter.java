@@ -39,6 +39,10 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         public void onItemLongClick(View v);
     }
 
+    public interface ApplyAction {
+        public void modifyProject(Project project);
+    }
+
     private static final int CHECK_ANIM = 1;
     private static final int ORIG_ANIM  = 2;
 
@@ -95,6 +99,10 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         return mSelectedItems.size();
     }
 
+    public void removeItem(Project project) {
+        mProjectList.remove(project);
+    }
+
     public void clearSelection(int firstVisPos, int lastVisPos) {
         int size = mSelectedItems.size();
         for (int i = 0; i < size; ++i) {
@@ -108,6 +116,26 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
             }
         }
         mSelectedItems.clear();
+    }
+
+    public void forEachSelectedItemModifyInPlace(ApplyAction func) {
+        for (int i = 0; i < mSelectedItems.size(); ++i) {
+            int projectPos = mSelectedItems.keyAt(i);
+            Project project = mProjectList.get(projectPos);
+            func.modifyProject(project);
+        }
+    }
+
+    public void forEachSelectedItemRemove(ApplyAction func) {
+        for (int i = mSelectedItems.size() - 1; i >= 0; --i) {
+            int pos = mSelectedItems.keyAt(i);
+            Project project = getItem(pos);
+            func.modifyProject(project);
+            removeItem(project);
+            notifyItemRemoved(pos);
+        }
+        mSelectedItems.clear();
+        mAnimItems.clear();
     }
 
     protected View initView(ViewGroup parent, int layout) {

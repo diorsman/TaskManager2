@@ -5,28 +5,36 @@
     <item
         android:id="@+id/action_edit_project"
         android:title="@string/action_edit_project"
+        android:icon="@drawable/ic_action_action_info_outline"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_share_project"
         android:title="@string/shared_project"
+        android:icon="@drawable/ic_action_social_share"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_mark_complete"
         android:title="@string/action_mark_complete"
+        android:icon="@drawable/ic_action_navigation_check"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/action_mark_not_complete"
-          android:title="@string/action_mark_not_complete"/>
+    <item
+        android:id="@+id/action_mark_not_complete"
+        android:icon="@drawable/ic_action_navigation_close"
+        android:title="@string/action_mark_not_complete"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_archive"
         android:title="@string/archive_project"
+        android:icon="@drawable/ic_action_content_archive"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/delete"
+        android:id="@+id/action_trash"
         android:title="@string/delete_project"
+        android:icon="@drawable/ic_action_action_delete"
         app:showAsAction="ifRoom"/>
 </menu>

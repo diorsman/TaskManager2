@@ -40,9 +40,9 @@ import com.personal.taskmanager2.adapters.ActionBarSpinner;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.model.parse.Project;
-import com.personal.taskmanager2.ui.widget.DividerItemDecoration;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
+import com.personal.taskmanager2.ui.widget.DividerItemDecoration;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.util.ArrayList;
@@ -75,13 +75,10 @@ public abstract class BaseProjectFragment extends Fragment
     private BaseProjectAdapter mAdapter;
     private Context            mContext;
 
-    private boolean mQueriedList   = false;
-    private boolean mQueriedDetail = false;
-
     private boolean mArchive;
     private boolean mTrash;
 
-    private int mSelectedPosition = 0;
+    private int mSelectedPosition = -1;
     private int mSortBy           = 0;
 
     private ActionMode mActionMode;
@@ -90,9 +87,12 @@ public abstract class BaseProjectFragment extends Fragment
         return mActionMode;
     }
 
-    private ActionMode.Callback mActionModeCallBack = new ActionMode.Callback() {
+    private class MyActionCallback implements ActionMode.Callback {
+
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            actionMode.setTitleOptionalHint(true);
+            actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
             menu.clear();
             MenuInflater inflater = actionMode.getMenuInflater();
             inflater.inflate(R.menu.project_context_menu_single, menu);
@@ -101,6 +101,8 @@ public abstract class BaseProjectFragment extends Fragment
 
         @Override
         public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            actionMode.setTitleOptionalHint(true);
+            actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
             menu.clear();
             MenuInflater inflater = actionMode.getMenuInflater();
             if (mAdapter.getNumSelected() > 1) {
@@ -114,7 +116,65 @@ public abstract class BaseProjectFragment extends Fragment
 
         @Override
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            return false;
+            switch (menuItem.getItemId()) {
+                case R.id.action_edit_project:
+                    mSelectedPosition = -1;
+                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        @Override
+                        public void modifyProject(Project project) {
+                            mActionMode.finish();
+                            project.safeEdit(BaseProjectFragment.this.getFragmentManager(),
+                                             BaseProjectFragment.this.getActivity());
+                        }
+                    });
+                    return true;
+                case R.id.action_share_project:
+                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        @Override
+                        public void modifyProject(Project project) {
+                            project.share(BaseProjectFragment.this.getActivity());
+                        }
+                    });
+                    return true;
+                case R.id.action_mark_complete:
+                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        @Override
+                        public void modifyProject(Project project) {
+                            project.safeChangeStatus(true, BaseProjectFragment.this.getActivity());
+                        }
+                    });
+                    mActionMode.finish();
+                    return true;
+                case R.id.action_mark_not_complete:
+                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        @Override
+                        public void modifyProject(Project project) {
+                            project.safeChangeStatus(false, BaseProjectFragment.this.getActivity());
+                        }
+                    });
+                    mActionMode.finish();
+                    return true;
+                case R.id.action_archive:
+                    mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
+                        @Override
+                        public void modifyProject(Project project) {
+                            project.safeArchive(true, getActivity());
+                        }
+                    });
+                    mActionMode.finish();
+                    return true;
+                case R.id.action_trash:
+                    mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
+                        @Override
+                        public void modifyProject(Project project) {
+                            project.safeTrash(true, getActivity());
+                        }
+                    });
+                    mActionMode.finish();
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         @Override
@@ -125,7 +185,9 @@ public abstract class BaseProjectFragment extends Fragment
             mAdapter.clearSelection(firstVisPos, lastVisPos);
             mActionMode = null;
         }
-    };
+    }
+
+    private ActionMode.Callback mActionModeCallBack = new MyActionCallback();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -207,7 +269,7 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     @Override
-    public void onAvatarClick(View avatar,int position) {
+    public void onAvatarClick(View avatar, int position) {
         toggleSelection(position);
     }
 
@@ -275,15 +337,11 @@ public abstract class BaseProjectFragment extends Fragment
                 switch (position) {
                     case 0:
                         //Default List View
-                        navItemSelected(LIST_VIEW_POS, mQueriedList);
-                        mQueriedList = true;
-                        mQueriedDetail = false;
+                        navItemSelected(LIST_VIEW_POS);
                         break;
                     case 1:
                         // Detail View
-                        navItemSelected(DETAIL_VIEW_POS, mQueriedDetail);
-                        mQueriedDetail = true;
-                        mQueriedList = false;
+                        navItemSelected(DETAIL_VIEW_POS);
                         break;
                 }
             }
@@ -296,11 +354,11 @@ public abstract class BaseProjectFragment extends Fragment
         spinner.setSelection(mSelectedPosition);
     }
 
-    private void navItemSelected(int position, boolean hasQueried) {
-        mSelectedPosition = position;
-        if (!hasQueried) {
+    private void navItemSelected(int position) {
+        if (mSelectedPosition != position) {
             queryProjects();
         }
+        mSelectedPosition = position;
     }
 
     private void setUpSearchView(Toolbar toolbar) {
@@ -326,7 +384,7 @@ public abstract class BaseProjectFragment extends Fragment
             public boolean onQueryTextSubmit(String query) {
 
                 MenuItemCompat.collapseActionView(searchItem);
-
+                mSelectedPosition = -1;
                 getFragmentManager().beginTransaction()
                                     .addToBackStack(null)
                                     .replace(R.id.container, SearchFragment.newInstance(query))

@@ -5,7 +5,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:theme="@style/Theme.Toolbar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
     <Spinner

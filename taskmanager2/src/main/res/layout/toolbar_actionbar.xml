@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
     android:background="@null"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:theme="@style/Theme.Toolbar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
 </android.support.v7.widget.Toolbar>
