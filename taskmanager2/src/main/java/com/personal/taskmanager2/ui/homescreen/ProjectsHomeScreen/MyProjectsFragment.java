@@ -5,11 +5,18 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
+import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.CreateProjectFragment;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.JoinProjectFragment;
 import com.personal.taskmanager2.ui.widget.FloatingActionButton;
@@ -52,6 +59,105 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mCreateButton.setOnClickListener(this);
         mAddProjectButton.setOnClickListener(this);
         mJoinProjectButton.setOnClickListener(this);
+
+        mActionModeCallback = new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                actionMode.setTitleOptionalHint(true);
+                actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
+                menu.clear();
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.project_context_menu_single, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                actionMode.setTitleOptionalHint(true);
+                actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
+                menu.clear();
+                MenuInflater inflater = actionMode.getMenuInflater();
+                if (mAdapter.getNumSelected() > 1) {
+                    inflater.inflate(R.menu.project_context_menu_multiple, menu);
+                }
+                else {
+                    inflater.inflate(R.menu.project_context_menu_single, menu);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_edit_project:
+                        mSelectedPosition = -1;
+                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                            @Override
+                            public void modifyProject(Project project) {
+                                getActionMode().finish();
+                                project.safeEdit(MyProjectsFragment.this.getFragmentManager(),
+                                                 MyProjectsFragment.this.getActivity());
+                            }
+                        });
+                        return true;
+                    case R.id.action_share_project:
+                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                            @Override
+                            public void modifyProject(Project project) {
+                                project.share(MyProjectsFragment.this.getActivity());
+                            }
+                        });
+                        return true;
+                    case R.id.action_mark_complete:
+                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                            @Override
+                            public void modifyProject(Project project) {
+                                project.safeChangeStatus(true, MyProjectsFragment.this.getActivity());
+                            }
+                        });
+                        getActionMode().finish();
+                        return true;
+                    case R.id.action_mark_not_complete:
+                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                            @Override
+                            public void modifyProject(Project project) {
+                                project.safeChangeStatus(false, MyProjectsFragment.this.getActivity());
+                            }
+                        });
+                        getActionMode().finish();
+                        return true;
+                    case R.id.action_archive:
+                        mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
+                            @Override
+                            public void modifyProject(Project project) {
+                                project.safeArchive(true, getActivity());
+                            }
+                        });
+                        getActionMode().finish();
+                        return true;
+                    case R.id.action_trash:
+                        mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
+                            @Override
+                            public void modifyProject(Project project) {
+                                project.safeTrash(true, getActivity());
+                            }
+                        });
+                        getActionMode().finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                int firstVisPos = llm.findFirstVisibleItemPosition();
+                int lastVisPos = llm.findLastVisibleItemPosition();
+                mAdapter.clearSelection(firstVisPos, lastVisPos);
+                mActionMode = null;
+            }
+        };
 
         return rootView;
     }

@@ -65,131 +65,30 @@ public abstract class BaseProjectFragment extends Fragment
 
     private String mToolbarTitle;
 
-    private SwipeRefreshLayout mRefreshLayoutList;
-    private RecyclerView       mRecyclerView;
-    private TextView           mLoadProjects;
-    private TextView           mNoProjects;
+    private   SwipeRefreshLayout mRefreshLayoutList;
+    protected RecyclerView       mRecyclerView;
+    private   TextView           mLoadProjects;
+    private   TextView           mNoProjects;
 
     private int mLayoutResourceId;
 
-    private BaseProjectAdapter mAdapter;
-    private Context            mContext;
+    protected BaseProjectAdapter mAdapter;
+    private   Context            mContext;
 
     private boolean mArchive;
     private boolean mTrash;
 
-    private int mSelectedPosition = -1;
-    private int mSortBy           = 0;
+    protected int mSelectedPosition = -1;
+    private   int mSortBy           = 0;
 
-    private ActionMode mActionMode;
+    protected ActionMode mActionMode;
 
     public ActionMode getActionMode() {
         return mActionMode;
     }
 
-    private class MyActionCallback implements ActionMode.Callback {
+    protected ActionMode.Callback mActionModeCallback;
 
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            actionMode.setTitleOptionalHint(true);
-            actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
-            menu.clear();
-            MenuInflater inflater = actionMode.getMenuInflater();
-            inflater.inflate(R.menu.project_context_menu_single, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-            actionMode.setTitleOptionalHint(true);
-            actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
-            menu.clear();
-            MenuInflater inflater = actionMode.getMenuInflater();
-            if (mAdapter.getNumSelected() > 1) {
-                inflater.inflate(R.menu.project_context_menu_multiple, menu);
-            }
-            else {
-                inflater.inflate(R.menu.project_context_menu_single, menu);
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_edit_project:
-                    mSelectedPosition = -1;
-                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
-                        @Override
-                        public void modifyProject(Project project) {
-                            mActionMode.finish();
-                            project.safeEdit(BaseProjectFragment.this.getFragmentManager(),
-                                             BaseProjectFragment.this.getActivity());
-                        }
-                    });
-                    return true;
-                case R.id.action_share_project:
-                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
-                        @Override
-                        public void modifyProject(Project project) {
-                            project.share(BaseProjectFragment.this.getActivity());
-                        }
-                    });
-                    return true;
-                case R.id.action_mark_complete:
-                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
-                        @Override
-                        public void modifyProject(Project project) {
-                            project.safeChangeStatus(true, BaseProjectFragment.this.getActivity());
-                        }
-                    });
-                    mActionMode.finish();
-                    return true;
-                case R.id.action_mark_not_complete:
-                    mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
-                        @Override
-                        public void modifyProject(Project project) {
-                            project.safeChangeStatus(false, BaseProjectFragment.this.getActivity());
-                        }
-                    });
-                    mActionMode.finish();
-                    return true;
-                case R.id.action_archive:
-                    mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
-                        @Override
-                        public void modifyProject(Project project) {
-                            project.safeArchive(true, getActivity());
-                        }
-                    });
-                    mActionMode.finish();
-                    return true;
-                case R.id.action_trash:
-                    mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
-                        @Override
-                        public void modifyProject(Project project) {
-                            project.safeTrash(true, getActivity());
-                        }
-                    });
-                    mActionMode.finish();
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-            int firstVisPos = llm.findFirstVisibleItemPosition();
-            int lastVisPos = llm.findLastVisibleItemPosition();
-            mAdapter.clearSelection(firstVisPos, lastVisPos);
-            mActionMode = null;
-        }
-    }
-
-    private ActionMode.Callback mActionModeCallBack = new MyActionCallback();
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
 
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -280,8 +179,8 @@ public abstract class BaseProjectFragment extends Fragment
         else {
             mAdapter.selectItem(position);
             if (mActionMode == null) {
-                mActionMode = Utilities.getToolbar(getActivity()).startActionMode(
-                        mActionModeCallBack);
+                mActionMode =
+                        Utilities.getToolbar(getActivity()).startActionMode(mActionModeCallback);
             }
             else {
                 mActionMode.invalidate();
