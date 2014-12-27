@@ -50,6 +50,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     private List<Project>      mProjectList;
     private SparseBooleanArray mSelectedItems;
     private SparseIntArray     mAnimItems;
+    private SectionedRecycleViewAdapter mSectionAdapter;
 
     private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
     Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
@@ -64,6 +65,10 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         mSelectedItems = new SparseBooleanArray();
         mAnimItems = new SparseIntArray();
         mClickListener = listener;
+    }
+
+    public void setSectionAdapter(SectionedRecycleViewAdapter adapter) {
+        mSectionAdapter = adapter;
     }
 
     @Override
@@ -82,13 +87,13 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     public void selectItem(int position) {
         mSelectedItems.put(position, true);
         mAnimItems.put(position, CHECK_ANIM);
-        notifyItemChanged(position);
+        notifyItemChanged(mSectionAdapter.positionToSectionedPosition(position));
     }
 
     public void unselectedItem(int position) {
         mSelectedItems.delete(position);
         mAnimItems.put(position, ORIG_ANIM);
-        notifyItemChanged(position);
+        notifyItemChanged(mSectionAdapter.positionToSectionedPosition(position));
     }
 
     public boolean isItemSelected(int position) {
@@ -107,7 +112,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         int size = mSelectedItems.size();
         for (int i = 0; i < size; ++i) {
             int key = mSelectedItems.keyAt(i);
-            notifyItemChanged(key);
+            notifyItemChanged(mSectionAdapter.positionToSectionedPosition(key));
             if (key >= firstVisPos && key <= lastVisPos) {
                 mAnimItems.put(key, ORIG_ANIM);
             }
@@ -132,7 +137,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
             Project project = getItem(pos);
             func.modifyProject(project);
             removeItem(project);
-            notifyItemRemoved(pos);
+            notifyItemRemoved(mSectionAdapter.positionToSectionedPosition(pos));
         }
         mSelectedItems.clear();
         mAnimItems.clear();
@@ -177,14 +182,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
 
     protected void initAvatar(View avatar, Project project, final int position) {
         if (isItemSelected(position)) {
-            if (mAnimItems.get(position) == CHECK_ANIM) {
-                AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(),
-                                                                               R.animator.card_flip_left_in);
-                anim.setTarget(avatar);
-                anim.start();
-                mAnimItems.delete(position);
-            }
-
+            showAnim(position, CHECK_ANIM, R.animator.card_flip_left_in, avatar);
             avatar.setBackground(getContext().getResources().getDrawable(R.drawable.checked_item));
         }
         else {
@@ -203,15 +201,17 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
                 sIconMap.put(key, icon);
             }
 
-            if (mAnimItems.get(position) == ORIG_ANIM) {
-                AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(),
-                                                                               R.animator.card_flip_right_in);
-                anim.setTarget(avatar);
-                anim.start();
-                mAnimItems.delete(position);
-            }
-
+            showAnim(position,ORIG_ANIM, R.animator.card_flip_right_in, avatar);
             avatar.setBackground(icon);
+        }
+    }
+
+    private void showAnim(int pos, int animType, int animId, View view) {
+        if (mAnimItems.get(pos) == animType) {
+            AnimatorSet anim = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), animId);
+            anim.setTarget(view);
+            anim.start();
+            mAnimItems.delete(pos);
         }
     }
 

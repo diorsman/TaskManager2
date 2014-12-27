@@ -31,7 +31,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
     private Handler mHandler = new Handler();
 
-    private boolean mOpenAdd = false;
+    private boolean mOpenCreate = false;
 
     public static BaseProjectFragment newInstance() {
 
@@ -60,11 +60,16 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mAddProjectButton.setOnClickListener(this);
         mJoinProjectButton.setOnClickListener(this);
 
+        mAddProjectButton.setScaleX(0);
+        mAddProjectButton.setScaleY(0);
+        mJoinProjectButton.setScaleX(0);
+        mJoinProjectButton.setScaleY(0);
+
         mActionModeCallback = new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.setTitleOptionalHint(true);
-                actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
+                actionMode.setTitle(Integer.toString(mProjectAdapter.getNumSelected()));
                 menu.clear();
                 MenuInflater inflater = actionMode.getMenuInflater();
                 inflater.inflate(R.menu.project_context_menu_single, menu);
@@ -74,10 +79,10 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
             @Override
             public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.setTitleOptionalHint(true);
-                actionMode.setTitle(Integer.toString(mAdapter.getNumSelected()));
+                actionMode.setTitle(Integer.toString(mProjectAdapter.getNumSelected()));
                 menu.clear();
                 MenuInflater inflater = actionMode.getMenuInflater();
-                if (mAdapter.getNumSelected() > 1) {
+                if (mProjectAdapter.getNumSelected() > 1) {
                     inflater.inflate(R.menu.project_context_menu_multiple, menu);
                 }
                 else {
@@ -91,7 +96,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                 switch (menuItem.getItemId()) {
                     case R.id.action_edit_project:
                         mSelectedPosition = -1;
-                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 getActionMode().finish();
@@ -101,7 +106,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         });
                         return true;
                     case R.id.action_share_project:
-                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 project.share(MyProjectsFragment.this.getActivity());
@@ -109,7 +114,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         });
                         return true;
                     case R.id.action_mark_complete:
-                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 project.safeChangeStatus(true, MyProjectsFragment.this.getActivity());
@@ -118,7 +123,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         getActionMode().finish();
                         return true;
                     case R.id.action_mark_not_complete:
-                        mAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 project.safeChangeStatus(false, MyProjectsFragment.this.getActivity());
@@ -127,7 +132,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         getActionMode().finish();
                         return true;
                     case R.id.action_archive:
-                        mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 project.safeArchive(true, getActivity());
@@ -136,7 +141,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         getActionMode().finish();
                         return true;
                     case R.id.action_trash:
-                        mAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 project.safeTrash(true, getActivity());
@@ -154,7 +159,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                 LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
                 int firstVisPos = llm.findFirstVisibleItemPosition();
                 int lastVisPos = llm.findLastVisibleItemPosition();
-                mAdapter.clearSelection(firstVisPos, lastVisPos);
+                mProjectAdapter.clearSelection(firstVisPos, lastVisPos);
                 mActionMode = null;
             }
         };
@@ -183,7 +188,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     private void createProjectsButtonClick() {
 
 
-        if (!mOpenAdd) {
+        if (!mOpenCreate) {
             rotateClockwise();
         }
         else {
@@ -203,7 +208,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
                          @Override
                          public void onAnimationEnd(Animator animation) {
-                             mOpenAdd = true;
+                             mOpenCreate = true;
                          }
                      });
     }
@@ -220,7 +225,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
                          @Override
                          public void onAnimationEnd(Animator animation) {
-                             mOpenAdd = false;
+                             mOpenCreate = false;
                          }
                      });
     }
@@ -229,13 +234,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mAddProjectButton.animate()
                          .setDuration(125)
                          .scaleX(1)
-                         .scaleY(1)
-                         .setListener(new AnimatorListenerAdapter() {
-                             @Override
-                             public void onAnimationStart(Animator animation) {
-                                 mAddProjectButton.setVisibility(View.VISIBLE);
-                             }
-                         });
+                         .scaleY(1);
 
         mHandler.postDelayed(mJoinProjectFadeIn, 125 / 2);
     }
@@ -246,13 +245,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
             mJoinProjectButton.animate()
                               .setDuration(125)
                               .scaleX(1)
-                              .scaleY(1)
-                              .setListener(new AnimatorListenerAdapter() {
-                                  @Override
-                                  public void onAnimationStart(Animator animation) {
-                                      mJoinProjectButton.setVisibility(View.VISIBLE);
-                                  }
-                              });
+                              .scaleY(1);
         }
     };
 
@@ -261,13 +254,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mJoinProjectButton.animate()
                           .setDuration(125)
                           .scaleX(0)
-                          .scaleY(0)
-                          .setListener(new AnimatorListenerAdapter() {
-                              @Override
-                              public void onAnimationEnd(Animator animation) {
-                                  mJoinProjectButton.setVisibility(View.INVISIBLE);
-                              }
-                          });
+                          .scaleY(0);
 
         mHandler.postDelayed(mAddProjectFadeOut, 125 / 2);
     }
@@ -278,13 +265,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
             mAddProjectButton.animate()
                              .setDuration(125)
                              .scaleX(0)
-                             .scaleY(0)
-                             .setListener(new AnimatorListenerAdapter() {
-                                 @Override
-                                 public void onAnimationEnd(Animator animation) {
-                                     mAddProjectButton.setVisibility(View.INVISIBLE);
-                                 }
-                             });
+                             .scaleY(0);
         }
     };
 }

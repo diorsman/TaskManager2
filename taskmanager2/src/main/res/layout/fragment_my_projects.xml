@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
 
     <RelativeLayout
@@ -44,8 +45,7 @@
         android:layout_marginRight="16dp"
         app:floatingColor="@color/teal_primary"
         app:floatingColorPressed="@color/teal_focused"
-        app:floatingIcon="@drawable/ic_content_create"
-        android:visibility="invisible"/>
+        app:floatingIcon="@drawable/ic_content_create"/>
 
     <com.personal.taskmanager2.ui.widget.FloatingActionButton
         android:id="@+id/join_project_fab"
@@ -57,8 +57,7 @@
         android:layout_marginRight="16dp"
         app:floatingColor="@color/cyan_primary"
         app:floatingColorPressed="@color/cyan_focused"
-        app:floatingIcon="@drawable/ic_social_person_add"
-        android:visibility="invisible"/>
+        app:floatingIcon="@drawable/ic_social_person_add"/>
 
 </FrameLayout>
 

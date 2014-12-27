@@ -12,7 +12,7 @@ public class ListViewAnimationHelper<T> {
 
     private ListView                mListView;
     private AnimatorListenerAdapter mRemoveListener;
-    //private BaseProjectAdapter      mAdapter;
+    //private BaseProjectAdapter      mProjectAdapter;
 
 
     public ListViewAnimationHelper(AnimatorListenerAdapter removeListener) {
@@ -20,7 +20,7 @@ public class ListViewAnimationHelper<T> {
     }
 
     /*public void setAdapter(BaseProjectAdapter adapter) {
-        mAdapter = adapter;
+        mProjectAdapter = adapter;
     }*/
 
     public void setListView(ListView listView) {
@@ -28,12 +28,12 @@ public class ListViewAnimationHelper<T> {
     }
 
     public void showRemoveAnimation(T item) {
-        //int pos = mAdapter.getPosition((Project) item);
+        //int pos = mProjectAdapter.getPosition((Project) item);
         //showRemoveAnimation(pos);
     }
 
     public void showRemoveAnimation(int pos) {
-        //mAdapter.remove(pos);
+        //mProjectAdapter.remove(pos);
         int visiblePos = mListView.getFirstVisiblePosition();
         final View item = mListView.getChildAt(pos - visiblePos);
         item.animate()

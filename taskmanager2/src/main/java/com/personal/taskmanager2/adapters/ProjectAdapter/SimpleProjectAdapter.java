@@ -24,13 +24,14 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
     private final static DateFormat SIMPLE_DATE_FORMAT =
             new SimpleDateFormat("MM/dd/yyyy 'at' hh:mm a");
 
-    public SimpleProjectAdapter(Context context, List<Project> projectList, OnItemClickListener listener) {
+    public SimpleProjectAdapter(Context context,
+                                List<Project> projectList,
+                                OnItemClickListener listener) {
         super(context, projectList, listener);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                         int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = initView(parent, R.layout.list_item_project);
         final ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
@@ -75,9 +76,10 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
         holder.projectStatus.setVisibility(ProgressBar.VISIBLE);
         holder.projectStatus.setProgress((int) progress);
         holder.projectStatus.getProgressDrawable()
-              .setColorFilter(getContext().getResources()
-                                          .getColor(Utilities.getColorRsrcFromColor(project.getColor())),
-                              PorterDuff.Mode.SRC_IN);
+                            .setColorFilter(getContext().getResources()
+                                                        .getColor(Utilities.getColorRsrcFromColor(
+                                                                project.getColor())),
+                                            PorterDuff.Mode.SRC_IN);
     }
 
     public static class ViewHolder extends BaseProjectAdapter.ViewHolder {

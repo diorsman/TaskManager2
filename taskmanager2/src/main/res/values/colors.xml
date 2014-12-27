@@ -29,4 +29,5 @@
     <color name="light_gray">#ddd</color>
     <color name="checked_gray">#212121</color>
     <color name="cab_background">#607D8B</color>
+    <color name="background">#e5e5e5</color>
 </resources>

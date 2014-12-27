@@ -5,8 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="88dp"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
+    android:gravity="center_vertical"
     android:descendantFocusability="blocksDescendants"
     android:background="@drawable/list_view_selector"
     android:clickable="true">
