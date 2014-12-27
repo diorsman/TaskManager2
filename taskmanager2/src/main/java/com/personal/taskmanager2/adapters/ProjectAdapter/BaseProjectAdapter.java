@@ -3,6 +3,7 @@ package com.personal.taskmanager2.adapters.ProjectAdapter;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -173,6 +174,11 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         if (project.getStatus()) {
             textView.setTextAppearance(mContext, styleComplete);
             textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        else if (project.getDueDate().getTime() < System.currentTimeMillis()) {
+            textView.setTextAppearance(mContext, styleNotComplete);
+            textView.setPaintFlags(textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
+            textView.setTextColor(Color.RED);
         }
         else {
             textView.setTextAppearance(mContext, styleNotComplete);

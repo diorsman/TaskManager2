@@ -682,12 +682,10 @@ public abstract class BaseProjectFragment extends Fragment
     private void getProjectCountOverdue(Handler handler) {
         try {
             Calendar end = Calendar.getInstance();
-            end.add(Calendar.DATE, -1);
-            setCalendarToEndOfDay(end);
             printCal(end, "overdue = ");
 
             ParseQuery<Project> projectQuery = initQuery();
-            projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, end.getTime());
+            projectQuery.whereLessThan(Project.DUE_DATE_COL, end.getTime());
             int numProjectsOverdue = projectQuery.count();
             Log.d(TAG, "num projects overdue = " + numProjectsOverdue);
 
@@ -704,8 +702,6 @@ public abstract class BaseProjectFragment extends Fragment
     private void getProjectCountDueToday(Handler handler) {
         try {
             Calendar startToday = Calendar.getInstance();
-            setCalendarToBeginningOfDay(startToday);
-
             Calendar endToday = Calendar.getInstance();
             setCalendarToEndOfDay(endToday);
 
