@@ -635,8 +635,9 @@ public abstract class BaseProjectFragment extends Fragment
                         sections.add(new SectionedRecycleViewAdapter.Section(0, "Due Today"));
                     }
                     else {
-                        sections.add(new SectionedRecycleViewAdapter.Section(numProjectsOverdue,
-                                                                             "Due Today"));
+                        sections.add(new SectionedRecycleViewAdapter.Section(
+                                numProjectsOverdue - numProjectsCompleted,
+                                "Due Today"));
                     }
                 }
                 if (numProjectsDueThisWeek > 0) {
@@ -645,7 +646,8 @@ public abstract class BaseProjectFragment extends Fragment
                     }
                     else {
                         sections.add(new SectionedRecycleViewAdapter.Section(
-                                numProjectsOverdue + numProjectsDueToday, "Due This Week"));
+                                numProjectsOverdue + numProjectsDueToday - numProjectsCompleted,
+                                "Due This Week"));
                     }
                 }
                 if (numProjectsDueThisMonth > 0) {
@@ -654,7 +656,8 @@ public abstract class BaseProjectFragment extends Fragment
                     }
                     else {
                         sections.add(new SectionedRecycleViewAdapter.Section(
-                                numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek,
+                                numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek -
+                                numProjectsCompleted,
                                 "Due This Month"));
                     }
                 }
@@ -665,7 +668,7 @@ public abstract class BaseProjectFragment extends Fragment
                     else {
                         sections.add(new SectionedRecycleViewAdapter.Section(
                                 numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek +
-                                numProjectsDueThisMonth, "Due Later"));
+                                numProjectsDueThisMonth - numProjectsCompleted, "Due Later"));
                     }
                 }
                 if (numProjectsCompleted > 0) {
