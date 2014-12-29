@@ -24,6 +24,8 @@ import com.personal.taskmanager2.ui.widget.FloatingActionButton;
 public class MyProjectsFragment extends BaseProjectFragment implements View.OnClickListener {
 
     private static final String TAG = "MyProjectsFragment";
+    
+    private static final int ANIM_TIME = 250;
 
     private FloatingActionButton mCreateButton;
     private FloatingActionButton mAddProjectButton;
@@ -60,10 +62,10 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mAddProjectButton.setOnClickListener(this);
         mJoinProjectButton.setOnClickListener(this);
 
-        mAddProjectButton.setScaleX(0);
+        /*mAddProjectButton.setScaleX(0);
         mAddProjectButton.setScaleY(0);
         mJoinProjectButton.setScaleX(0);
-        mJoinProjectButton.setScaleY(0);
+        mJoinProjectButton.setScaleY(0);*/
 
         mActionModeCallback = new ActionMode.Callback() {
             @Override
@@ -117,7 +119,8 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
-                                project.safeChangeStatus(true, MyProjectsFragment.this.getActivity());
+                                project.safeChangeStatus(true,
+                                                         MyProjectsFragment.this.getActivity());
                             }
                         });
                         getActionMode().finish();
@@ -126,7 +129,8 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                         mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
-                                project.safeChangeStatus(false, MyProjectsFragment.this.getActivity());
+                                project.safeChangeStatus(false,
+                                                         MyProjectsFragment.this.getActivity());
                             }
                         });
                         getActionMode().finish();
@@ -175,7 +179,9 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                 break;
             case R.id.add_project_fab:
                 createProjectsButtonClick();
-                CreateProjectFragment.newInstance().show(getFragmentManager(), null);
+                CreateProjectFragment frag = CreateProjectFragment.newInstance();
+                frag.setTargetFragment(this, 1);
+                frag.show(getFragmentManager(), null);
                 break;
             case R.id.join_project_fab:
                 createProjectsButtonClick();
@@ -198,24 +204,27 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
 
     private void rotateClockwise() {
         mCreateButton.animate()
-                     .setDuration(250)
+                     .setDuration(ANIM_TIME * 2)
                      .rotation(45)
                      .setListener(new AnimatorListenerAdapter() {
                          @Override
                          public void onAnimationStart(Animator animation) {
-                             fadeInViews();
+                             mAddProjectButton.setVisibility(View.VISIBLE);
+                             mJoinProjectButton.setVisibility(View.VISIBLE);
+                             //fadeInViews();
                          }
 
                          @Override
                          public void onAnimationEnd(Animator animation) {
                              mOpenCreate = true;
+                             fadeInViews();
                          }
                      });
     }
 
     private void rotateCounterClockwise() {
         mCreateButton.animate()
-                     .setDuration(250)
+                     .setDuration(ANIM_TIME)
                      .rotation(0)
                      .setListener(new AnimatorListenerAdapter() {
                          @Override
@@ -231,41 +240,65 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     }
 
     private void fadeInViews() {
+        mAddProjectButton.setVisibility(View.VISIBLE);
         mAddProjectButton.animate()
-                         .setDuration(125)
+                         .setDuration(ANIM_TIME / 2)
                          .scaleX(1)
-                         .scaleY(1);
+                         .scaleY(1)
+                         .setListener(new AnimatorListenerAdapter() {
+                             @Override
+                             public void onAnimationStart(Animator animation) {
+                             }
+                         });
 
-        mHandler.postDelayed(mJoinProjectFadeIn, 125 / 2);
+        mHandler.postDelayed(mJoinProjectFadeIn, ANIM_TIME / 4);
     }
 
     Runnable mJoinProjectFadeIn = new Runnable() {
         @Override
         public void run() {
+            mJoinProjectButton.setVisibility(View.VISIBLE);
             mJoinProjectButton.animate()
-                              .setDuration(125)
+                              .setDuration(ANIM_TIME / 2)
                               .scaleX(1)
-                              .scaleY(1);
+                              .scaleY(1)
+                              .setListener(new AnimatorListenerAdapter() {
+                                  @Override
+                                  public void onAnimationStart(Animator animation) {
+                                  }
+                              });
         }
     };
 
 
     private void fadeOutViews() {
         mJoinProjectButton.animate()
-                          .setDuration(125)
+                          .setDuration(ANIM_TIME / 2)
                           .scaleX(0)
-                          .scaleY(0);
+                          .scaleY(0)
+                          .setListener(new AnimatorListenerAdapter() {
+                              @Override
+                              public void onAnimationEnd(Animator animation) {
+                                  mJoinProjectButton.setVisibility(View.GONE);
+                              }
+                          });
 
-        mHandler.postDelayed(mAddProjectFadeOut, 125 / 2);
+        mHandler.postDelayed(mAddProjectFadeOut, ANIM_TIME / 4);
     }
 
     Runnable mAddProjectFadeOut = new Runnable() {
         @Override
         public void run() {
             mAddProjectButton.animate()
-                             .setDuration(125)
+                             .setDuration(ANIM_TIME / 2)
                              .scaleX(0)
-                             .scaleY(0);
+                             .scaleY(0)
+                             .setListener(new AnimatorListenerAdapter() {
+                                 @Override
+                                 public void onAnimationEnd(Animator animation) {
+                                     mAddProjectButton.setVisibility(View.GONE);
+                                 }
+                             });
         }
     };
 }

@@ -43,6 +43,9 @@
         android:layout_marginBottom="88dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:visibility="gone"
         app:floatingColor="@color/teal_primary"
         app:floatingColorPressed="@color/teal_focused"
         app:floatingIcon="@drawable/ic_content_create"/>
@@ -55,6 +58,9 @@
         android:layout_marginBottom="160dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:scaleX="0"
+        android:scaleY="0"
+        android:visibility="gone"
         app:floatingColor="@color/cyan_primary"
         app:floatingColorPressed="@color/cyan_focused"
         app:floatingIcon="@drawable/ic_social_person_add"/>

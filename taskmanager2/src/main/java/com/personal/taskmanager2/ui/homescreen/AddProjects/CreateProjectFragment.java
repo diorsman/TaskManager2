@@ -25,6 +25,7 @@ import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.BaseDialogFragment;
 import com.personal.taskmanager2.ui.DatePickerFragment;
 import com.personal.taskmanager2.ui.TimePickerFragment;
+import com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen.MyProjectsFragment;
 import com.personal.taskmanager2.utilities.EmptyEditTextException;
 import com.personal.taskmanager2.utilities.Utilities;
 
@@ -169,7 +170,9 @@ public class CreateProjectFragment extends BaseDialogFragment
                         Toast.makeText(getActivity(), "Project Created!", Toast.LENGTH_SHORT)
                              .show();
                         getDialog().dismiss();
-                        Utilities.refreshFragment(getFragmentManager());
+                        MyProjectsFragment frag = (MyProjectsFragment) getTargetFragment();
+                        frag.queryProjects();
+                        //Utilities.refreshFragment(getFragmentManager());
                         break;
 
                     case EXCEPTION_OCCURRED:

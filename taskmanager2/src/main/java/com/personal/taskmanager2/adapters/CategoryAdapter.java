@@ -57,17 +57,17 @@ public class CategoryAdapter extends ArrayAdapter<String> {
 
         switch (position) {
             case 0:
-                return android.R.color.holo_blue_dark;
+                return R.color.project_blue;
             case 1:
-                return android.R.color.holo_orange_dark;
+                return R.color.project_orange;
             case 2:
-                return android.R.color.holo_orange_light;
+                return R.color.project_yellow;
             case 3:
-                return android.R.color.holo_green_dark;
+                return R.color.project_green;
             case 4:
-                return android.R.color.holo_red_dark;
+                return R.color.project_red;
             case 5:
-                return android.R.color.holo_purple;
+                return R.color.project_purple;
             default:
                 Log.e(TAG, "Illegal position for color");
                 throw new IllegalArgumentException();
