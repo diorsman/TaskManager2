@@ -126,17 +126,7 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
 
-    public void setSections(/*Section[] sections*/ List<Section> sections) {
-        mSections.clear();
-
-        /*Arrays.sort(sections, new Comparator<Section>() {
-            @Override
-            public int compare(Section o, Section o1) {
-                return (o.firstPosition == o1.firstPosition)
-                        ? 0
-                        : ((o.firstPosition < o1.firstPosition) ? -1 : 1);
-            }
-        });*/
+    public void setSections(List<Section> sections) {
         Collections.sort(sections, new Comparator<Section>() {
             @Override
             public int compare(Section o, Section o1) {

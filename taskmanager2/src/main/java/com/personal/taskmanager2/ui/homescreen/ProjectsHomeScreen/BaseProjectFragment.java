@@ -221,74 +221,6 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     @Override
-    public boolean canDismiss(int position) {
-        return !mSectionedAdapter.isSectionHeaderPosition(position);
-    }
-
-    @Override
-    public void onDismiss(RecyclerView listView, int[] reverseSortedPositions) {
-
-    }
-
-    @Override
-    public void onItemClick(View v) {
-        int position =
-                mSectionedAdapter.sectionedPositionToPosition(mRecyclerView.getChildPosition(v));
-
-        if (mProjectAdapter.isItemSelected(position)) {
-            unSelectItem(position);
-        }
-        else {
-            Intent intent =
-                    new Intent(BaseProjectFragment.this.getActivity(),
-                               ProjectDetailActivity.class);
-            intent.putExtra("project",
-                            mProjectAdapter.getItem(position));
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onItemLongClick(View v) {
-        int position = mRecyclerView.getChildPosition(v);
-        toggleSelection(position);
-    }
-
-    @Override
-    public void onAvatarClick(View avatar, int position) {
-        toggleSelection(position);
-    }
-
-    private void toggleSelection(int position) {
-        position = mSectionedAdapter.sectionedPositionToPosition(position);
-        if (mProjectAdapter.isItemSelected(position)) {
-            unSelectItem(position);
-        }
-        else {
-            mProjectAdapter.selectItem(position);
-            if (mActionMode == null) {
-                mActionMode =
-                        Utilities.getToolbar(getActivity()).startActionMode(mActionModeCallback);
-            }
-            else {
-                mActionMode.invalidate();
-            }
-        }
-    }
-
-    private void unSelectItem(int position) {
-        mProjectAdapter.unselectedItem(position);
-        if (mProjectAdapter.getNumSelected() == 0) {
-            //if (mActionMode != null) {
-            mActionMode.finish();
-            //}
-        }
-        else {
-            mActionMode.invalidate();
-        }
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Toolbar toolbar = Utilities.getToolbar(getActivity());
 
@@ -338,7 +270,7 @@ public abstract class BaseProjectFragment extends Fragment
 
             }
         });
-        spinner.setSelection(mSelectedPosition);
+        spinner.setSelection(0);
     }
 
     private void navItemSelected(int position) {
@@ -346,7 +278,9 @@ public abstract class BaseProjectFragment extends Fragment
             mSelectedPosition = position;
             queryProjects();
         }
-        mSelectedPosition = position;
+        else {
+            mSelectedPosition = position;
+        }
     }
 
     private void setUpSearchView(Toolbar toolbar) {
@@ -518,15 +452,15 @@ public abstract class BaseProjectFragment extends Fragment
                 try {
                     List<Future<Integer>> futures = mExecutor.invokeAll(mCallables);
                     int numItems = futures.get(0).get();
+                    if (numItems == 0) {
+                        return 0;
+                    }
                     int numProjectsOverdue = futures.get(1).get();
                     int numProjectsDueToday = futures.get(2).get();
                     int numProjectsDueThisWeek = futures.get(3).get();
                     int numProjectsDueThisMonth = futures.get(4).get();
                     int numProjectsCompleted = futures.get(5).get();
 
-                    if (numItems == 0) {
-                        return 0;
-                    }
                     int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
                                               numProjectsDueThisWeek - numProjectsDueThisMonth -
                                               numProjectsCompleted;
@@ -792,5 +726,71 @@ public abstract class BaseProjectFragment extends Fragment
             projectQuery.orderByAscending(Project.DESCRIPTION_COL);
         }
         projectQuery.addAscendingOrder(Project.DUE_DATE_COL);
+    }
+
+    @Override
+    public boolean canDismiss(int position) {
+        return !mSectionedAdapter.isSectionHeaderPosition(position);
+    }
+
+    @Override
+    public void onDismiss(RecyclerView listView, int[] reverseSortedPositions) {
+
+    }
+
+    @Override
+    public void onItemClick(View v) {
+        int position =
+                mSectionedAdapter.sectionedPositionToPosition(mRecyclerView.getChildPosition(v));
+
+        if (mProjectAdapter.isItemSelected(position)) {
+            unSelectItem(position);
+        }
+        else {
+            Intent intent =
+                    new Intent(BaseProjectFragment.this.getActivity(),
+                               ProjectDetailActivity.class);
+            intent.putExtra("project",
+                            mProjectAdapter.getItem(position));
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View v) {
+        int position = mRecyclerView.getChildPosition(v);
+        toggleSelection(position);
+    }
+
+    @Override
+    public void onAvatarClick(View avatar, int position) {
+        toggleSelection(position);
+    }
+
+    private void toggleSelection(int position) {
+        position = mSectionedAdapter.sectionedPositionToPosition(position);
+        if (mProjectAdapter.isItemSelected(position)) {
+            unSelectItem(position);
+        }
+        else {
+            mProjectAdapter.selectItem(position);
+            if (mActionMode == null) {
+                mActionMode =
+                        Utilities.getToolbar(getActivity()).startActionMode(mActionModeCallback);
+            }
+            else {
+                mActionMode.invalidate();
+            }
+        }
+    }
+
+    private void unSelectItem(int position) {
+        mProjectAdapter.unselectedItem(position);
+        if (mProjectAdapter.getNumSelected() == 0) {
+            mActionMode.finish();
+        }
+        else {
+            mActionMode.invalidate();
+        }
     }
 }
