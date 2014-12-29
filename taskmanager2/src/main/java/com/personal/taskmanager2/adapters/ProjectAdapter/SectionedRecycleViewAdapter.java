@@ -8,8 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Omid Ghomeshi on 12/26/14.
@@ -125,10 +126,18 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
 
-    public void setSections(Section[] sections) {
+    public void setSections(/*Section[] sections*/ List<Section> sections) {
         mSections.clear();
 
-        Arrays.sort(sections, new Comparator<Section>() {
+        /*Arrays.sort(sections, new Comparator<Section>() {
+            @Override
+            public int compare(Section o, Section o1) {
+                return (o.firstPosition == o1.firstPosition)
+                        ? 0
+                        : ((o.firstPosition < o1.firstPosition) ? -1 : 1);
+            }
+        });*/
+        Collections.sort(sections, new Comparator<Section>() {
             @Override
             public int compare(Section o, Section o1) {
                 return (o.firstPosition == o1.firstPosition)
