@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -17,11 +16,15 @@ import java.util.List;
  */
 public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapter.ViewHolder> {
 
-    private final static DateFormat DETAIL_DATE_FORMAT =
-            new SimpleDateFormat("'Due' 'on' MMM dd, yyyy 'at' hh:mm a");
-
-    public DetailProjectAdapter(Context context, List<Project> projectList, OnItemClickListener listener) {
-        super(context, projectList, listener);
+    public DetailProjectAdapter(Context context,
+                                List<Project> projectList,
+                                OnItemClickListener listener) {
+        super(context,
+              R.style.completed_detail,
+              R.style.not_completed_detail,
+              projectList,
+              listener,
+              new SimpleDateFormat("'Due' 'on' MMM dd, yyyy 'at' hh:mm a"));
     }
 
     @Override
@@ -29,31 +32,14 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
                                          int viewType) {
         View view = initView(parent, R.layout.list_item_project_detail);
         final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mClickListener.onAvatarClick(v, viewHolder.getPosition());
-            }
-        });
+        initAvatarClick(viewHolder);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        super.onBindViewHolder(holder, position);
         Project project = getItem(position);
-
-        holder.itemView.setActivated(isItemSelected(position));
-        initAvatar(holder.projectAvatar, project, position);
-
-        holder.projectName.setText(project.getName());
-        setTitleAppearance(holder.projectName,
-                           project,
-                           R.style.completed_detail,
-                           R.style.not_completed_detail);
-
-        //set due date
-        holder.projectDueDate.setText(DETAIL_DATE_FORMAT.format(project.getDueDate()));
 
         holder.projectDescription.setText(project.getDescription());
 

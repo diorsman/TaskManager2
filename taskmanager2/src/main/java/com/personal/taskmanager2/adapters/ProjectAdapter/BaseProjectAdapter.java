@@ -20,6 +20,7 @@ import com.personal.taskmanager2.ui.widget.CharCircleIcon;
 import com.personal.taskmanager2.utilities.IconKey;
 import com.personal.taskmanager2.utilities.Utilities;
 
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,25 +34,30 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
 
     public interface OnItemClickListener {
 
-        public void onAvatarClick(View v, int position);
+        void onAvatarClick(View v, int position);
 
-        public void onItemClick(View v);
+        void onItemClick(View v);
 
-        public void onItemLongClick(View v);
+        void onItemLongClick(View v);
     }
 
     public interface ApplyAction {
-        public void modifyProject(Project project);
+
+        void modifyProject(Project project);
     }
 
     private static final int CHECK_ANIM = 1;
     private static final int ORIG_ANIM  = 2;
 
-    private Context            mContext;
-    private List<Project>      mProjectList;
-    private SparseBooleanArray mSelectedItems;
-    private SparseIntArray     mAnimItems;
+    private Context                     mContext;
+    private List<Project>               mProjectList;
+    private SparseBooleanArray          mSelectedItems;
+    private SparseIntArray              mAnimItems;
     private SectionedRecycleViewAdapter mSectionAdapter;
+
+    private int                         mStyleIdCompleted;
+    private int                         mStyleIdNotCompleted;
+    private static DateFormat sDateFormat;
 
     private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
     Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
@@ -59,13 +65,19 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     protected OnItemClickListener mClickListener;
 
     public BaseProjectAdapter(Context context,
+                              int styleIdCompleted,
+                              int styleIdNotCompleted,
                               List<Project> projectList,
-                              OnItemClickListener listener) {
+                              OnItemClickListener listener,
+                              DateFormat dateFormat) {
         mProjectList = projectList;
         mContext = context;
         mSelectedItems = new SparseBooleanArray();
         mAnimItems = new SparseIntArray();
         mClickListener = listener;
+        mStyleIdCompleted = styleIdCompleted;
+        mStyleIdNotCompleted = styleIdNotCompleted;
+        sDateFormat = dateFormat;
     }
 
     public void setSectionAdapter(SectionedRecycleViewAdapter adapter) {
@@ -166,27 +178,32 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         return view;
     }
 
-    protected void setTitleAppearance(TextView textView,
-                                      Project project,
-                                      int styleComplete,
-                                      int styleNotComplete) {
-
-        if (project.getStatus()) {
-            textView.setTextAppearance(mContext, styleComplete);
-            textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-        else if (project.getDueDate().getTime() < System.currentTimeMillis()) {
-            textView.setTextAppearance(mContext, styleNotComplete);
-            textView.setPaintFlags(textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
-            textView.setTextColor(Color.RED);
-        }
-        else {
-            textView.setTextAppearance(mContext, styleNotComplete);
-            textView.setPaintFlags(textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
-        }
+    protected void initAvatarClick(final ViewHolder viewHolder) {
+        viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onAvatarClick(v, viewHolder.getPosition());
+            }
+        });
     }
 
-    protected void initAvatar(View avatar, Project project, final int position) {
+    @Override
+    public void onBindViewHolder(E holder, int position) {
+        Project project = getItem(position);
+
+        holder.itemView.setActivated(isItemSelected(position));
+        initAvatar(holder.projectAvatar, project, position);
+
+        holder.projectName.setText(project.getName());
+        setTitleAppearance(holder.projectName,
+                           project,
+                           mStyleIdCompleted,
+                           mStyleIdNotCompleted);
+
+        holder.projectDueDate.setText(sDateFormat.format(project.getDueDate()));
+    }
+
+    private void initAvatar(View avatar, Project project, final int position) {
         if (isItemSelected(position)) {
             showAnim(position, CHECK_ANIM, R.animator.card_flip_left_in, avatar);
             avatar.setBackground(getContext().getResources().getDrawable(R.drawable.checked_item));
@@ -207,7 +224,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
                 sIconMap.put(key, icon);
             }
 
-            showAnim(position,ORIG_ANIM, R.animator.card_flip_right_in, avatar);
+            showAnim(position, ORIG_ANIM, R.animator.card_flip_right_in, avatar);
             avatar.setBackground(icon);
         }
     }
@@ -221,7 +238,27 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         }
     }
 
-    public abstract static class ViewHolder extends RecyclerView.ViewHolder {
+    private void setTitleAppearance(TextView textView,
+                                    Project project,
+                                    int styleComplete,
+                                    int styleNotComplete) {
+
+        if (project.getStatus()) {
+            textView.setTextAppearance(mContext, styleComplete);
+            textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+        else if (project.getDueDate().getTime() < System.currentTimeMillis()) {
+            textView.setTextAppearance(mContext, styleNotComplete);
+            textView.setPaintFlags(textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
+            textView.setTextColor(Color.RED);
+        }
+        else {
+            textView.setTextAppearance(mContext, styleNotComplete);
+            textView.setPaintFlags(textView.getPaintFlags() & ~(Paint.STRIKE_THRU_TEXT_FLAG));
+        }
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public View     projectAvatar;
         public TextView projectName;

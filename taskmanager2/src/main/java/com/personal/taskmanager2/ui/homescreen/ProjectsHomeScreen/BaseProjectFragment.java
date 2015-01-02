@@ -67,7 +67,7 @@ public abstract class BaseProjectFragment extends Fragment
 
     private static final String TAG = "BaseProjectFragment";
 
-    private static final int LIST_VIEW_POS   = 0;
+    private static final int SIMPLE_VIEW_POS = 0;
     private static final int DETAIL_VIEW_POS = 1;
 
     private static final int SORT_BY_DUE_DATE    = 0;
@@ -96,8 +96,7 @@ public abstract class BaseProjectFragment extends Fragment
     protected int mSelectedPosition = -1;
     private   int mSortBy           = 0;
 
-    private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-
+    private static       int      NUMBER_OF_CORES      = Runtime.getRuntime().availableProcessors();
     private static final int      KEEP_ALIVE_TIME      = 1;
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
 
@@ -107,8 +106,7 @@ public abstract class BaseProjectFragment extends Fragment
                                                                                KEEP_ALIVE_TIME,
                                                                                KEEP_ALIVE_TIME_UNIT,
                                                                                mQueryQueue);
-
-    private List<Callable<Integer>> mCallables = new ArrayList<>(6);
+    private       List<Callable<Integer>> mCallables  = new ArrayList<>(6);
 
     private Callable<Integer> queryProjectCallable = new Callable<Integer>() {
         @Override
@@ -225,7 +223,7 @@ public abstract class BaseProjectFragment extends Fragment
         Toolbar toolbar = Utilities.getToolbar(getActivity());
 
         //action bar setup
-        setUpActionBar(toolbar);
+        initActionBar(toolbar);
 
         //search view setup
         setUpSearchView(toolbar);
@@ -233,15 +231,15 @@ public abstract class BaseProjectFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setUpActionBar(Toolbar toolbar) {
+    private void initActionBar(Toolbar toolbar) {
         Utilities.enableToolbarTitle(getActivity(), false, TAG);
         toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.VISIBLE);
         toolbar.setBackgroundColor(getResources().getColor(R.color.theme_primary));
         toolbar.inflateMenu(R.menu.home_screen);
-        initSpinnerAdapter(toolbar);
+        initSpinner(toolbar);
     }
 
-    private void initSpinnerAdapter(Toolbar toolbar) {
+    private void initSpinner(Toolbar toolbar) {
         Spinner spinner = (Spinner) toolbar.findViewById(R.id.actionbar_spinner);
         ActionBarActivity parent = (ActionBarActivity) getActivity();
         ArrayAdapter<String> actionBarSpinner =
@@ -256,7 +254,7 @@ public abstract class BaseProjectFragment extends Fragment
                 switch (position) {
                     case 0:
                         //Default List View
-                        navItemSelected(LIST_VIEW_POS);
+                        navItemSelected(SIMPLE_VIEW_POS);
                         break;
                     case 1:
                         // Detail View
@@ -469,61 +467,76 @@ public abstract class BaseProjectFragment extends Fragment
 
                     //Sections
                     if (numProjectsOverdue > 0) {
-                        sections.add(new SectionedRecycleViewAdapter.Section(0, "Overdue"));
+                        sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                             "Overdue",
+                                                                             numProjectsOverdue -
+                                                                             numProjectsCompleted));
                     }
                     if (numProjectsDueToday > 0) {
                         if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0, "Due Today"));
+                            sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                                 "Due Today",
+                                                                                 numProjectsDueToday));
                         }
                         else {
                             sections.add(new SectionedRecycleViewAdapter.Section(
                                     numProjectsOverdue - numProjectsCompleted,
-                                    "Due Today"));
+                                    "Due Today",
+                                    numProjectsDueToday));
                         }
                     }
                     if (numProjectsDueThisWeek > 0) {
                         if (sections.isEmpty()) {
                             sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Due This Week"));
+                                                                                 "Due This Week",
+                                                                                 numProjectsDueThisWeek));
                         }
                         else {
                             sections.add(new SectionedRecycleViewAdapter.Section(
                                     numProjectsOverdue + numProjectsDueToday -
                                     numProjectsCompleted,
-                                    "Due This Week"));
+                                    "Due This Week",
+                                    numProjectsDueThisWeek));
                         }
                     }
                     if (numProjectsDueThisMonth > 0) {
                         if (sections.isEmpty()) {
                             sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Due This Month"));
+                                                                                 "Due This Month",
+                                                                                 numProjectsDueThisMonth));
                         }
                         else {
                             sections.add(new SectionedRecycleViewAdapter.Section(
                                     numProjectsOverdue + numProjectsDueToday +
                                     numProjectsDueThisWeek - numProjectsCompleted,
-                                    "Due This Month"));
+                                    "Due This Month",
+                                    numProjectsDueThisMonth));
                         }
                     }
                     if (numProjectsDueLater > 0) {
                         if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0, "Due Later"));
+                            sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                                 "Due Later",
+                                                                                 numProjectsDueLater));
                         }
                         else {
                             sections.add(new SectionedRecycleViewAdapter.Section(
                                     numProjectsOverdue + numProjectsDueToday +
                                     numProjectsDueThisWeek + numProjectsDueThisMonth -
-                                    numProjectsCompleted, "Due Later"));
+                                    numProjectsCompleted, "Due Later", numProjectsDueLater));
                         }
                     }
                     if (numProjectsCompleted > 0) {
                         if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0, "Completed"));
+                            sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                                 "Completed",
+                                                                                 numProjectsCompleted));
                         }
                         else {
                             sections.add(new SectionedRecycleViewAdapter.Section(
                                     mProjectAdapter.getItemCount() - numProjectsCompleted,
-                                    "Completed"));
+                                    "Completed",
+                                    numProjectsCompleted));
                         }
                     }
 
@@ -683,8 +696,6 @@ public abstract class BaseProjectFragment extends Fragment
                                                                          BaseProjectFragment.this);
             mSectionedAdapter =
                     new SectionedRecycleViewAdapter(BaseProjectFragment.this.getActivity(),
-                                                    R.layout.list_item_section,
-                                                    R.id.list_item_section,
                                                     mProjectAdapter);
 
         }

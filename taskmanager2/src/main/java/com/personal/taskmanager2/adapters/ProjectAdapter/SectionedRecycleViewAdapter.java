@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.personal.taskmanager2.R;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,22 +23,16 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int SECTION_TYPE = 0;
 
     private boolean mValid = true;
-    private int                mSectionResourceId;
-    private int                mTextResourceId;
-    private LayoutInflater     mLayoutInflater;
-    private BaseProjectAdapter mBaseAdapter;
+    private LayoutInflater                                    mLayoutInflater;
+    private BaseProjectAdapter<BaseProjectAdapter.ViewHolder> mBaseAdapter;
     private SparseArray<Section> mSections = new SparseArray<>();
 
 
     public SectionedRecycleViewAdapter(Context context,
-                                       int sectionResourceId,
-                                       int textResourceId,
-                                       BaseProjectAdapter baseAdapter) {
+                                       BaseProjectAdapter<BaseProjectAdapter.ViewHolder> baseAdapter) {
 
         mLayoutInflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mSectionResourceId = sectionResourceId;
-        mTextResourceId = textResourceId;
         mBaseAdapter = baseAdapter;
         mContext = context;
 
@@ -67,23 +63,13 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
         });
     }
 
-
-    public static class SectionViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView title;
-
-        public SectionViewHolder(View view, int mTextResourceid) {
-            super(view);
-            title = (TextView) view.findViewById(mTextResourceid);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int typeView) {
         if (typeView == SECTION_TYPE) {
-            final View view =
-                    LayoutInflater.from(mContext).inflate(mSectionResourceId, parent, false);
-            return new SectionViewHolder(view, mTextResourceId);
+            final View view = mLayoutInflater.inflate(R.layout.list_item_section, parent, false);
+            return new SectionViewHolder(view,
+                                         R.id.list_item_section_title,
+                                         R.id.list_item_section_num_items);
         }
         else {
             return mBaseAdapter.onCreateViewHolder(parent, typeView - 1);
@@ -93,10 +79,13 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder sectionViewHolder, int position) {
         if (isSectionHeaderPosition(position)) {
-            ((SectionViewHolder) sectionViewHolder).title.setText(mSections.get(position).title);
+            Section section = mSections.get(position);
+            ((SectionViewHolder) sectionViewHolder).title.setText(section.title);
+            ((SectionViewHolder) sectionViewHolder).numItems.setText(Integer.toString(section.numItems));
         }
         else {
-            mBaseAdapter.onBindViewHolder(sectionViewHolder, sectionedPositionToPosition(position));
+            mBaseAdapter.onBindViewHolder((BaseProjectAdapter.ViewHolder) sectionViewHolder,
+                                          sectionedPositionToPosition(position));
         }
 
     }
@@ -108,16 +97,30 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 : mBaseAdapter.getItemViewType(sectionedPositionToPosition(position)) + 1;
     }
 
+    public static class SectionViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView title;
+        public TextView numItems;
+
+        public SectionViewHolder(View view, int mTextResourceid, int numItemsResourceId) {
+            super(view);
+            title = (TextView) view.findViewById(mTextResourceid);
+            numItems = (TextView) view.findViewById(numItemsResourceId);
+        }
+    }
+
 
     public static class Section {
 
         int          firstPosition;
         int          sectionedPosition;
         CharSequence title;
+        int          numItems;
 
-        public Section(int firstPosition, CharSequence title) {
+        public Section(int firstPosition, CharSequence title, int numItems) {
             this.firstPosition = firstPosition;
             this.title = title;
+            this.numItems = numItems;
         }
 
         public CharSequence getTitle() {

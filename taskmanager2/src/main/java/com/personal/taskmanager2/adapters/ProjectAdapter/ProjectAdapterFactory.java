@@ -20,10 +20,14 @@ public class ProjectAdapterFactory {
                                                           BaseProjectAdapter.OnItemClickListener listener) {
 
         if (adapterType == SIMPLE_ADAPTER) {
-            return new SimpleProjectAdapter(context, projects, listener);
+            return new SimpleProjectAdapter(context,
+                                            projects,
+                                            listener);
         }
         else if (adapterType == DETAIL_ADAPTER) {
-            return new DetailProjectAdapter(context, projects, listener);
+            return new DetailProjectAdapter(context,
+                                            projects,
+                                            listener);
         }
         else {
             Log.e(TAG, "Passed in incorrect adapter type.");

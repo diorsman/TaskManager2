@@ -10,7 +10,6 @@ import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.utilities.Utilities;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -21,44 +20,29 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
 
     private static final String TAG = "SimpleProjectAdapter";
 
-    private final static DateFormat SIMPLE_DATE_FORMAT =
-            new SimpleDateFormat("MM/dd/yyyy 'at' hh:mm a");
-
     public SimpleProjectAdapter(Context context,
                                 List<Project> projectList,
                                 OnItemClickListener listener) {
-        super(context, projectList, listener);
+        super(context,
+              R.style.completed_default,
+              R.style.not_completed_default,
+              projectList,
+              listener,
+              new SimpleDateFormat("MM/dd/yyyy 'at' hh:mm a"));
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = initView(parent, R.layout.list_item_project);
         final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mClickListener.onAvatarClick(v, viewHolder.getPosition());
-            }
-        });
+        initAvatarClick(viewHolder);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
         Project project = getItem(position);
-
-        holder.itemView.setActivated(isItemSelected(position));
-        initAvatar(holder.projectAvatar, project, position);
-
-        // set name
-        holder.projectName.setText(project.getName());
-        setTitleAppearance(holder.projectName,
-                           project,
-                           R.style.completed_default,
-                           R.style.not_completed_default);
-
-        //set due date
-        holder.projectDueDate.setText(SIMPLE_DATE_FORMAT.format(project.getDueDate()));
 
         //set progress
         double progress;
