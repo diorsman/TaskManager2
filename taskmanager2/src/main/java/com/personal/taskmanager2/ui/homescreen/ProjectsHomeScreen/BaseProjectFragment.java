@@ -460,8 +460,7 @@ public abstract class BaseProjectFragment extends Fragment
                     int numProjectsCompleted = futures.get(5).get();
 
                     int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
-                                              numProjectsDueThisWeek - numProjectsDueThisMonth -
-                                              numProjectsCompleted;
+                                              numProjectsDueThisWeek - numProjectsDueThisMonth;
 
                     List<SectionedRecycleViewAdapter.Section> sections = new ArrayList<>();
 
