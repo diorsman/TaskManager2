@@ -43,7 +43,6 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.SectionedRecycleViewAda
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
-import com.personal.taskmanager2.ui.widget.DividerItemDecoration;
 import com.personal.taskmanager2.utilities.RecyclerViewTouchListener;
 import com.personal.taskmanager2.utilities.Utilities;
 
@@ -54,6 +53,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -100,13 +100,13 @@ public abstract class BaseProjectFragment extends Fragment
     private static final int      KEEP_ALIVE_TIME      = 1;
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
 
-    private final BlockingQueue<Runnable> mQueryQueue = new LinkedBlockingQueue<>();
-    private       ThreadPoolExecutor      mExecutor   = new ThreadPoolExecutor(NUMBER_OF_CORES,
-                                                                               NUMBER_OF_CORES,
-                                                                               KEEP_ALIVE_TIME,
-                                                                               KEEP_ALIVE_TIME_UNIT,
-                                                                               mQueryQueue);
-    private       List<Callable<Integer>> mCallables  = new ArrayList<>(6);
+    private       CountDownLatch          countDownLatch = new CountDownLatch(6);
+    private final BlockingQueue<Runnable> mQueryQueue    = new LinkedBlockingQueue<>();
+    private       ThreadPoolExecutor      mExecutor      = new ThreadPoolExecutor(NUMBER_OF_CORES,
+                                                                                  NUMBER_OF_CORES,
+                                                                                  KEEP_ALIVE_TIME,
+                                                                                  KEEP_ALIVE_TIME_UNIT,
+                                                                                  mQueryQueue);
 
     private Callable<Integer> queryProjectCallable = new Callable<Integer>() {
         @Override
@@ -167,13 +167,6 @@ public abstract class BaseProjectFragment extends Fragment
             }
         });
 
-        mCallables.add(queryProjectCallable);
-        mCallables.add(getNumProjectsOverdueCallable);
-        mCallables.add(getNumProjectsDueTodayCallable);
-        mCallables.add(getNumProjectsDueThisWeekCallable);
-        mCallables.add(getNumProjectDueThisMonthCallable);
-        mCallables.add(getNumProjectsCompletedCallable);
-
         super.onCreate(savedInstanceState);
     }
 
@@ -195,11 +188,8 @@ public abstract class BaseProjectFragment extends Fragment
         mNoProjects = (TextView) rootView.findViewById(R.id.no_projects_text);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.project_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
-                                                                  DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(mRecyclerView,
                                                                            mRefreshLayoutList,
                                                                            this));
@@ -436,9 +426,17 @@ public abstract class BaseProjectFragment extends Fragment
         queryProjects();
     }
 
+
+
     public void queryProjects() {
         AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
             private Exception exception;
+            Future<Integer> getNumProjectsOverdue;
+            Future<Integer> getNumProjectsDueToday;
+            Future<Integer> getNumProjectsDueThisWeek;
+            Future<Integer> getNumProjectsDueThisMonth;
+            Future<Integer> getNumProjectsCompleted;
+            Future<Integer> getNumProjects;
 
             @Override
             protected void onPreExecute() {
@@ -448,16 +446,24 @@ public abstract class BaseProjectFragment extends Fragment
             @Override
             protected Integer doInBackground(Void... params) {
                 try {
-                    List<Future<Integer>> futures = mExecutor.invokeAll(mCallables);
-                    int numItems = futures.get(0).get();
+                    getNumProjectsOverdue = mExecutor.submit(getNumProjectsOverdueCallable);
+                    getNumProjectsDueToday = mExecutor.submit(getNumProjectsDueTodayCallable);
+                    getNumProjectsDueThisWeek = mExecutor.submit(getNumProjectsDueThisWeekCallable);
+                    getNumProjectsDueThisMonth = mExecutor.submit(getNumProjectDueThisMonthCallable);
+                    getNumProjectsCompleted = mExecutor.submit(getNumProjectsCompletedCallable);
+                    getNumProjects = mExecutor.submit(queryProjectCallable);
+
+                    countDownLatch.await();
+
+                    int numProjectsOverdue = getNumProjectsOverdue.get();
+                    int numProjectsDueToday = getNumProjectsDueToday.get();
+                    int numProjectsDueThisWeek = getNumProjectsDueThisWeek.get();
+                    int numProjectsDueThisMonth = getNumProjectsDueThisMonth.get();
+                    int numProjectsCompleted = getNumProjectsCompleted.get();
+                    int numItems = getNumProjects.get();
                     if (numItems == 0) {
                         return 0;
                     }
-                    int numProjectsOverdue = futures.get(1).get();
-                    int numProjectsDueToday = futures.get(2).get();
-                    int numProjectsDueThisWeek = futures.get(3).get();
-                    int numProjectsDueThisMonth = futures.get(4).get();
-                    int numProjectsCompleted = futures.get(5).get();
 
                     int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
                                               numProjectsDueThisWeek - numProjectsDueThisMonth;
@@ -585,7 +591,7 @@ public abstract class BaseProjectFragment extends Fragment
                 mRefreshLayoutList.setRefreshing(false);
             }
         };
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private int getProjectCountOverdue() throws ParseException {
@@ -596,6 +602,7 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThan(Project.DUE_DATE_COL, end.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "num projects overdue = " + count);
+        countDownLatch.countDown();
 
         return count;
     }
@@ -610,6 +617,7 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, endToday.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due today = " + count);
+        countDownLatch.countDown();
 
         return count;
     }
@@ -631,6 +639,7 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, lastDayOfWeek.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due this week = " + count);
+        countDownLatch.countDown();
 
         return count;
     }
@@ -652,6 +661,7 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, endMonth.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due this month = " + count);
+        countDownLatch.countDown();
 
         return count;
     }
@@ -661,6 +671,7 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereEqualTo(Project.STATUS_COL, true);
         int count = projectQuery.count();
         Log.d(TAG, "Num projects completed = " + count);
+        countDownLatch.countDown();
         return count;
     }
 
@@ -678,8 +689,8 @@ public abstract class BaseProjectFragment extends Fragment
         cal.set(Calendar.MILLISECOND, 999);
     }
 
+    DateFormat dateFormat = DateFormat.getDateTimeInstance();
     private void printCal(Calendar cal, String init) {
-        DateFormat dateFormat = DateFormat.getDateTimeInstance();
         Log.d(TAG, init + " " + dateFormat.format(cal.getTime()));
     }
 
@@ -698,6 +709,7 @@ public abstract class BaseProjectFragment extends Fragment
                                                     mProjectAdapter);
 
         }
+        countDownLatch.countDown();
         return projectList.size();
     }
 

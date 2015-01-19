@@ -125,8 +125,9 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         int size = mSelectedItems.size();
         for (int i = 0; i < size; ++i) {
             int key = mSelectedItems.keyAt(i);
-            notifyItemChanged(mSectionAdapter.positionToSectionedPosition(key));
-            if (key >= firstVisPos && key <= lastVisPos) {
+            int posKey = mSectionAdapter.positionToSectionedPosition(mSelectedItems.keyAt(i));
+            notifyItemChanged(posKey);
+            if (posKey >= firstVisPos && posKey <= lastVisPos) {
                 mAnimItems.put(key, ORIG_ANIM);
             }
             else {
@@ -191,7 +192,13 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     public void onBindViewHolder(E holder, int position) {
         Project project = getItem(position);
 
-        holder.itemView.setActivated(isItemSelected(position));
+        if (isItemSelected(position)) {
+            holder.itemView.setBackgroundColor(getContext().getResources().getColor(R.color.item_selected_background));
+        }
+        else {
+            holder.itemView.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+        }
+        //holder.itemView.setActivated(isItemSelected(position));
         initAvatar(holder.projectAvatar, project, position);
 
         holder.projectName.setText(project.getName());
@@ -263,6 +270,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         public View     projectAvatar;
         public TextView projectName;
         public TextView projectDueDate;
+        public View divider;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -270,6 +278,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
             projectAvatar = itemView.findViewById(R.id.project_list_color_slice);
             projectName = (TextView) itemView.findViewById(R.id.project_list_name);
             projectDueDate = (TextView) itemView.findViewById(R.id.project_list_due_date);
+            divider = (View) itemView.findViewById(R.id.divider);
         }
     }
 }

@@ -11,7 +11,7 @@
                 android:topRightRadius="5dp"/>
 
             <solid
-                android:color="@color/checked_gray" />
+                android:color="@android:color/darker_gray" />
         </shape>
     </item>
 
