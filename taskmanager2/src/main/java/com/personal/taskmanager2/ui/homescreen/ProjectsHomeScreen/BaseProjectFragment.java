@@ -109,42 +109,49 @@ public abstract class BaseProjectFragment extends Fragment
             mQueryQueue,
             this);
 
-    private Callable<Integer> queryProjectCallable = new Callable<Integer>() {
+    Future<Integer> mGetNumProjectsOverdue;
+    Future<Integer> mGetNumProjectsDueToday;
+    Future<Integer> mGetNumProjectsDueThisWeek;
+    Future<Integer> mGetNumProjectsDueThisMonth;
+    Future<Integer> mGetNumProjectsCompleted;
+    Future<Integer> mGetNumProjects;
+
+    private Callable<Integer> mQueryProjectCallable = new Callable<Integer>() {
         @Override
         public Integer call() throws ParseException {
             return queryProjectsInBackground();
         }
     };
 
-    private Callable<Integer> getNumProjectsDueTodayCallable = new Callable<Integer>() {
+    private Callable<Integer> mGetNumProjectsDueTodayCallable = new Callable<Integer>() {
         @Override
         public Integer call() throws ParseException {
             return getProjectCountDueToday();
         }
     };
 
-    private Callable<Integer> getNumProjectsDueThisWeekCallable = new Callable<Integer>() {
+    private Callable<Integer> mGetNumProjectsDueThisWeekCallable = new Callable<Integer>() {
         @Override
         public Integer call() throws ParseException {
             return getProjectCountDueThisWeek();
         }
     };
 
-    private Callable<Integer> getNumProjectDueThisMonthCallable = new Callable<Integer>() {
+    private Callable<Integer> mGetNumProjectDueThisMonthCallable = new Callable<Integer>() {
         @Override
         public Integer call() throws ParseException {
             return getProjectCountDueThisMonth();
         }
     };
 
-    private Callable<Integer> getNumProjectsOverdueCallable = new Callable<Integer>() {
+    private Callable<Integer> mGetNumProjectsOverdueCallable = new Callable<Integer>() {
         @Override
         public Integer call() throws ParseException {
             return getProjectCountOverdue();
         }
     };
 
-    private Callable<Integer> getNumProjectsCompletedCallable = new Callable<Integer>() {
+    private Callable<Integer> mGetNumProjectsCompletedCallable = new Callable<Integer>() {
         @Override
         public Integer call() throws ParseException {
             return getProjectCountCompleted();
@@ -431,31 +438,24 @@ public abstract class BaseProjectFragment extends Fragment
     public void queryProjects() {
         mRefreshLayoutList.setRefreshing(true);
 
-        getNumProjectsOverdue = mExecutor.submit(getNumProjectsOverdueCallable);
-        getNumProjectsDueToday = mExecutor.submit(getNumProjectsDueTodayCallable);
-        getNumProjectsDueThisWeek = mExecutor.submit(getNumProjectsDueThisWeekCallable);
-        getNumProjectsDueThisMonth =
-                mExecutor.submit(getNumProjectDueThisMonthCallable);
-        getNumProjectsCompleted = mExecutor.submit(getNumProjectsCompletedCallable);
-        getNumProjects = mExecutor.submit(queryProjectCallable);
+        mGetNumProjectsOverdue = mExecutor.submit(mGetNumProjectsOverdueCallable);
+        mGetNumProjectsDueToday = mExecutor.submit(mGetNumProjectsDueTodayCallable);
+        mGetNumProjectsDueThisWeek = mExecutor.submit(mGetNumProjectsDueThisWeekCallable);
+        mGetNumProjectsDueThisMonth =
+                mExecutor.submit(mGetNumProjectDueThisMonthCallable);
+        mGetNumProjectsCompleted = mExecutor.submit(mGetNumProjectsCompletedCallable);
+        mGetNumProjects = mExecutor.submit(mQueryProjectCallable);
     }
-
-    Future<Integer> getNumProjectsOverdue;
-    Future<Integer> getNumProjectsDueToday;
-    Future<Integer> getNumProjectsDueThisWeek;
-    Future<Integer> getNumProjectsDueThisMonth;
-    Future<Integer> getNumProjectsCompleted;
-    Future<Integer> getNumProjects;
 
     @Override
     public void onAllTasksComplete() {
         try {
-            int numProjectsOverdue = getNumProjectsOverdue.get();
-            int numProjectsDueToday = getNumProjectsDueToday.get();
-            int numProjectsDueThisWeek = getNumProjectsDueThisWeek.get();
-            int numProjectsDueThisMonth = getNumProjectsDueThisMonth.get();
-            int numProjectsCompleted = getNumProjectsCompleted.get();
-            int numItems = getNumProjects.get();
+            int numProjectsOverdue = mGetNumProjectsOverdue.get();
+            int numProjectsDueToday = mGetNumProjectsDueToday.get();
+            int numProjectsDueThisWeek = mGetNumProjectsDueThisWeek.get();
+            int numProjectsDueThisMonth = mGetNumProjectsDueThisMonth.get();
+            int numProjectsCompleted = mGetNumProjectsCompleted.get();
+            int numItems = mGetNumProjects.get();
 
             if (numItems == 0) {
                 mRefreshLayoutList.setRefreshing(false);
