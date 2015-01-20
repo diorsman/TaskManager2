@@ -6,7 +6,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,6 +42,7 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.SectionedRecycleViewAda
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
+import com.personal.taskmanager2.utilities.NotifyingThreadPoolExecutor;
 import com.personal.taskmanager2.utilities.RecyclerViewTouchListener;
 import com.personal.taskmanager2.utilities.Utilities;
 
@@ -51,19 +51,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public abstract class BaseProjectFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
                    BaseProjectAdapter.OnItemClickListener,
-                   RecyclerViewTouchListener.DismissCallbacks {
+                   RecyclerViewTouchListener.DismissCallbacks,
+                   NotifyingThreadPoolExecutor.Callback {
 
     private static final String TAG = "BaseProjectFragment";
 
@@ -97,16 +97,17 @@ public abstract class BaseProjectFragment extends Fragment
     private   int mSortBy           = 0;
 
     private static       int      NUMBER_OF_CORES      = Runtime.getRuntime().availableProcessors();
-    private static final int      KEEP_ALIVE_TIME      = 1;
-    private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
+    private static final int      KEEP_ALIVE_TIME      = 0;
+    private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.MILLISECONDS;
 
-    private       CountDownLatch          countDownLatch = new CountDownLatch(6);
-    private final BlockingQueue<Runnable> mQueryQueue    = new LinkedBlockingQueue<>();
-    private       ThreadPoolExecutor      mExecutor      = new ThreadPoolExecutor(NUMBER_OF_CORES,
-                                                                                  NUMBER_OF_CORES,
-                                                                                  KEEP_ALIVE_TIME,
-                                                                                  KEEP_ALIVE_TIME_UNIT,
-                                                                                  mQueryQueue);
+    private final BlockingQueue<Runnable> mQueryQueue = new ArrayBlockingQueue<>(6);
+    private       ThreadPoolExecutor      mExecutor   = new NotifyingThreadPoolExecutor(
+            NUMBER_OF_CORES,
+            NUMBER_OF_CORES,
+            KEEP_ALIVE_TIME,
+            KEEP_ALIVE_TIME_UNIT,
+            mQueryQueue,
+            this);
 
     private Callable<Integer> queryProjectCallable = new Callable<Integer>() {
         @Override
@@ -427,171 +428,139 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
 
-
     public void queryProjects() {
-        AsyncTask<Void, Void, Integer> task = new AsyncTask<Void, Void, Integer>() {
-            private Exception exception;
-            Future<Integer> getNumProjectsOverdue;
-            Future<Integer> getNumProjectsDueToday;
-            Future<Integer> getNumProjectsDueThisWeek;
-            Future<Integer> getNumProjectsDueThisMonth;
-            Future<Integer> getNumProjectsCompleted;
-            Future<Integer> getNumProjects;
+        mRefreshLayoutList.setRefreshing(true);
 
-            @Override
-            protected void onPreExecute() {
-                mRefreshLayoutList.setRefreshing(true);
+        getNumProjectsOverdue = mExecutor.submit(getNumProjectsOverdueCallable);
+        getNumProjectsDueToday = mExecutor.submit(getNumProjectsDueTodayCallable);
+        getNumProjectsDueThisWeek = mExecutor.submit(getNumProjectsDueThisWeekCallable);
+        getNumProjectsDueThisMonth =
+                mExecutor.submit(getNumProjectDueThisMonthCallable);
+        getNumProjectsCompleted = mExecutor.submit(getNumProjectsCompletedCallable);
+        getNumProjects = mExecutor.submit(queryProjectCallable);
+    }
+
+    Future<Integer> getNumProjectsOverdue;
+    Future<Integer> getNumProjectsDueToday;
+    Future<Integer> getNumProjectsDueThisWeek;
+    Future<Integer> getNumProjectsDueThisMonth;
+    Future<Integer> getNumProjectsCompleted;
+    Future<Integer> getNumProjects;
+
+    @Override
+    public void onAllTasksComplete() {
+        try {
+            int numProjectsOverdue = getNumProjectsOverdue.get();
+            int numProjectsDueToday = getNumProjectsDueToday.get();
+            int numProjectsDueThisWeek = getNumProjectsDueThisWeek.get();
+            int numProjectsDueThisMonth = getNumProjectsDueThisMonth.get();
+            int numProjectsCompleted = getNumProjectsCompleted.get();
+            int numItems = getNumProjects.get();
+
+            if (numItems == 0) {
+                mRefreshLayoutList.setRefreshing(false);
+                mLoadProjects.setVisibility(View.GONE);
+                mNoProjects.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+                return;
             }
 
-            @Override
-            protected Integer doInBackground(Void... params) {
-                try {
-                    getNumProjectsOverdue = mExecutor.submit(getNumProjectsOverdueCallable);
-                    getNumProjectsDueToday = mExecutor.submit(getNumProjectsDueTodayCallable);
-                    getNumProjectsDueThisWeek = mExecutor.submit(getNumProjectsDueThisWeekCallable);
-                    getNumProjectsDueThisMonth = mExecutor.submit(getNumProjectDueThisMonthCallable);
-                    getNumProjectsCompleted = mExecutor.submit(getNumProjectsCompletedCallable);
-                    getNumProjects = mExecutor.submit(queryProjectCallable);
+            int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
+                                      numProjectsDueThisWeek - numProjectsDueThisMonth;
 
-                    countDownLatch.await();
+            List<SectionedRecycleViewAdapter.Section> sections = new ArrayList<>();
 
-                    int numProjectsOverdue = getNumProjectsOverdue.get();
-                    int numProjectsDueToday = getNumProjectsDueToday.get();
-                    int numProjectsDueThisWeek = getNumProjectsDueThisWeek.get();
-                    int numProjectsDueThisMonth = getNumProjectsDueThisMonth.get();
-                    int numProjectsCompleted = getNumProjectsCompleted.get();
-                    int numItems = getNumProjects.get();
-                    if (numItems == 0) {
-                        return 0;
-                    }
-
-                    int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
-                                              numProjectsDueThisWeek - numProjectsDueThisMonth;
-
-                    List<SectionedRecycleViewAdapter.Section> sections = new ArrayList<>();
-
-                    //Sections
-                    if (numProjectsOverdue > 0) {
-                        sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                             "Overdue",
-                                                                             numProjectsOverdue -
-                                                                             numProjectsCompleted));
-                    }
-                    if (numProjectsDueToday > 0) {
-                        if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Due Today",
-                                                                                 numProjectsDueToday));
-                        }
-                        else {
-                            sections.add(new SectionedRecycleViewAdapter.Section(
-                                    numProjectsOverdue - numProjectsCompleted,
-                                    "Due Today",
-                                    numProjectsDueToday));
-                        }
-                    }
-                    if (numProjectsDueThisWeek > 0) {
-                        if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Due This Week",
-                                                                                 numProjectsDueThisWeek));
-                        }
-                        else {
-                            sections.add(new SectionedRecycleViewAdapter.Section(
-                                    numProjectsOverdue + numProjectsDueToday -
-                                    numProjectsCompleted,
-                                    "Due This Week",
-                                    numProjectsDueThisWeek));
-                        }
-                    }
-                    if (numProjectsDueThisMonth > 0) {
-                        if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Due This Month",
-                                                                                 numProjectsDueThisMonth));
-                        }
-                        else {
-                            sections.add(new SectionedRecycleViewAdapter.Section(
-                                    numProjectsOverdue + numProjectsDueToday +
-                                    numProjectsDueThisWeek - numProjectsCompleted,
-                                    "Due This Month",
-                                    numProjectsDueThisMonth));
-                        }
-                    }
-                    if (numProjectsDueLater > 0) {
-                        if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Due Later",
-                                                                                 numProjectsDueLater));
-                        }
-                        else {
-                            sections.add(new SectionedRecycleViewAdapter.Section(
-                                    numProjectsOverdue + numProjectsDueToday +
-                                    numProjectsDueThisWeek + numProjectsDueThisMonth -
-                                    numProjectsCompleted, "Due Later", numProjectsDueLater));
-                        }
-                    }
-                    if (numProjectsCompleted > 0) {
-                        if (sections.isEmpty()) {
-                            sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                                 "Completed",
-                                                                                 numProjectsCompleted));
-                        }
-                        else {
-                            sections.add(new SectionedRecycleViewAdapter.Section(
-                                    mProjectAdapter.getItemCount() - numProjectsCompleted,
-                                    "Completed",
-                                    numProjectsCompleted));
-                        }
-                    }
-
-                    mSectionedAdapter.setSections(sections);
-                    mProjectAdapter.setSectionAdapter(mSectionedAdapter);
-
-                    return 1;
-                }
-                catch (ExecutionException e) {
-                    Throwable ee = e.getCause();
-                    Log.e(TAG, e.getMessage(), ee);
-                    if (ee instanceof ParseException) {
-                        exception = (ParseException) ee;
-                        return -1;
-                    }
-                    exception = e;
-                    return -1;
-                }
-                catch (InterruptedException e) {
-                    Log.e(TAG, e.getMessage(), e);
-                    exception = e;
-                    return -1;
-                }
+            //Sections
+            if (numProjectsOverdue > 0) {
+                sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                     "Overdue",
+                                                                     numProjectsOverdue -
+                                                                     numProjectsCompleted));
             }
-
-            @Override
-            protected void onPostExecute(Integer result) {
-                if (result == -1) {
-                    // error
-                    Toast.makeText(mContext, exception.getMessage(), Toast.LENGTH_LONG).show();
-                    mLoadProjects.setVisibility(View.GONE);
-                    mNoProjects.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
-                }
-                else if (result == 0) {
-                    // empty
-                    mLoadProjects.setVisibility(View.GONE);
-                    mNoProjects.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
+            if (numProjectsDueToday > 0) {
+                if (sections.isEmpty()) {
+                    sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                         "Due Today",
+                                                                         numProjectsDueToday));
                 }
                 else {
-                    mRecyclerView.setAdapter(mSectionedAdapter);
-                    mLoadProjects.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mNoProjects.setVisibility(View.GONE);
+                    sections.add(new SectionedRecycleViewAdapter.Section(
+                            numProjectsOverdue - numProjectsCompleted,
+                            "Due Today",
+                            numProjectsDueToday));
                 }
-                mRefreshLayoutList.setRefreshing(false);
             }
-        };
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if (numProjectsDueThisWeek > 0) {
+                if (sections.isEmpty()) {
+                    sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                         "Due This Week",
+                                                                         numProjectsDueThisWeek));
+                }
+                else {
+                    sections.add(new SectionedRecycleViewAdapter.Section(
+                            numProjectsOverdue + numProjectsDueToday -
+                            numProjectsCompleted,
+                            "Due This Week",
+                            numProjectsDueThisWeek));
+                }
+            }
+            if (numProjectsDueThisMonth > 0) {
+                if (sections.isEmpty()) {
+                    sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                         "Due This Month",
+                                                                         numProjectsDueThisMonth));
+                }
+                else {
+                    sections.add(new SectionedRecycleViewAdapter.Section(
+                            numProjectsOverdue + numProjectsDueToday +
+                            numProjectsDueThisWeek - numProjectsCompleted,
+                            "Due This Month",
+                            numProjectsDueThisMonth));
+                }
+            }
+            if (numProjectsDueLater > 0) {
+                if (sections.isEmpty()) {
+                    sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                         "Due Later",
+                                                                         numProjectsDueLater));
+                }
+                else {
+                    sections.add(new SectionedRecycleViewAdapter.Section(
+                            numProjectsOverdue + numProjectsDueToday +
+                            numProjectsDueThisWeek + numProjectsDueThisMonth -
+                            numProjectsCompleted, "Due Later", numProjectsDueLater));
+                }
+            }
+            if (numProjectsCompleted > 0) {
+                if (sections.isEmpty()) {
+                    sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                         "Completed",
+                                                                         numProjectsCompleted));
+                }
+                else {
+                    sections.add(new SectionedRecycleViewAdapter.Section(
+                            mProjectAdapter.getItemCount() - numProjectsCompleted,
+                            "Completed",
+                            numProjectsCompleted));
+                }
+            }
+
+            mSectionedAdapter.setSections(sections);
+            mProjectAdapter.setSectionAdapter(mSectionedAdapter);
+
+            mRecyclerView.setAdapter(mSectionedAdapter);
+            mLoadProjects.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mNoProjects.setVisibility(View.GONE);
+            mRefreshLayoutList.setRefreshing(false);
+        }
+        catch (InterruptedException | ExecutionException e) {
+            // error
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
+            mLoadProjects.setVisibility(View.GONE);
+            mNoProjects.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     private int getProjectCountOverdue() throws ParseException {
@@ -602,7 +571,6 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThan(Project.DUE_DATE_COL, end.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "num projects overdue = " + count);
-        countDownLatch.countDown();
 
         return count;
     }
@@ -617,7 +585,6 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, endToday.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due today = " + count);
-        countDownLatch.countDown();
 
         return count;
     }
@@ -639,7 +606,6 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, lastDayOfWeek.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due this week = " + count);
-        countDownLatch.countDown();
 
         return count;
     }
@@ -661,7 +627,6 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, endMonth.getTime());
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due this month = " + count);
-        countDownLatch.countDown();
 
         return count;
     }
@@ -671,7 +636,6 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.whereEqualTo(Project.STATUS_COL, true);
         int count = projectQuery.count();
         Log.d(TAG, "Num projects completed = " + count);
-        countDownLatch.countDown();
         return count;
     }
 
@@ -690,6 +654,7 @@ public abstract class BaseProjectFragment extends Fragment
     }
 
     DateFormat dateFormat = DateFormat.getDateTimeInstance();
+
     private void printCal(Calendar cal, String init) {
         Log.d(TAG, init + " " + dateFormat.format(cal.getTime()));
     }
@@ -709,7 +674,7 @@ public abstract class BaseProjectFragment extends Fragment
                                                     mProjectAdapter);
 
         }
-        countDownLatch.countDown();
+
         return projectList.size();
     }
 
