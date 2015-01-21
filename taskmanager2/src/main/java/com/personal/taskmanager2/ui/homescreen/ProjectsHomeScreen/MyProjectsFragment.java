@@ -3,6 +3,8 @@ package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.personal.taskmanager2.Constants;
 import com.personal.taskmanager2.R;
 import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.model.parse.Project;
@@ -24,7 +27,7 @@ import com.personal.taskmanager2.ui.widget.FloatingActionButton;
 public class MyProjectsFragment extends BaseProjectFragment implements View.OnClickListener {
 
     private static final String TAG = "MyProjectsFragment";
-    
+
     private static final int ANIM_TIME = 250;
 
     private FloatingActionButton mCreateButton;
@@ -67,7 +70,12 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mJoinProjectButton.setScaleX(0);
         mJoinProjectButton.setScaleY(0);*/
 
-        mActionModeCallback = new ActionMode.Callback() {
+        return rootView;
+    }
+
+    @Override
+    ActionMode.Callback initCab() {
+        return new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 actionMode.setTitleOptionalHint(true);
@@ -97,12 +105,11 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_edit_project:
-                        mSelectedPosition = -1;
                         mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 getActionMode().finish();
-                                project.safeEdit(MyProjectsFragment.this.getFragmentManager(),
+                                project.safeEdit(MyProjectsFragment.this,
                                                  MyProjectsFragment.this.getActivity());
                             }
                         });
@@ -164,11 +171,19 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                 int firstVisPos = llm.findFirstVisibleItemPosition();
                 int lastVisPos = llm.findLastVisibleItemPosition();
                 mProjectAdapter.clearSelection(firstVisPos, lastVisPos);
-                mActionMode = null;
+                setActionMode(null);
             }
         };
+    }
 
-        return rootView;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.EDIT_PROJECT_REQUEST && resultCode == Activity.RESULT_OK) {
+            mRecyclerView.setVisibility(View.INVISIBLE);
+            mLoadProjects.setVisibility(View.VISIBLE);
+            queryProjects();
+        }
     }
 
     @Override

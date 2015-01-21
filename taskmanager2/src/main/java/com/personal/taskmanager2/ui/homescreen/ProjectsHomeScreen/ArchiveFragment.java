@@ -1,6 +1,7 @@
 package com.personal.taskmanager2.ui.homescreen.ProjectsHomeScreen;
 
 import android.os.Bundle;
+import android.view.ActionMode;
 
 import com.personal.taskmanager2.R;
 
@@ -20,5 +21,10 @@ public class ArchiveFragment extends BaseProjectFragment {
         frag.setArguments(args);
 
         return frag;
+    }
+
+    @Override
+    ActionMode.Callback initCab() {
+        return null;
     }
 }

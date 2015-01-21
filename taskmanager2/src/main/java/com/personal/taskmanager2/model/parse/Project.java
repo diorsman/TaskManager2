@@ -1,6 +1,6 @@
 package com.personal.taskmanager2.model.parse;
 
-import android.app.FragmentManager;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,8 +11,8 @@ import android.widget.Toast;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.personal.taskmanager2.R;
-import com.personal.taskmanager2.ui.EditProjectFragment;
+import com.personal.taskmanager2.Constants;
+import com.personal.taskmanager2.ui.EditProjectActivity;
 import com.personal.taskmanager2.utilities.BCrypt;
 
 import org.json.JSONArray;
@@ -267,8 +267,7 @@ public class Project extends ParseObject implements Parcelable {
         return 0;
     }
 
-    public boolean safeEdit(final FragmentManager fragmentManager, Context context) {
-
+    public boolean safeEdit(final Fragment fragment, final Context context) {
         /*if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
             fragmentManager.beginTransaction()
                            .addToBackStack(null)
@@ -279,7 +278,7 @@ public class Project extends ParseObject implements Parcelable {
             Toast.makeText(context, "Only administrator can edit the project", Toast.LENGTH_LONG)
                  .show();
         }*/
-        return safeModify(context, new ModifyProject() {
+        /*return safeModify(context, new ModifyProject() {
             @Override
             public void modify() {
                 fragmentManager.beginTransaction()
@@ -287,6 +286,14 @@ public class Project extends ParseObject implements Parcelable {
                                .replace(R.id.container,
                                         EditProjectFragment.newInstance(Project.this))
                                .commit();
+            }
+        });*/
+        return safeModify(context, new ModifyProject() {
+            @Override
+            public void modify() {
+                Intent intent = new Intent(context, EditProjectActivity.class);
+                intent.putExtra("project", Project.this);
+                fragment.startActivityForResult(intent, Constants.EDIT_PROJECT_REQUEST);
             }
         });
     }

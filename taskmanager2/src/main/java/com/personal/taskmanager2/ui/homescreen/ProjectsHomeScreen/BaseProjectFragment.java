@@ -79,7 +79,7 @@ public abstract class BaseProjectFragment extends Fragment
 
     private   SwipeRefreshLayout mRefreshLayoutList;
     protected RecyclerView       mRecyclerView;
-    private   TextView           mLoadProjects;
+    protected TextView           mLoadProjects;
     private   TextView           mNoProjects;
 
     private int mLayoutResourceId;
@@ -87,25 +87,23 @@ public abstract class BaseProjectFragment extends Fragment
     protected BaseProjectAdapter          mProjectAdapter;
     protected SectionedRecycleViewAdapter mSectionedAdapter;
     private   Context                     mContext;
-    protected ActionMode                  mActionMode;
-    protected ActionMode.Callback         mActionModeCallback;
+    private   ActionMode                  mActionMode;
+    private ActionMode.Callback mActionModeCallback = initCab();
 
     private boolean mArchive;
     private boolean mTrash;
 
-    protected int mSelectedPosition = -1;
-    private   int mSortBy           = 0;
+    private int mSelectedPosition = -1;
+    private int mSortBy           = 0;
 
-    private static       int      NUMBER_OF_CORES      = Runtime.getRuntime().availableProcessors();
-    private static final int      KEEP_ALIVE_TIME      = 0;
-    private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.MILLISECONDS;
+    private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
 
     private final BlockingQueue<Runnable> mQueryQueue = new ArrayBlockingQueue<>(6);
     private       ThreadPoolExecutor      mExecutor   = new NotifyingThreadPoolExecutor(
             NUMBER_OF_CORES,
             NUMBER_OF_CORES,
-            KEEP_ALIVE_TIME,
-            KEEP_ALIVE_TIME_UNIT,
+            0L,
+            TimeUnit.MILLISECONDS,
             mQueryQueue,
             this);
 
@@ -158,10 +156,17 @@ public abstract class BaseProjectFragment extends Fragment
         }
     };
 
+    abstract ActionMode.Callback initCab();
+
     public ActionMode getActionMode() {
         return mActionMode;
     }
 
+    protected void setActionMode(ActionMode actionMode) {
+        mActionMode = actionMode;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
 
         getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {

@@ -1,12 +1,12 @@
 package com.personal.taskmanager2.ui;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,13 +135,8 @@ public class EditProjectFragment extends android.app.Fragment
     }
 
     private void setUpActionBar() {
-        Utilities.enableToolbarTitle(getActivity(), true, TAG);
         Toolbar toolbar = Utilities.getToolbar(getActivity());
         toolbar.getMenu().clear();
-        View spinner = toolbar.findViewById(R.id.actionbar_spinner);
-        if (spinner != null) {
-            toolbar.findViewById(R.id.actionbar_spinner).setVisibility(View.GONE);
-        }
         toolbar.inflateMenu(R.menu.edit_project);
         toolbar.setTitle("Editing Project");
         toolbar.setBackgroundColor(getResources().getColor(Utilities.getColorRsrcFromColor(mProject.getColor())));
@@ -166,25 +161,11 @@ public class EditProjectFragment extends android.app.Fragment
 
     private void acceptChanges() {
 
+        final Handler handler = new Handler();
+
         mMainViewSwitcher.setDisplayedChild(1);
 
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
 
-                switch (msg.what) {
-                    case 1:
-                        Toast.makeText(getActivity(), "Project Updated!", Toast.LENGTH_LONG).show();
-                        getFragmentManager().popBackStack();
-                        break;
-                    case 0:
-                        Toast.makeText(getActivity(),
-                                       "Error Occurred. Please Try Again",
-                                       Toast.LENGTH_LONG).show();
-                        resetViews();
-                }
-            }
-        };
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -211,11 +192,26 @@ public class EditProjectFragment extends android.app.Fragment
 
                     mProject.setColor(category);
                     mProject.save();
-                    handler.sendEmptyMessage(1);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(), "Project Updated!", Toast.LENGTH_LONG).show();
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                        }
+                    });
                 }
                 catch (ParseException e) {
                     Log.e(TAG, "ParseException", e);
-                    handler.sendEmptyMessage(0);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(),
+                                           "Error Occurred. Please Try Again",
+                                           Toast.LENGTH_LONG).show();
+                            resetViews();
+                        }
+                    });
                 }
             }
         };

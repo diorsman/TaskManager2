@@ -14,12 +14,13 @@ public class NotifyingThreadPoolExecutor extends ThreadPoolExecutor {
     private static final String TAG = "NotifyingThreadPoolExecutor";
 
     public interface Callback {
+
         void onAllTasksComplete();
     }
 
-    private int      mNumTasks = 0;
+    private int mNumTasks = 0;
     private Callback mCallback;
-    private Handler handler = new Handler();
+    private Handler mHandler = new Handler();
 
     public NotifyingThreadPoolExecutor(int corePoolSize,
                                        int maximumPoolSize,
@@ -43,7 +44,7 @@ public class NotifyingThreadPoolExecutor extends ThreadPoolExecutor {
         super.afterExecute(r, t);
         mNumTasks--;
         if (mNumTasks == 0) {
-            handler.post(new Runnable() {
+            mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mCallback.onAllTasksComplete();
