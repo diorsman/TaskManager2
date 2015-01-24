@@ -41,7 +41,7 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.SectionedRecycleViewAda
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.utilities.NotifyingThreadPoolExecutor;
-import com.personal.taskmanager2.utilities.RecyclerViewTouchListener;
+import com.personal.taskmanager2.ui.ItemTouchListener;
 import com.personal.taskmanager2.utilities.Utilities;
 
 import java.text.DateFormat;
@@ -200,7 +200,8 @@ public abstract class BaseProjectFragment extends Fragment
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.project_recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerViewTouchListener listener = new RecyclerViewTouchListener(mRecyclerView, mRefreshLayoutList, new RecyclerViewTouchListener.DismissCallbacks() {
+        ItemTouchListener
+                listener = new ItemTouchListener(mRecyclerView, mRefreshLayoutList, new ItemTouchListener.DismissCallbacks() {
             @Override
             public boolean canDismiss(int position) {
                 return !mSectionedAdapter.isSectionHeaderPosition(position);

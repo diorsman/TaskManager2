@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.personal.taskmanager2.utilities;
+package com.personal.taskmanager2.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -37,9 +37,9 @@ import java.util.List;
 /**
  * Created by Omid Ghomeshi on 12/18/14.
  */
-public class RecyclerViewTouchListener implements RecyclerView.OnItemTouchListener {
+public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
 
-    private static final String TAG = "RecyclerViewTouchListener";
+    private static final String TAG = "ItemTouchListener";
 
     // Cached ViewConfiguration and system-wide constant values
     private int  mSlop;
@@ -69,7 +69,7 @@ public class RecyclerViewTouchListener implements RecyclerView.OnItemTouchListen
     private float mDeltaX;
 
     /**
-     * The callback interface used by {@link RecyclerViewTouchListener} to inform its client
+     * The callback interface used by {@link ItemTouchListener} to inform its client
      * about a successful dismissal of one or more list item positions.
      */
     public interface DismissCallbacks {
@@ -90,9 +90,9 @@ public class RecyclerViewTouchListener implements RecyclerView.OnItemTouchListen
         void onDismiss(RecyclerView listView, int[] reverseSortedPositions);
     }
 
-    public RecyclerViewTouchListener(RecyclerView recyclerView,
-                                     SwipeRefreshLayout refreshLayout,
-                                     DismissCallbacks callbacks) {
+    public ItemTouchListener(RecyclerView recyclerView,
+                             SwipeRefreshLayout refreshLayout,
+                             DismissCallbacks callbacks) {
         ViewConfiguration vc = ViewConfiguration.get(recyclerView.getContext());
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
