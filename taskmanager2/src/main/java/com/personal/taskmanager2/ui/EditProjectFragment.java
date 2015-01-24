@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -50,6 +52,7 @@ public class EditProjectFragment extends android.app.Fragment
     private Project mProject;
 
     private ViewSwitcher mMainViewSwitcher;
+    private ScrollView   mScrollView;
     private TextView     mProjectNameLabel;
     private TextView     mProjectDescriptionLabel;
     private EditText     mProjectName;
@@ -93,6 +96,7 @@ public class EditProjectFragment extends android.app.Fragment
         mProjectDescription = (EditText) rootView.findViewById(R.id.edit_project_description);
         mProjectPassword = (EditText) rootView.findViewById(R.id.edit_project_password);
         mSpinner = (Spinner) rootView.findViewById(R.id.edit_project_category);
+        mScrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
 
         mMainViewSwitcher.setDisplayedChild(0);
 
@@ -195,9 +199,11 @@ public class EditProjectFragment extends android.app.Fragment
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getActivity(), "Project Updated!", Toast.LENGTH_LONG).show();
+                            mScrollView.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getActivity(), "Project Updated!", Toast.LENGTH_LONG)
+                                 .show();
                             getActivity().setResult(Activity.RESULT_OK);
-                            getActivity().finish();
+                            ActivityCompat.finishAfterTransition(getActivity());
                         }
                     });
                 }
@@ -284,5 +290,13 @@ public class EditProjectFragment extends android.app.Fragment
         mCalendar.set(Calendar.MINUTE, minute);
         DateFormat time = DateFormat.getTimeInstance(DateFormat.SHORT);
         mTimeButton.setText("Due at " + time.format(mCalendar.getTime()));
+    }
+
+    public void hide() {
+        mScrollView.setVisibility(View.INVISIBLE);
+    }
+
+    public void show() {
+        mScrollView.setVisibility(View.VISIBLE);
     }
 }

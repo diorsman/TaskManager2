@@ -7,12 +7,15 @@
     android:layout_height="88dp"
     app:cardCornerRadius="0dp"
     app:cardMaxElevation="0dp"
-    android:foreground="?selectableItemBackground">
+    android:foreground="?selectableItemBackground"
+    android:transitionName="transition"
+    >
 
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        >
 
         <View
             android:id="@+id/project_list_color_slice"
@@ -27,8 +30,7 @@
             android:id="@+id/project_list_name"
             style="@style/not_completed_default"
             android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"
-            />
+            android:layout_marginStart="72dp"/>
 
         <TextView
             android:id="@+id/project_list_due_date"

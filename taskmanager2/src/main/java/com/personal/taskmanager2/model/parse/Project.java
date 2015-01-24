@@ -1,11 +1,14 @@
 package com.personal.taskmanager2.model.parse;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.view.View;
 import android.widget.Toast;
 
 import com.parse.ParseClassName;
@@ -267,7 +270,10 @@ public class Project extends ParseObject implements Parcelable {
         return 0;
     }
 
-    public boolean safeEdit(final Fragment fragment, final Context context) {
+    public boolean safeEdit(final Fragment fragment,
+                            final Context context,
+                            final Activity activity,
+                            final View view) {
         /*if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
             fragmentManager.beginTransaction()
                            .addToBackStack(null)
@@ -292,8 +298,12 @@ public class Project extends ParseObject implements Parcelable {
             @Override
             public void modify() {
                 Intent intent = new Intent(context, EditProjectActivity.class);
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        activity,
+                        view,
+                        "transition");
                 intent.putExtra("project", Project.this);
-                fragment.startActivityForResult(intent, Constants.EDIT_PROJECT_REQUEST);
+                fragment.startActivityForResult(intent, Constants.EDIT_PROJECT_REQUEST, options.toBundle());
             }
         });
     }

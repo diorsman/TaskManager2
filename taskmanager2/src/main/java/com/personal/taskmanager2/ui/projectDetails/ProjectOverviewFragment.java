@@ -149,7 +149,7 @@ public class ProjectOverviewFragment extends Fragment
                 break;
 
             case R.id.edit_project:
-                mProject.safeEdit(this, getActivity());
+                //mProject.safeEdit(this, getActivity());
                 break;
 
             case R.id.share_project:

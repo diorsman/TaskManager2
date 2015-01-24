@@ -5,171 +5,190 @@
     android:id="@+id/main_view_switcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_light">
+    android:background="@android:color/background_light"
+    android:animateLayoutChanges="true">
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:fillViewport="true"
-        android:clipToPadding="false">
+        android:transitionName="transition">
 
-        <RelativeLayout
+        <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:fillViewport="true"
+            android:clipToPadding="false"
+            android:visibility="invisible">
 
-            <TextView
-                style="@style/edit_project_title"
-                android:id="@+id/edit_project_instructions"
-                android:text="@string/edit_project_instructions"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <View
-                style="@style/horizontal_divider"
-                android:layout_below="@id/edit_project_instructions"
-                />
-
-            <TextView
-                style="@style/edit_project_label"
-                android:id="@+id/edit_project_name_label"
-                android:text="@string/project_name"
-                android:layout_below="@id/edit_project_instructions"/>
-
-            <ViewSwitcher
-                android:id="@+id/edit_project_name_view"
-                android:layout_below="@+id/edit_project_name_label"
-                style="@style/edit_project_view_switcher">
 
                 <TextView
-                    style="@style/edit_project_actual"
-                    android:id="@+id/edit_project_name_actual"/>
+                    style="@style/edit_project_title"
+                    android:id="@+id/edit_project_instructions"
+                    android:text="@string/edit_project_instructions"/>
 
-                <EditText
-                    style="@style/default_edit_text"
-                    android:id="@+id/edit_project_name"
-                    android:hint="@string/project_name"/>
-
-            </ViewSwitcher>
-
-            <View
-                android:layout_below="@id/edit_project_name_view"
-                style="@style/horizontal_divider"/>
-
-
-            <ViewSwitcher
-                style="@style/edit_project_view_switcher"
-                android:layout_marginTop="10dp"
-                android:id="@+id/edit_project_password_view"
-                android:layout_below="@id/edit_project_name_view">
-
-                <TextView
-                    style="@style/edit_project_password"
-                    android:id="@+id/edit_project_password_label"
-                    android:text="@string/edit_password"/>
-
-                <EditText
-                    style="@style/password_edit_text"
-                    android:id="@+id/edit_project_password"
-                    android:hint="@string/password"/>
-
-            </ViewSwitcher>
-
-            <View
-                android:layout_below="@id/edit_project_password_view"
-                style="@style/horizontal_divider"/>
-
-            <TextView
-                style="@style/edit_project_label"
-                android:id="@+id/edit_project_description_label"
-                android:layout_below="@+id/edit_project_password_view"
-                android:text="@string/edit_project_description"/>
-
-            <ViewSwitcher
-                style="@style/edit_project_view_switcher"
-                android:id="@+id/edit_project_description_view"
-                android:layout_below="@+id/edit_project_description_label">
-
-                <TextView
-                    style="@style/edit_project_actual"
-                    android:id="@+id/edit_project_description_actual"/>
-
-                <EditText
-                    style="@style/default_edit_text"
-                    android:id="@+id/edit_project_description"
-                    android:hint="@string/edit_project_description"
-                    android:inputType="textMultiLine"/>
-
-            </ViewSwitcher>
-
-            <View
-                android:id="@+id/third_line"
-                android:layout_below="@id/edit_project_description_view"
-                style="@style/horizontal_divider"
-                android:layout_marginTop="10dp"/>
-
-            <LinearLayout
-                style="@style/edit_project_linear_layout"
-                android:id="@+id/button_view"
-                android:layout_below="@id/third_line"
-                android:weightSum="2"
-                android:orientation="horizontal"
-                >
-
-                <Button
-                    android:id="@+id/editProjectDueDateButton"
-                    android:layout_marginRight="5dp"
-                    style="@style/edit_project_buttons"/>
-
-                <Button
-                    android:id="@+id/editProjectTimeButton"
-                    android:layout_marginLeft="5dp"
-                    style="@style/edit_project_buttons"
+                <View
+                    style="@style/horizontal_divider"
+                    android:layout_below="@id/edit_project_instructions"
                     />
 
-            </LinearLayout>
+                <TextView
+                    style="@style/edit_project_label"
+                    android:id="@+id/edit_project_name_label"
+                    android:text="@string/project_name"
+                    android:layout_below="@id/edit_project_instructions"/>
 
-            <View
-                android:id="@+id/fourth_line"
-                android:layout_below="@id/button_view"
-                style="@style/horizontal_divider"/>
+                <ViewSwitcher
+                    android:id="@+id/edit_project_name_view"
+                    android:layout_below="@+id/edit_project_name_label"
+                    style="@style/edit_project_view_switcher">
 
-            <LinearLayout
-                style="@style/edit_project_linear_layout"
-                android:id="@+id/category_view"
-                android:layout_below="@id/fourth_line"
-                android:weightSum="1">
+                    <TextView
+                        style="@style/edit_project_actual"
+                        android:id="@+id/edit_project_name_actual"/>
+
+                    <EditText
+                        style="@style/default_edit_text"
+                        android:id="@+id/edit_project_name"
+                        android:hint="@string/project_name"/>
+
+                </ViewSwitcher>
+
+                <View
+                    android:layout_below="@id/edit_project_name_view"
+                    style="@style/horizontal_divider"/>
+
+
+                <ViewSwitcher
+                    style="@style/edit_project_view_switcher"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/edit_project_password_view"
+                    android:layout_below="@id/edit_project_name_view">
+
+                    <TextView
+                        style="@style/edit_project_password"
+                        android:id="@+id/edit_project_password_label"
+                        android:text="@string/edit_password"/>
+
+                    <EditText
+                        style="@style/password_edit_text"
+                        android:id="@+id/edit_project_password"
+                        android:hint="@string/password"/>
+
+                </ViewSwitcher>
+
+                <View
+                    android:layout_below="@id/edit_project_password_view"
+                    style="@style/horizontal_divider"/>
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="@string/category"
-                    android:layout_weight=".5"/>
+                    style="@style/edit_project_label"
+                    android:id="@+id/edit_project_description_label"
+                    android:layout_below="@+id/edit_project_password_view"
+                    android:text="@string/edit_project_description"/>
 
-                <Spinner
-                    android:id="@+id/edit_project_category"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".5"/>
+                <ViewSwitcher
+                    style="@style/edit_project_view_switcher"
+                    android:id="@+id/edit_project_description_view"
+                    android:layout_below="@+id/edit_project_description_label">
 
-            </LinearLayout>
+                    <TextView
+                        style="@style/edit_project_actual"
+                        android:id="@+id/edit_project_description_actual"/>
 
-            <View
-                android:id="@+id/last_line"
-                android:layout_below="@id/category_view"
-                style="@style/horizontal_divider"/>
+                    <EditText
+                        style="@style/default_edit_text"
+                        android:id="@+id/edit_project_description"
+                        android:hint="@string/edit_project_description"
+                        android:inputType="textMultiLine"/>
 
-        </RelativeLayout>
+                </ViewSwitcher>
 
-    </ScrollView>
+                <View
+                    android:id="@+id/third_line"
+                    android:layout_below="@id/edit_project_description_view"
+                    style="@style/horizontal_divider"
+                    android:layout_marginTop="10dp"/>
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        style="?android:progressBarStyleLarge"/>
+                <LinearLayout
+                    style="@style/edit_project_linear_layout"
+                    android:id="@+id/button_view"
+                    android:layout_below="@id/third_line"
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/editProjectDueDateButton"
+                        android:layout_marginRight="5dp"
+                        style="@style/edit_project_buttons"/>
+
+                    <Button
+                        android:id="@+id/editProjectTimeButton"
+                        android:layout_marginLeft="5dp"
+                        style="@style/edit_project_buttons"
+                        />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/fourth_line"
+                    android:layout_below="@id/button_view"
+                    style="@style/horizontal_divider"/>
+
+                <LinearLayout
+                    style="@style/edit_project_linear_layout"
+                    android:id="@+id/category_view"
+                    android:layout_below="@id/fourth_line"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="@string/category"
+                        android:layout_weight=".5"/>
+
+                    <Spinner
+                        android:id="@+id/edit_project_category"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"/>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/last_line"
+                    android:layout_below="@id/category_view"
+                    style="@style/horizontal_divider"/>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:transitionName="transition">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="?android:progressBarStyleLarge"/>
+
+    </android.support.v7.widget.CardView>
+
 
 </ViewSwitcher>

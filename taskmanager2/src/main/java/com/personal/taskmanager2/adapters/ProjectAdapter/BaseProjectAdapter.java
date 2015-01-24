@@ -46,6 +46,10 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         void modifyProject(Project project);
     }
 
+    public interface ApplyAction2 {
+        void modifyProject2(Project project, int pos);
+    }
+
     private static final int CHECK_ANIM = 1;
     private static final int ORIG_ANIM  = 2;
 
@@ -55,12 +59,20 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     private SparseIntArray              mAnimItems;
     private SectionedRecycleViewAdapter mSectionAdapter;
 
-    private int                         mStyleIdCompleted;
-    private int                         mStyleIdNotCompleted;
+    private        int        mStyleIdCompleted;
+    private        int        mStyleIdNotCompleted;
     private static DateFormat sDateFormat;
 
     private static HashMap<IconKey, CharCircleIcon> sIconMap = new HashMap<>();
     Typeface typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
+
+    private RecyclerView mRecyclerView;
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
 
     protected OnItemClickListener mClickListener;
 
@@ -145,6 +157,14 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         }
     }
 
+    public void forEachSelectItemModifyInPlace2(ApplyAction2 func) {
+        for (int i = 0; i < mSelectedItems.size(); ++i) {
+            int projectPos = mSelectedItems.keyAt(i);
+            Project project = mProjectList.get(projectPos);
+            func.modifyProject2(project, projectPos);
+        }
+    }
+
     public void forEachSelectedItemRemove(ApplyAction func) {
         for (int i = mSelectedItems.size() - 1; i >= 0; --i) {
             int pos = mSelectedItems.keyAt(i);
@@ -193,10 +213,12 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         Project project = getItem(position);
 
         if (isItemSelected(position)) {
-            holder.itemView.setBackgroundColor(getContext().getResources().getColor(R.color.item_selected_background));
+            holder.itemView.setBackgroundColor(getContext().getResources()
+                                                           .getColor(R.color.item_selected_background));
         }
         else {
-            holder.itemView.setBackgroundColor(getContext().getResources().getColor(android.R.color.white));
+            holder.itemView.setBackgroundColor(getContext().getResources()
+                                                           .getColor(android.R.color.white));
         }
         //holder.itemView.setActivated(isItemSelected(position));
         initAvatar(holder.projectAvatar, project, position);
@@ -270,7 +292,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         public View     projectAvatar;
         public TextView projectName;
         public TextView projectDueDate;
-        public View divider;
+        public View     divider;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -278,7 +300,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
             projectAvatar = itemView.findViewById(R.id.project_list_color_slice);
             projectName = (TextView) itemView.findViewById(R.id.project_list_name);
             projectDueDate = (TextView) itemView.findViewById(R.id.project_list_due_date);
-            divider = (View) itemView.findViewById(R.id.divider);
+            divider = itemView.findViewById(R.id.divider);
         }
     }
 }

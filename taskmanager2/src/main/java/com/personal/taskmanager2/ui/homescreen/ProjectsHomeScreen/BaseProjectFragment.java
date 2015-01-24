@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,7 +40,6 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.adapters.ProjectAdapter.SectionedRecycleViewAdapter;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
-import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.utilities.NotifyingThreadPoolExecutor;
 import com.personal.taskmanager2.utilities.RecyclerViewTouchListener;
 import com.personal.taskmanager2.utilities.Utilities;
@@ -62,7 +60,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class BaseProjectFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
                    BaseProjectAdapter.OnItemClickListener,
-                   RecyclerViewTouchListener.DismissCallbacks,
                    NotifyingThreadPoolExecutor.Callback {
 
     private static final String TAG = "BaseProjectFragment";
@@ -87,8 +84,8 @@ public abstract class BaseProjectFragment extends Fragment
     protected BaseProjectAdapter          mProjectAdapter;
     protected SectionedRecycleViewAdapter mSectionedAdapter;
     private   Context                     mContext;
-    private   ActionMode                  mActionMode;
-    private ActionMode.Callback mActionModeCallback = initCab();
+    protected ActionMode                  mActionMode;
+    protected ActionMode.Callback mActionModeCallback = initCab();
 
     private boolean mArchive;
     private boolean mTrash;
@@ -203,9 +200,19 @@ public abstract class BaseProjectFragment extends Fragment
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.project_recycler_view);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addOnItemTouchListener(new RecyclerViewTouchListener(mRecyclerView,
-                                                                           mRefreshLayoutList,
-                                                                           this));
+        RecyclerViewTouchListener listener = new RecyclerViewTouchListener(mRecyclerView, mRefreshLayoutList, new RecyclerViewTouchListener.DismissCallbacks() {
+            @Override
+            public boolean canDismiss(int position) {
+                return !mSectionedAdapter.isSectionHeaderPosition(position);
+            }
+
+            @Override
+            public void onDismiss(RecyclerView listView, int[] reverseSortedPositions) {
+
+            }
+        });
+        mRecyclerView.addOnItemTouchListener(listener);
+        mRecyclerView.setOnScrollListener(listener.makeScrollListener());
 
         // refresh layout setup
         mRefreshLayoutList.setOnRefreshListener(this);
@@ -720,69 +727,5 @@ public abstract class BaseProjectFragment extends Fragment
         projectQuery.addAscendingOrder(Project.DUE_DATE_COL);
     }
 
-    @Override
-    public boolean canDismiss(int position) {
-        return !mSectionedAdapter.isSectionHeaderPosition(position);
-    }
 
-    @Override
-    public void onDismiss(RecyclerView listView, int[] reverseSortedPositions) {
-
-    }
-
-    @Override
-    public void onItemClick(View v) {
-        int position =
-                mSectionedAdapter.sectionedPositionToPosition(mRecyclerView.getChildPosition(v));
-
-        if (mProjectAdapter.isItemSelected(position)) {
-            unSelectItem(position);
-        }
-        else {
-            Intent intent =
-                    new Intent(BaseProjectFragment.this.getActivity(),
-                               ProjectDetailActivity.class);
-            intent.putExtra("project",
-                            mProjectAdapter.getItem(position));
-            startActivity(intent);
-        }
-    }
-
-    @Override
-    public void onItemLongClick(View v) {
-        int position = mRecyclerView.getChildPosition(v);
-        toggleSelection(position);
-    }
-
-    @Override
-    public void onAvatarClick(View avatar, int position) {
-        toggleSelection(position);
-    }
-
-    private void toggleSelection(int position) {
-        position = mSectionedAdapter.sectionedPositionToPosition(position);
-        if (mProjectAdapter.isItemSelected(position)) {
-            unSelectItem(position);
-        }
-        else {
-            mProjectAdapter.selectItem(position);
-            if (mActionMode == null) {
-                mActionMode =
-                        Utilities.getToolbar(getActivity()).startActionMode(mActionModeCallback);
-            }
-            else {
-                mActionMode.invalidate();
-            }
-        }
-    }
-
-    private void unSelectItem(int position) {
-        mProjectAdapter.unselectedItem(position);
-        if (mProjectAdapter.getNumSelected() == 0) {
-            mActionMode.finish();
-        }
-        else {
-            mActionMode.invalidate();
-        }
-    }
 }

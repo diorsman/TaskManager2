@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -22,7 +23,9 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.model.parse.Project;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.CreateProjectFragment;
 import com.personal.taskmanager2.ui.homescreen.AddProjects.JoinProjectFragment;
+import com.personal.taskmanager2.ui.projectDetails.ProjectDetailActivity;
 import com.personal.taskmanager2.ui.widget.FloatingActionButton;
+import com.personal.taskmanager2.utilities.Utilities;
 
 public class MyProjectsFragment extends BaseProjectFragment implements View.OnClickListener {
 
@@ -105,12 +108,24 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_edit_project:
-                        mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        /*mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
                             public void modifyProject(Project project) {
                                 getActionMode().finish();
                                 project.safeEdit(MyProjectsFragment.this,
-                                                 MyProjectsFragment.this.getActivity());
+                                                 MyProjectsFragment.this.getActivity(),
+                                                 MyProjectsFragment.this.getActivity(),
+                                                 mRecyclerView.get);
+                            }
+                        });*/
+                        mProjectAdapter.forEachSelectItemModifyInPlace2(new BaseProjectAdapter.ApplyAction2() {
+                            @Override
+                            public void modifyProject2(Project project, int pos) {
+                                getActionMode().finish();
+                                project.safeEdit(MyProjectsFragment.this,
+                                                 MyProjectsFragment.this.getActivity(),
+                                                 MyProjectsFragment.this.getActivity(),
+                                                 mRecyclerView.findViewHolderForPosition(mSectionedAdapter.positionToSectionedPosition(pos)).itemView);
                             }
                         });
                         return true;
@@ -316,4 +331,61 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                              });
         }
     };
+
+    @Override
+    public void onItemClick(View v) {
+        int position =
+                mSectionedAdapter.sectionedPositionToPosition(mRecyclerView.getChildPosition(v));
+
+        if (mProjectAdapter.isItemSelected(position)) {
+            unSelectItem(position);
+        }
+        else {
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+            Intent intent =
+                    new Intent(MyProjectsFragment.this.getActivity(),
+                               ProjectDetailActivity.class);
+            intent.putExtra("project",
+                            mProjectAdapter.getItem(position));
+            startActivity(intent, options.toBundle());
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View v) {
+        int position = mRecyclerView.getChildPosition(v);
+        toggleSelection(position);
+    }
+
+    @Override
+    public void onAvatarClick(View avatar, int position) {
+        toggleSelection(position);
+    }
+
+    private void toggleSelection(int position) {
+        position = mSectionedAdapter.sectionedPositionToPosition(position);
+        if (mProjectAdapter.isItemSelected(position)) {
+            unSelectItem(position);
+        }
+        else {
+            mProjectAdapter.selectItem(position);
+            if (mActionMode == null) {
+                mActionMode =
+                        Utilities.getToolbar(getActivity()).startActionMode(mActionModeCallback);
+            }
+            else {
+                mActionMode.invalidate();
+            }
+        }
+    }
+
+    private void unSelectItem(int position) {
+        mProjectAdapter.unselectedItem(position);
+        if (mProjectAdapter.getNumSelected() == 0) {
+            mActionMode.finish();
+        }
+        else {
+            mActionMode.invalidate();
+        }
+    }
 }
