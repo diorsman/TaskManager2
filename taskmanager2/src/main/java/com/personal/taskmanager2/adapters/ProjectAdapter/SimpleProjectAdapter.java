@@ -2,6 +2,7 @@ package com.personal.taskmanager2.adapters.ProjectAdapter;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -33,9 +34,11 @@ public class SimpleProjectAdapter extends BaseProjectAdapter<SimpleProjectAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = initView(parent, R.layout.list_item_project);
+        //View view = initView(parent, R.layout.list_item_project);
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.list_item_project, parent, false);
         final ViewHolder viewHolder = new ViewHolder(view);
-        initAvatarClick(viewHolder);
+        initClick(viewHolder);
         return viewHolder;
     }
 

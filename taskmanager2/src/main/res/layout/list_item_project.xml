@@ -1,79 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="88dp"
-    app:cardCornerRadius="0dp"
-    app:cardMaxElevation="0dp"
-    android:foreground="?selectableItemBackground"
-    android:transitionName="transition"
-    >
+    android:layout_height="88dp">
 
     <RelativeLayout
-        android:layout_height="match_parent"
+        android:id="@+id/completion_view"
         android:layout_width="match_parent"
-        android:layout_marginTop="16dp"
-        >
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/project_green">
 
-        <View
-            android:id="@+id/project_list_color_slice"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_alignTop="@+id/project_list_name"
-            android:clickable="true"/>
-
-        <TextView
-            android:id="@+id/project_list_name"
-            style="@style/not_completed_default"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"/>
-
-        <TextView
-            android:id="@+id/project_list_due_date"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/project_list_name"
-            android:textSize="14sp"
-            android:textColor="@color/secondary_text_default_material_light"
-            android:fontFamily="sans-serif"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"/>
-
-        <ProgressBar
-            android:id="@+id/project_list_status"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/project_list_due_date"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"/>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            style="@style/horizontal_divider"
-            android:layout_marginTop="20dp"/>
-
-        <!--<ImageButton-->
-        <!--android:id="@+id/project_list_overflow"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:background="@drawable/card_overflow_style"-->
-        <!--android:contentDescription="@string/overflow"-->
-        <!--android:focusable="false"-->
-        <!--android:focusableInTouchMode="false"-->
-        <!--android:layout_marginLeft="16dp"-->
-        <!--android:layout_marginRight="16dp"/>-->
+            android:layout_centerVertical="true"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:src="@drawable/ic_action_navigation_check"/>
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+    <RelativeLayout
+        android:id="@+id/archive_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/project_yellow">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:paddingRight="16dp"
+            android:paddingEnd="16dp"
+            android:src="@drawable/ic_action_content_archive"/>
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card_view:cardCornerRadius="0dp"
+        card_view:cardMaxElevation="0dp"
+        android:foreground="?selectableItemBackground"
+        android:transitionName="transition">
+
+        <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp">
+
+            <View
+                android:id="@+id/project_list_color_slice"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_alignTop="@+id/project_list_name"
+                android:clickable="true"/>
+
+            <TextView
+                android:id="@+id/project_list_name"
+                style="@style/not_completed_default"
+                android:layout_marginLeft="72dp"
+                android:layout_marginStart="72dp"/>
+
+            <TextView
+                android:id="@+id/project_list_due_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/project_list_name"
+                android:textSize="14sp"
+                android:textColor="@color/secondary_text_default_material_light"
+                android:fontFamily="sans-serif"
+                android:layout_marginLeft="72dp"
+                android:layout_marginStart="72dp"/>
+
+            <ProgressBar
+                android:id="@+id/project_list_status"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/project_list_due_date"
+                android:layout_marginLeft="72dp"
+                android:layout_marginStart="72dp"/>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                style="@style/horizontal_divider"
+                android:layout_marginTop="20dp"/>
+
+            <!--<ImageButton-->
+            <!--android:id="@+id/project_list_overflow"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:background="@drawable/card_overflow_style"-->
+            <!--android:contentDescription="@string/overflow"-->
+            <!--android:focusable="false"-->
+            <!--android:focusableInTouchMode="false"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:layout_marginRight="16dp"/>-->
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</FrameLayout>
+
 

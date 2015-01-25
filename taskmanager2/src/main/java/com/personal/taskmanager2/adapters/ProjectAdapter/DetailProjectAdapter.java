@@ -1,6 +1,7 @@
 package com.personal.taskmanager2.adapters.ProjectAdapter;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,9 +31,13 @@ public class DetailProjectAdapter extends BaseProjectAdapter<DetailProjectAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
-        View view = initView(parent, R.layout.list_item_project_detail);
+        //View view = initView(parent, R.layout.list_item_project_detail);
+        View view =
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_project_detail,
+                                                                 parent,
+                                                                 false);
         final ViewHolder viewHolder = new ViewHolder(view);
-        initAvatarClick(viewHolder);
+        initClick(viewHolder);
         return viewHolder;
     }
 

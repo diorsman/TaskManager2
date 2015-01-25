@@ -81,10 +81,16 @@ public class SectionedRecycleViewAdapter extends RecyclerView.Adapter<RecyclerVi
         if (isSectionHeaderPosition(position)) {
             Section section = mSections.get(position);
             ((SectionViewHolder) sectionViewHolder).title.setText(section.title);
-            ((SectionViewHolder) sectionViewHolder).numItems.setText(Integer.toString(section.numItems));
+            if (section.numItems > 0) {
+                ((SectionViewHolder) sectionViewHolder).numItems.setText(Integer.toString(section.numItems));
+            }
+            else {
+                ((SectionViewHolder) sectionViewHolder).numItems.setText("");
+            }
         }
         else {
-            BaseProjectAdapter.ViewHolder viewHolder = (BaseProjectAdapter.ViewHolder) sectionViewHolder;
+            BaseProjectAdapter.ViewHolder viewHolder =
+                    (BaseProjectAdapter.ViewHolder) sectionViewHolder;
             mBaseAdapter.onBindViewHolder(viewHolder, sectionedPositionToPosition(position));
             if (isSectionHeaderPosition(position + 1)) {
                 viewHolder.divider.setVisibility(View.INVISIBLE);

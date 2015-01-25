@@ -6,12 +6,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.personal.taskmanager2.R;
@@ -47,6 +46,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     }
 
     public interface ApplyAction2 {
+
         void modifyProject2(Project project, int pos);
     }
 
@@ -177,33 +177,35 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         mAnimItems.clear();
     }
 
-    protected View initView(ViewGroup parent, int layout) {
+    /*protected View initView(ViewGroup parent, int layout) {
         View view = LayoutInflater.from(parent.getContext()).inflate(layout,
                                                                      parent,
                                                                      false);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mClickListener.onItemClick(v);
-            }
-        });
 
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mClickListener.onItemLongClick(v);
-                return true;
-            }
-        });
 
         return view;
-    }
+    }*/
 
-    protected void initAvatarClick(final ViewHolder viewHolder) {
+    protected void initClick(final ViewHolder viewHolder) {
         viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mClickListener.onAvatarClick(v, viewHolder.getPosition());
+            }
+        });
+
+        viewHolder.mainView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClickListener.onItemClick(viewHolder.itemView);
+            }
+        });
+
+        viewHolder.mainView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mClickListener.onItemLongClick(viewHolder.itemView);
+                return true;
             }
         });
     }
@@ -213,14 +215,14 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         Project project = getItem(position);
 
         if (isItemSelected(position)) {
-            holder.itemView.setBackgroundColor(getContext().getResources()
-                                                           .getColor(R.color.item_selected_background));
+            holder.mainView.setCardBackgroundColor(getContext().getResources()
+                                                               .getColor(R.color.item_selected_background));
         }
         else {
-            holder.itemView.setBackgroundColor(getContext().getResources()
-                                                           .getColor(android.R.color.white));
+            holder.mainView.setCardBackgroundColor(getContext().getResources()
+                                                               .getColor(android.R.color.white));
         }
-        //holder.itemView.setActivated(isItemSelected(position));
+
         initAvatar(holder.projectAvatar, project, position);
 
         holder.projectName.setText(project.getName());
@@ -289,6 +291,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        public CardView mainView;
         public View     projectAvatar;
         public TextView projectName;
         public TextView projectDueDate;
@@ -297,6 +300,7 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         public ViewHolder(final View itemView) {
             super(itemView);
 
+            mainView = (CardView) itemView.findViewById(R.id.main_view);
             projectAvatar = itemView.findViewById(R.id.project_list_color_slice);
             projectName = (TextView) itemView.findViewById(R.id.project_list_name);
             projectDueDate = (TextView) itemView.findViewById(R.id.project_list_due_date);

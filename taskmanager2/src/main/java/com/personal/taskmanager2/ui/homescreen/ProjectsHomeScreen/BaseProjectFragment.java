@@ -39,12 +39,11 @@ import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 import com.personal.taskmanager2.adapters.ProjectAdapter.ProjectAdapterFactory;
 import com.personal.taskmanager2.adapters.ProjectAdapter.SectionedRecycleViewAdapter;
 import com.personal.taskmanager2.model.parse.Project;
+import com.personal.taskmanager2.ui.ItemTouchListener;
 import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.utilities.NotifyingThreadPoolExecutor;
-import com.personal.taskmanager2.ui.ItemTouchListener;
 import com.personal.taskmanager2.utilities.Utilities;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,12 +73,10 @@ public abstract class BaseProjectFragment extends Fragment
 
     private String mToolbarTitle;
 
-    private   SwipeRefreshLayout mRefreshLayoutList;
+    private   SwipeRefreshLayout mRefreshLayout;
     protected RecyclerView       mRecyclerView;
     protected TextView           mLoadProjects;
     private   TextView           mNoProjects;
-
-    private int mLayoutResourceId;
 
     protected BaseProjectAdapter          mProjectAdapter;
     protected SectionedRecycleViewAdapter mSectionedAdapter;
@@ -159,10 +156,6 @@ public abstract class BaseProjectFragment extends Fragment
         return mActionMode;
     }
 
-    protected void setActionMode(ActionMode actionMode) {
-        mActionMode = actionMode;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -185,14 +178,14 @@ public abstract class BaseProjectFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle args = getArguments();
-        mLayoutResourceId = args.getInt("resourceId");
+        int layoutResourceId = args.getInt("resourceId");
         mArchive = args.getBoolean("archive");
         mTrash = args.getBoolean("trash");
         mToolbarTitle = args.getString("title");
 
-        View rootView = inflater.inflate(mLayoutResourceId, container, false);
+        View rootView = inflater.inflate(layoutResourceId, container, false);
 
-        mRefreshLayoutList =
+        mRefreshLayout =
                 (SwipeRefreshLayout) rootView.findViewById(R.id.refresh_layout_list_view);
         mLoadProjects = (TextView) rootView.findViewById(R.id.myProjectLoad);
         mNoProjects = (TextView) rootView.findViewById(R.id.no_projects_text);
@@ -201,26 +194,30 @@ public abstract class BaseProjectFragment extends Fragment
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         ItemTouchListener
-                listener = new ItemTouchListener(mRecyclerView, mRefreshLayoutList, new ItemTouchListener.DismissCallbacks() {
-            @Override
-            public boolean canDismiss(int position) {
-                return !mSectionedAdapter.isSectionHeaderPosition(position);
-            }
+                listener = new ItemTouchListener(mRecyclerView,
+                                                 mRefreshLayout,
+                                                 new ItemTouchListener.DismissCallbacks() {
+                                                     @Override
+                                                     public boolean canDismiss(int position) {
+                                                         return !mSectionedAdapter.isSectionHeaderPosition(
+                                                                 position);
+                                                     }
 
-            @Override
-            public void onDismiss(RecyclerView listView, int[] reverseSortedPositions) {
+                                                     @Override
+                                                     public void onDismiss(RecyclerView listView,
+                                                                           int[] reverseSortedPositions) {
 
-            }
-        });
+                                                     }
+                                                 });
         mRecyclerView.addOnItemTouchListener(listener);
         mRecyclerView.setOnScrollListener(listener.makeScrollListener());
 
         // refresh layout setup
-        mRefreshLayoutList.setOnRefreshListener(this);
-        mRefreshLayoutList.setColorSchemeResources(android.R.color.holo_purple,
-                                                   android.R.color.holo_green_light,
-                                                   android.R.color.holo_orange_light,
-                                                   android.R.color.holo_red_light);
+        mRefreshLayout.setOnRefreshListener(this);
+        mRefreshLayout.setColorSchemeResources(android.R.color.holo_purple,
+                                               android.R.color.holo_green_light,
+                                               android.R.color.holo_orange_light,
+                                               android.R.color.holo_red_light);
 
         mContext = getActivity();
 
@@ -449,7 +446,7 @@ public abstract class BaseProjectFragment extends Fragment
 
 
     public void queryProjects() {
-        mRefreshLayoutList.setRefreshing(true);
+        mRefreshLayout.setRefreshing(true);
 
         mGetNumProjectsOverdue = mExecutor.submit(mGetNumProjectsOverdueCallable);
         mGetNumProjectsDueToday = mExecutor.submit(mGetNumProjectsDueTodayCallable);
@@ -471,7 +468,7 @@ public abstract class BaseProjectFragment extends Fragment
             int numItems = mGetNumProjects.get();
 
             if (numItems == 0) {
-                mRefreshLayoutList.setRefreshing(false);
+                mRefreshLayout.setRefreshing(false);
                 mLoadProjects.setVisibility(View.GONE);
                 mNoProjects.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
@@ -479,7 +476,8 @@ public abstract class BaseProjectFragment extends Fragment
             }
 
             int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
-                                      numProjectsDueThisWeek - numProjectsDueThisMonth;
+                                      numProjectsDueThisWeek - numProjectsDueThisMonth -
+                                      numProjectsCompleted;
 
             List<SectionedRecycleViewAdapter.Section> sections = new ArrayList<>();
 
@@ -487,8 +485,7 @@ public abstract class BaseProjectFragment extends Fragment
             if (numProjectsOverdue > 0) {
                 sections.add(new SectionedRecycleViewAdapter.Section(0,
                                                                      "Overdue",
-                                                                     numProjectsOverdue -
-                                                                     numProjectsCompleted));
+                                                                     numProjectsOverdue));
             }
             if (numProjectsDueToday > 0) {
                 if (sections.isEmpty()) {
@@ -498,7 +495,7 @@ public abstract class BaseProjectFragment extends Fragment
                 }
                 else {
                     sections.add(new SectionedRecycleViewAdapter.Section(
-                            numProjectsOverdue - numProjectsCompleted,
+                            numProjectsOverdue,
                             "Due Today",
                             numProjectsDueToday));
                 }
@@ -511,8 +508,7 @@ public abstract class BaseProjectFragment extends Fragment
                 }
                 else {
                     sections.add(new SectionedRecycleViewAdapter.Section(
-                            numProjectsOverdue + numProjectsDueToday -
-                            numProjectsCompleted,
+                            numProjectsOverdue + numProjectsDueToday,
                             "Due This Week",
                             numProjectsDueThisWeek));
                 }
@@ -525,8 +521,7 @@ public abstract class BaseProjectFragment extends Fragment
                 }
                 else {
                     sections.add(new SectionedRecycleViewAdapter.Section(
-                            numProjectsOverdue + numProjectsDueToday +
-                            numProjectsDueThisWeek - numProjectsCompleted,
+                            numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek,
                             "Due This Month",
                             numProjectsDueThisMonth));
                 }
@@ -539,9 +534,8 @@ public abstract class BaseProjectFragment extends Fragment
                 }
                 else {
                     sections.add(new SectionedRecycleViewAdapter.Section(
-                            numProjectsOverdue + numProjectsDueToday +
-                            numProjectsDueThisWeek + numProjectsDueThisMonth -
-                            numProjectsCompleted, "Due Later", numProjectsDueLater));
+                            numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek +
+                            numProjectsDueThisMonth, "Due Later", numProjectsDueLater));
                 }
             }
             if (numProjectsCompleted > 0) {
@@ -557,6 +551,10 @@ public abstract class BaseProjectFragment extends Fragment
                             numProjectsCompleted));
                 }
             }
+            // add footer view
+            sections.add(new SectionedRecycleViewAdapter.Section(mProjectAdapter.getItemCount(),
+                                                                 "",
+                                                                 0));
 
             mSectionedAdapter.setSections(sections);
             mProjectAdapter.setSectionAdapter(mSectionedAdapter);
@@ -565,7 +563,7 @@ public abstract class BaseProjectFragment extends Fragment
             mLoadProjects.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
             mNoProjects.setVisibility(View.GONE);
-            mRefreshLayoutList.setRefreshing(false);
+            mRefreshLayout.setRefreshing(false);
         }
         catch (InterruptedException | ExecutionException e) {
             // error
@@ -578,10 +576,11 @@ public abstract class BaseProjectFragment extends Fragment
 
     private int getProjectCountOverdue() throws ParseException {
         Calendar end = Calendar.getInstance();
-        printCal(end, "overdue = ");
+        //printCal(end, "overdue = ");
 
         ParseQuery<Project> projectQuery = initQuery();
         projectQuery.whereLessThan(Project.DUE_DATE_COL, end.getTime());
+        projectQuery.whereEqualTo(Project.STATUS_COL, false);
         int count = projectQuery.count();
         Log.d(TAG, "num projects overdue = " + count);
 
@@ -596,6 +595,7 @@ public abstract class BaseProjectFragment extends Fragment
         ParseQuery<Project> projectQuery = initQuery();
         projectQuery.whereGreaterThanOrEqualTo(Project.DUE_DATE_COL, startToday.getTime());
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, endToday.getTime());
+        projectQuery.whereEqualTo(Project.STATUS_COL, false);
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due today = " + count);
 
@@ -606,17 +606,18 @@ public abstract class BaseProjectFragment extends Fragment
         Calendar startWeek = Calendar.getInstance();
         startWeek.add(Calendar.DATE, 1);
         setCalendarToBeginningOfDay(startWeek);
-        printCal(startWeek, "start week =");
+        //printCal(startWeek, "start week =");
 
         Calendar lastDayOfWeek = Calendar.getInstance();
         int curDay = lastDayOfWeek.get(Calendar.DAY_OF_WEEK);
         lastDayOfWeek.add(Calendar.DATE, Calendar.SATURDAY - curDay);
         setCalendarToEndOfDay(lastDayOfWeek);
-        printCal(lastDayOfWeek, "end week =");
+        //printCal(lastDayOfWeek, "end week =");
 
         ParseQuery<Project> projectQuery = initQuery();
         projectQuery.whereGreaterThanOrEqualTo(Project.DUE_DATE_COL, startWeek.getTime());
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, lastDayOfWeek.getTime());
+        projectQuery.whereEqualTo(Project.STATUS_COL, false);
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due this week = " + count);
 
@@ -628,16 +629,17 @@ public abstract class BaseProjectFragment extends Fragment
         int curDay = startMonth.get(Calendar.DAY_OF_WEEK);
         startMonth.add(Calendar.DATE, Calendar.SATURDAY - curDay + 1);
         setCalendarToBeginningOfDay(startMonth);
-        printCal(startMonth, "start month=");
+        //printCal(startMonth, "start month=");
 
         Calendar endMonth = Calendar.getInstance();
         endMonth.set(Calendar.DAY_OF_MONTH, endMonth.getActualMaximum(Calendar.DAY_OF_MONTH));
         setCalendarToEndOfDay(endMonth);
-        printCal(endMonth, "end month=");
+        //printCal(endMonth, "end month=");
 
         ParseQuery<Project> projectQuery = initQuery();
         projectQuery.whereGreaterThanOrEqualTo(Project.DUE_DATE_COL, startMonth.getTime());
         projectQuery.whereLessThanOrEqualTo(Project.DUE_DATE_COL, endMonth.getTime());
+        projectQuery.whereEqualTo(Project.STATUS_COL, false);
         int count = projectQuery.count();
         Log.d(TAG, "Num projects due this month = " + count);
 
@@ -666,11 +668,11 @@ public abstract class BaseProjectFragment extends Fragment
         cal.set(Calendar.MILLISECOND, 999);
     }
 
-    DateFormat dateFormat = DateFormat.getDateTimeInstance();
+    /*DateFormat dateFormat = DateFormat.getDateTimeInstance();
 
     private void printCal(Calendar cal, String init) {
         Log.d(TAG, init + " " + dateFormat.format(cal.getTime()));
-    }
+    }*/
 
     private int queryProjectsInBackground() throws ParseException {
         ParseQuery<Project> projectQuery = initQuery();

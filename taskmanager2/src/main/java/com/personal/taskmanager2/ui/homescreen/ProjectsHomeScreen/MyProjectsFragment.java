@@ -186,7 +186,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                 int firstVisPos = llm.findFirstVisibleItemPosition();
                 int lastVisPos = llm.findLastVisibleItemPosition();
                 mProjectAdapter.clearSelection(firstVisPos, lastVisPos);
-                setActionMode(null);
+                mActionMode = null;
             }
         };
     }
