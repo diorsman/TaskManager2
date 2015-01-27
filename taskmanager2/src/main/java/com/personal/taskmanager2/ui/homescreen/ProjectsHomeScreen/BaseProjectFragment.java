@@ -42,7 +42,6 @@ import com.personal.taskmanager2.ui.homescreen.SearchFragment;
 import com.personal.taskmanager2.utilities.ProjectQueryHelper;
 import com.personal.taskmanager2.utilities.Utilities;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -382,89 +381,13 @@ public abstract class BaseProjectFragment extends Fragment
 
     @Override
     public void onProjectsRetrieved(List<Project> projects,
+                                    List<SectionedRecycleViewAdapter.Section> sections,
                                     int numProjectsOverdue,
                                     int numProjectsDueToday,
                                     int numProjectsDueThisWeek,
                                     int numProjectsDueThisMonth,
                                     int numProjectsDueLater,
                                     int numProjectsCompleted) {
-        List<SectionedRecycleViewAdapter.Section> sections = new ArrayList<>();
-
-        //Sections
-        if (numProjectsOverdue > 0) {
-            sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                 "Overdue",
-                                                                 numProjectsOverdue));
-        }
-        if (numProjectsDueToday > 0) {
-            if (sections.isEmpty()) {
-                sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                     "Due Today",
-                                                                     numProjectsDueToday));
-            }
-            else {
-                sections.add(new SectionedRecycleViewAdapter.Section(
-                        numProjectsOverdue,
-                        "Due Today",
-                        numProjectsDueToday));
-            }
-        }
-        if (numProjectsDueThisWeek > 0) {
-            if (sections.isEmpty()) {
-                sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                     "Due This Week",
-                                                                     numProjectsDueThisWeek));
-            }
-            else {
-                sections.add(new SectionedRecycleViewAdapter.Section(
-                        numProjectsOverdue + numProjectsDueToday,
-                        "Due This Week",
-                        numProjectsDueThisWeek));
-            }
-        }
-        if (numProjectsDueThisMonth > 0) {
-            if (sections.isEmpty()) {
-                sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                     "Due This Month",
-                                                                     numProjectsDueThisMonth));
-            }
-            else {
-                sections.add(new SectionedRecycleViewAdapter.Section(
-                        numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek,
-                        "Due This Month",
-                        numProjectsDueThisMonth));
-            }
-        }
-        if (numProjectsDueLater > 0) {
-            if (sections.isEmpty()) {
-                sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                     "Due Later",
-                                                                     numProjectsDueLater));
-            }
-            else {
-                sections.add(new SectionedRecycleViewAdapter.Section(
-                        numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek +
-                        numProjectsDueThisMonth, "Due Later", numProjectsDueLater));
-            }
-        }
-        if (numProjectsCompleted > 0) {
-            if (sections.isEmpty()) {
-                sections.add(new SectionedRecycleViewAdapter.Section(0,
-                                                                     "Completed",
-                                                                     numProjectsCompleted));
-            }
-            else {
-                sections.add(new SectionedRecycleViewAdapter.Section(
-                        projects.size() - numProjectsCompleted,
-                        "Completed",
-                        numProjectsCompleted));
-            }
-        }
-        // add footer view
-        sections.add(new SectionedRecycleViewAdapter.Section(projects.size(),
-                                                             "",
-                                                             0));
-
         mProjectAdapter = ProjectAdapterFactory.createProjectAdapter(mSelectedPosition,
                                                                      getActivity(),
                                                                      projects,

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.personal.taskmanager2.adapters.ProjectAdapter.SectionedRecycleViewAdapter;
 import com.personal.taskmanager2.model.parse.Project;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class ProjectQueryHelper implements NotifyingThreadPoolExecutor.Callback 
     private static final int MAIN_PROJECT_QUERY   = 0;
     private static final int SEARCH_PROJECT_QUERY = 1;
 
-    private int mQueryType;
+    private int     mQueryType;
     private boolean mArchive;
     private boolean mTrash;
 
@@ -95,6 +96,7 @@ public class ProjectQueryHelper implements NotifyingThreadPoolExecutor.Callback 
     public interface ProjectQueryCallback {
 
         void onProjectsRetrieved(List<Project> projects,
+                                 List<SectionedRecycleViewAdapter.Section> sections,
                                  int numProjectsOverdue,
                                  int numProjectsDueToday,
                                  int numProjectsDueThisWeek,
@@ -109,7 +111,9 @@ public class ProjectQueryHelper implements NotifyingThreadPoolExecutor.Callback 
 
     private ProjectQueryCallback mProjectQueryCallback;
 
-    public void initMainProjectQuery(ProjectQueryCallback projectQueryCallback, boolean archive, boolean trash) {
+    public void initMainProjectQuery(ProjectQueryCallback projectQueryCallback,
+                                     boolean archive,
+                                     boolean trash) {
         mProjectQueryCallback = projectQueryCallback;
         mQueryType = MAIN_PROJECT_QUERY;
         mArchive = archive;
@@ -143,18 +147,28 @@ public class ProjectQueryHelper implements NotifyingThreadPoolExecutor.Callback 
             int numProjectsDueThisMonth = mGetNumProjectsDueThisMonth.get();
             int numProjectsCompleted = mGetNumProjectsCompleted.get();
             List<Project> projects = mGetProjects.get();
-            int numItems = projects.size();
+            int numProjects = projects.size();
 
-            if (numItems == 0) {
+            if (numProjects == 0) {
                 mProjectQueryCallback.onNoProjectsFound();
                 return;
             }
 
-            int numProjectsDueLater = numItems - numProjectsOverdue - numProjectsDueToday -
+            int numProjectsDueLater = numProjects - numProjectsOverdue - numProjectsDueToday -
                                       numProjectsDueThisWeek - numProjectsDueThisMonth -
                                       numProjectsCompleted;
 
+            List<SectionedRecycleViewAdapter.Section> sections = createSections(numProjectsOverdue,
+                                                                                numProjectsDueToday,
+                                                                                numProjectsDueThisWeek,
+                                                                                numProjectsDueThisMonth,
+                                                                                numProjectsDueLater,
+                                                                                numProjectsCompleted,
+                                                                                numProjects);
+
+
             mProjectQueryCallback.onProjectsRetrieved(projects,
+                                                      sections,
                                                       numProjectsOverdue,
                                                       numProjectsDueToday,
                                                       numProjectsDueThisWeek,
@@ -165,6 +179,92 @@ public class ProjectQueryHelper implements NotifyingThreadPoolExecutor.Callback 
         catch (InterruptedException | ExecutionException e) {
             mProjectQueryCallback.onProjectQueryError(e);
         }
+    }
+
+    private List<SectionedRecycleViewAdapter.Section> createSections(int numProjectsOverdue,
+                                                                     int numProjectsDueToday,
+                                                                     int numProjectsDueThisWeek,
+                                                                     int numProjectsDueThisMonth,
+                                                                     int numProjectsDueLater,
+                                                                     int numProjectsCompleted,
+                                                                     int numProjects) {
+        List<SectionedRecycleViewAdapter.Section> sections = new ArrayList<>();
+
+        //Sections
+        if (numProjectsOverdue > 0) {
+            sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                 "Overdue",
+                                                                 numProjectsOverdue));
+        }
+        if (numProjectsDueToday > 0) {
+            if (sections.isEmpty()) {
+                sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                     "Due Today",
+                                                                     numProjectsDueToday));
+            }
+            else {
+                sections.add(new SectionedRecycleViewAdapter.Section(
+                        numProjectsOverdue,
+                        "Due Today",
+                        numProjectsDueToday));
+            }
+        }
+        if (numProjectsDueThisWeek > 0) {
+            if (sections.isEmpty()) {
+                sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                     "Due This Week",
+                                                                     numProjectsDueThisWeek));
+            }
+            else {
+                sections.add(new SectionedRecycleViewAdapter.Section(
+                        numProjectsOverdue + numProjectsDueToday,
+                        "Due This Week",
+                        numProjectsDueThisWeek));
+            }
+        }
+        if (numProjectsDueThisMonth > 0) {
+            if (sections.isEmpty()) {
+                sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                     "Due This Month",
+                                                                     numProjectsDueThisMonth));
+            }
+            else {
+                sections.add(new SectionedRecycleViewAdapter.Section(
+                        numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek,
+                        "Due This Month",
+                        numProjectsDueThisMonth));
+            }
+        }
+        if (numProjectsDueLater > 0) {
+            if (sections.isEmpty()) {
+                sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                     "Due Later",
+                                                                     numProjectsDueLater));
+            }
+            else {
+                sections.add(new SectionedRecycleViewAdapter.Section(
+                        numProjectsOverdue + numProjectsDueToday + numProjectsDueThisWeek +
+                        numProjectsDueThisMonth, "Due Later", numProjectsDueLater));
+            }
+        }
+        if (numProjectsCompleted > 0) {
+            if (sections.isEmpty()) {
+                sections.add(new SectionedRecycleViewAdapter.Section(0,
+                                                                     "Completed",
+                                                                     numProjectsCompleted));
+            }
+            else {
+                sections.add(new SectionedRecycleViewAdapter.Section(
+                        numProjects - numProjectsCompleted,
+                        "Completed",
+                        numProjectsCompleted));
+            }
+        }
+        // add footer view
+        sections.add(new SectionedRecycleViewAdapter.Section(numProjects,
+                                                             "",
+                                                             0));
+        return sections;
     }
 
 
