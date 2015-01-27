@@ -28,7 +28,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
-import com.personal.taskmanager2.R;
+import com.personal.taskmanager2.adapters.ProjectAdapter.BaseProjectAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -108,6 +108,7 @@ public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
         mRecyclerView = recyclerView;
         mRefreshLayout = refreshLayout;
         mCallbacks = callbacks;
+
     }
 
     public RecyclerView.OnScrollListener makeScrollListener() {
@@ -140,9 +141,6 @@ public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
             case MotionEvent.ACTION_DOWN: {
                 // Find the child view that was touched (perform a hit test)
                 mDownView = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
-                mCompletionView = mDownView.findViewById(R.id.completion_view);
-                mMainView = mDownView.findViewById(R.id.main_view);
-                mArchiveView = mDownView.findViewById(R.id.archive_view);
 
                 if (mDownView != null) {
                     mDownX = e.getRawX();
@@ -151,6 +149,12 @@ public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
                     if (mCallbacks.canDismiss(mDownPosition)) {
                         mVelocityTracker = VelocityTracker.obtain();
                         mVelocityTracker.addMovement(e);
+
+                        BaseProjectAdapter.ViewHolder viewHolder =
+                                (BaseProjectAdapter.ViewHolder) mRecyclerView.getChildViewHolder(mDownView);
+                        mCompletionView = viewHolder.completionView;
+                        mMainView = viewHolder.mainView;
+                        mArchiveView = viewHolder.archiveView;
                     }
                     else {
                         mDownView = null;
@@ -176,7 +180,7 @@ public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
                 float deltaX = e.getRawX() - mDownX;
                 float deltaY = e.getRawY() - mDownY;
 
-                if (mCurState == SWIPE_STATE ||
+                if ((mCurState == SWIPE_STATE) ||
                     (Math.abs(deltaX) > mSlop && Math.abs(deltaY) < Math.abs(deltaX) / 2)) {
                     mSwiping = true;
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
@@ -212,7 +216,7 @@ public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
                     mArchiveView.setVisibility(View.VISIBLE);
                     mCompletionView.setVisibility(View.GONE);
                 }
-                mMainView.setTranslationX(mDeltaX - mSwipingSlop);
+                mMainView.setTranslationX(mDeltaX);
                 mRecyclerView.requestDisallowInterceptTouchEvent(true);
                 mRefreshLayout.requestDisallowInterceptTouchEvent(true);
 
@@ -270,10 +274,12 @@ public class ItemTouchListener implements RecyclerView.OnItemTouchListener {
                      .setListener(new AnimatorListenerAdapter() {
                          @Override
                          public void onAnimationEnd(Animator animation) {
-                             if (mCompletionView != null && mCompletionView.getVisibility() == View.VISIBLE) {
+                             if (mCompletionView != null &&
+                                 mCompletionView.getVisibility() == View.VISIBLE) {
                                  mCompletionView.setVisibility(View.GONE);
                              }
-                             else if (mArchiveView != null && mArchiveView.getVisibility() == View.VISIBLE) {
+                             else if (mArchiveView != null &&
+                                      mArchiveView.getVisibility() == View.VISIBLE) {
                                  mArchiveView.setVisibility(View.GONE);
                              }
                          }

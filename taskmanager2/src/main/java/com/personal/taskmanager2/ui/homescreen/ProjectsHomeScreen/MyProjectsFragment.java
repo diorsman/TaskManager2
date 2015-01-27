@@ -68,11 +68,6 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
         mAddProjectButton.setOnClickListener(this);
         mJoinProjectButton.setOnClickListener(this);
 
-        /*mAddProjectButton.setScaleX(0);
-        mAddProjectButton.setScaleY(0);
-        mJoinProjectButton.setScaleX(0);
-        mJoinProjectButton.setScaleY(0);*/
-
         return rootView;
     }
 
@@ -108,31 +103,23 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_edit_project:
-                        /*mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
+                        mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
-                            public void modifyProject(Project project) {
+                            public void modifyProject(Project project, int position) {
                                 getActionMode().finish();
                                 project.safeEdit(MyProjectsFragment.this,
                                                  MyProjectsFragment.this.getActivity(),
                                                  MyProjectsFragment.this.getActivity(),
-                                                 mRecyclerView.get);
-                            }
-                        });*/
-                        mProjectAdapter.forEachSelectItemModifyInPlace2(new BaseProjectAdapter.ApplyAction2() {
-                            @Override
-                            public void modifyProject2(Project project, int pos) {
-                                getActionMode().finish();
-                                project.safeEdit(MyProjectsFragment.this,
-                                                 MyProjectsFragment.this.getActivity(),
-                                                 MyProjectsFragment.this.getActivity(),
-                                                 mRecyclerView.findViewHolderForPosition(mSectionedAdapter.positionToSectionedPosition(pos)).itemView);
+                                                 mRecyclerView.findViewHolderForPosition(
+                                                         mSectionedAdapter.positionToSectionedPosition(
+                                                                 position)).itemView);
                             }
                         });
                         return true;
                     case R.id.action_share_project:
                         mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
-                            public void modifyProject(Project project) {
+                            public void modifyProject(Project project, int position) {
                                 project.share(MyProjectsFragment.this.getActivity());
                             }
                         });
@@ -140,7 +127,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                     case R.id.action_mark_complete:
                         mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
-                            public void modifyProject(Project project) {
+                            public void modifyProject(Project project, int position) {
                                 project.safeChangeStatus(true,
                                                          MyProjectsFragment.this.getActivity());
                             }
@@ -150,7 +137,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                     case R.id.action_mark_not_complete:
                         mProjectAdapter.forEachSelectedItemModifyInPlace(new BaseProjectAdapter.ApplyAction() {
                             @Override
-                            public void modifyProject(Project project) {
+                            public void modifyProject(Project project, int position) {
                                 project.safeChangeStatus(false,
                                                          MyProjectsFragment.this.getActivity());
                             }
@@ -160,7 +147,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                     case R.id.action_archive:
                         mProjectAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
                             @Override
-                            public void modifyProject(Project project) {
+                            public void modifyProject(Project project, int position) {
                                 project.safeArchive(true, getActivity());
                             }
                         });
@@ -169,7 +156,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
                     case R.id.action_trash:
                         mProjectAdapter.forEachSelectedItemRemove(new BaseProjectAdapter.ApplyAction() {
                             @Override
-                            public void modifyProject(Project project) {
+                            public void modifyProject(Project project, int position) {
                                 project.safeTrash(true, getActivity());
                             }
                         });
@@ -333,15 +320,18 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     };
 
     @Override
-    public void onItemClick(View v) {
-        int position =
-                mSectionedAdapter.sectionedPositionToPosition(mRecyclerView.getChildPosition(v));
+    public void onItemClick(View v, int position) {
+        position = mSectionedAdapter.sectionedPositionToPosition(position);
 
         if (mProjectAdapter.isItemSelected(position)) {
             unSelectItem(position);
         }
         else {
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(v,
+                                                                                       0,
+                                                                                       0,
+                                                                                       v.getWidth(),
+                                                                                       v.getHeight());
             Intent intent =
                     new Intent(MyProjectsFragment.this.getActivity(),
                                ProjectDetailActivity.class);
@@ -352,8 +342,7 @@ public class MyProjectsFragment extends BaseProjectFragment implements View.OnCl
     }
 
     @Override
-    public void onItemLongClick(View v) {
-        int position = mRecyclerView.getChildPosition(v);
+    public void onItemLongClick(View v, int position) {
         toggleSelection(position);
     }
 

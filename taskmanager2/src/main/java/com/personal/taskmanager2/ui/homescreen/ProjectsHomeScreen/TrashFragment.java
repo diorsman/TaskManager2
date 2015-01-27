@@ -34,9 +34,8 @@ public class TrashFragment extends BaseProjectFragment {
     }
 
     @Override
-    public void onItemClick(View v) {
-        int position =
-                mSectionedAdapter.sectionedPositionToPosition(mRecyclerView.getChildPosition(v));
+    public void onItemClick(View v, int position) {
+        position = mSectionedAdapter.sectionedPositionToPosition(position);
 
         if (mProjectAdapter.isItemSelected(position)) {
             unSelectItem(position);
@@ -53,8 +52,7 @@ public class TrashFragment extends BaseProjectFragment {
     }
 
     @Override
-    public void onItemLongClick(View v) {
-        int position = mRecyclerView.getChildPosition(v);
+    public void onItemLongClick(View v, int position) {
         toggleSelection(position);
     }
 

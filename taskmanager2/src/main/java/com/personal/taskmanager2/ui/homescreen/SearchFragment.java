@@ -242,12 +242,12 @@ public class SearchFragment extends Fragment implements BaseProjectAdapter.OnIte
     }
 
     @Override
-    public void onItemClick(View v) {
+    public void onItemClick(View v, int position) {
 
     }
 
     @Override
-    public void onItemLongClick(View v) {
+    public void onItemLongClick(View v, int position) {
 
     }
 }

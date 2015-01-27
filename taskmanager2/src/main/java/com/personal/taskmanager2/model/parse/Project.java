@@ -274,26 +274,6 @@ public class Project extends ParseObject implements Parcelable {
                             final Context context,
                             final Activity activity,
                             final View view) {
-        /*if (isProjectAdminCurUser(ParseUser.getCurrentUser())) {
-            fragmentManager.beginTransaction()
-                           .addToBackStack(null)
-                           .add(R.id.container, EditProjectFragment.newInstance(this))
-                           .commit();
-        }
-        else {
-            Toast.makeText(context, "Only administrator can edit the project", Toast.LENGTH_LONG)
-                 .show();
-        }*/
-        /*return safeModify(context, new ModifyProject() {
-            @Override
-            public void modify() {
-                fragmentManager.beginTransaction()
-                               .addToBackStack(null)
-                               .replace(R.id.container,
-                                        EditProjectFragment.newInstance(Project.this))
-                               .commit();
-            }
-        });*/
         return safeModify(context, new ModifyProject() {
             @Override
             public void modify() {

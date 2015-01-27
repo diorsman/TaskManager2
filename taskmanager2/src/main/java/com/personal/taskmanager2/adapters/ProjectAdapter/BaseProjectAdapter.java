@@ -35,19 +35,14 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
 
         void onAvatarClick(View v, int position);
 
-        void onItemClick(View v);
+        void onItemClick(View v, int position);
 
-        void onItemLongClick(View v);
+        void onItemLongClick(View v, int position);
     }
 
     public interface ApplyAction {
 
-        void modifyProject(Project project);
-    }
-
-    public interface ApplyAction2 {
-
-        void modifyProject2(Project project, int pos);
+        void modifyProject(Project project, int position);
     }
 
     private static final int CHECK_ANIM = 1;
@@ -151,40 +146,23 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
 
     public void forEachSelectedItemModifyInPlace(ApplyAction func) {
         for (int i = 0; i < mSelectedItems.size(); ++i) {
-            int projectPos = mSelectedItems.keyAt(i);
-            Project project = mProjectList.get(projectPos);
-            func.modifyProject(project);
-        }
-    }
-
-    public void forEachSelectItemModifyInPlace2(ApplyAction2 func) {
-        for (int i = 0; i < mSelectedItems.size(); ++i) {
-            int projectPos = mSelectedItems.keyAt(i);
-            Project project = mProjectList.get(projectPos);
-            func.modifyProject2(project, projectPos);
+            int position = mSelectedItems.keyAt(i);
+            Project project = mProjectList.get(position);
+            func.modifyProject(project, position);
         }
     }
 
     public void forEachSelectedItemRemove(ApplyAction func) {
         for (int i = mSelectedItems.size() - 1; i >= 0; --i) {
-            int pos = mSelectedItems.keyAt(i);
-            Project project = getItem(pos);
-            func.modifyProject(project);
+            int position = mSelectedItems.keyAt(i);
+            Project project = getItem(position);
+            func.modifyProject(project, position);
             removeItem(project);
-            notifyItemRemoved(mSectionAdapter.positionToSectionedPosition(pos));
+            notifyItemRemoved(mSectionAdapter.positionToSectionedPosition(position));
         }
         mSelectedItems.clear();
         mAnimItems.clear();
     }
-
-    /*protected View initView(ViewGroup parent, int layout) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout,
-                                                                     parent,
-                                                                     false);
-
-
-        return view;
-    }*/
 
     protected void initClick(final ViewHolder viewHolder) {
         viewHolder.projectAvatar.setOnClickListener(new View.OnClickListener() {
@@ -197,14 +175,14 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
         viewHolder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickListener.onItemClick(viewHolder.itemView);
+                mClickListener.onItemClick(viewHolder.itemView, viewHolder.getPosition());
             }
         });
 
         viewHolder.mainView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mClickListener.onItemLongClick(viewHolder.itemView);
+                mClickListener.onItemLongClick(viewHolder.itemView, viewHolder.getPosition());
                 return true;
             }
         });
@@ -292,6 +270,8 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public CardView mainView;
+        public View     completionView;
+        public View     archiveView;
         public View     projectAvatar;
         public TextView projectName;
         public TextView projectDueDate;
@@ -301,6 +281,8 @@ public abstract class BaseProjectAdapter<E extends BaseProjectAdapter.ViewHolder
             super(itemView);
 
             mainView = (CardView) itemView.findViewById(R.id.main_view);
+            completionView = itemView.findViewById(R.id.completion_view);
+            archiveView = itemView.findViewById(R.id.archive_view);
             projectAvatar = itemView.findViewById(R.id.project_list_color_slice);
             projectName = (TextView) itemView.findViewById(R.id.project_list_name);
             projectDueDate = (TextView) itemView.findViewById(R.id.project_list_due_date);
